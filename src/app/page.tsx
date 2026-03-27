@@ -1,14 +1,12 @@
-import JobList from "@/components/jobs/JobList";
+import { MainLayout } from '@/components/layout';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">
-          Find Your Dream Job
-        </h1>
-        <JobList />
+    <MainLayout>
+      <div style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
+        <h1>Welcome to JobBoard</h1>
+        <p>Find your next opportunity or hire top talent.</p>
       </div>
-    </main>
+    </MainLayout>
   );
 }
