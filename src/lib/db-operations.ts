@@ -94,3 +94,5 @@ export async function getApplicationsByUserId(userId: string) {
   const db = await getDb();
   return db.data.applications.filter((a) => a.userId === userId);
 }
+
+export { Job, Application };
