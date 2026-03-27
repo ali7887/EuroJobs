@@ -1,0 +1,24 @@
+{
+  "jobs": [],
+  "users": [
+    {
+      "email": "john@example.com",
+      "passwordHash": "hashed_password_here",
+      "name": "John Doe",
+      "role": "job_seeker",
+      "id": "ad2159d4-d378-4148-bd3b-2887864d4135",
+      "createdAt": "2026-03-27T14:10:26.118Z"
+    }
+  ],
+  "applications": [
+    {
+      "jobId": "JOB_ID_HERE",
+      "coverLetter": "I am very interested in this position...",
+      "userId": "USER_ID_HERE",
+      "status": "pending",
+      "resumeUrl": "https://example.com/resume.pdf",
+      "id": "99ae7dca-3b8b-4e58-a303-1402543b1634",
+      "appliedAt": "2026-03-27T14:06:11.532Z"
+    }
+  ]
+}
