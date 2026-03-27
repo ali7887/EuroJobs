@@ -1,26 +1,37 @@
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger";
+import React from 'react';
+import styles from './Button.module.css';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  loading?: boolean;
 }
 
-export default function Button({ 
-  children, 
-  variant = "primary", 
-  className = "",
-  ...props 
-}: ButtonProps) {
-  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors";
-  const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
-    danger: "bg-red-600 text-white hover:bg-red-700"
-  };
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  loading = false,
+  disabled,
+  className = '',
+  ...props
+}) => {
+  const classes = [
+    styles.button,
+    styles[variant],
+    styles[size],
+    fullWidth && styles.fullWidth,
+    loading && styles.loading,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <button 
-      className={`${baseStyles} ${variants[variant]} ${className}`}
-      {...props}
-    >
-      {children}
+    <button className={classes} disabled={disabled || loading} {...props}>
+      {loading ? <span className={styles.spinner} /> : children}
     </button>
   );
-}
+};
