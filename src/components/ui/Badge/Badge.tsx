@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Badge.module.css';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'secondary';
   size?: 'sm' | 'md';
 }
 

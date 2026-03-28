@@ -1,11 +1,6 @@
 export { Button } from './Button/Button';
-export { Input } from './Input';
-export { Card } from './Card';
-export { Badge } from './Badge';
-export { Modal } from './Modal';
-
-export type { ButtonProps } from './Button/Button';
-export type { InputProps } from './Input';
-export type { CardProps } from './Card';
-export type { BadgeProps } from './Badge';
-export type { ModalProps } from './Modal';
+export { default as Input } from './Input';
+export { Card } from './Card/Card';
+export { Badge } from './Badge/Badge';
+export { Modal } from './Modal/Modal';
+export { default as Loader } from './Loader/Loader';
