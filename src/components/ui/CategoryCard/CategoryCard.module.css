@@ -1,47 +1,48 @@
 /* src/components/ui/CategoryCard/CategoryCard.module.css */
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px 24px;
+  padding: var(--space-8);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   text-align: center;
-  transition: all 0.3s ease;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  min-height: 180px;
+  transition: all var(--transition-base);
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
 }
 
-.icon {
-  font-size: 2.5rem;
-  margin-bottom: 8px;
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-base);
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1);
+  background: var(--color-primary);
+  color: white;
 }
 
 .name {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--foreground);
-  margin: 0 0 8px 0;
+  font-size: var(--font-size-lg);       /* FIXED: was --text-lg */
+  font-weight: var(--font-weight-semibold); /* FIXED: was --font-semibold */
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
 }
 
 .count {
-  font-size: 0.9375rem;
-  color: var(--muted-foreground);
-  margin: 0;
-}
-
-/* Fix orphan card by ensuring consistent sizing */
-@media (min-width: 769px) {
-  .card {
-    min-width: 280px;
-  }
+  font-size: var(--font-size-sm);       /* FIXED: was --text-sm */
+  color: var(--color-text-secondary);
 }
