@@ -1,17 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react';
 import { MainLayout } from '@/components/layout';
-import { Button, Input, Card, Badge } from '@/components/ui';
+import { SearchBar } from '@/components/sections/Hero';
+import { JobCard } from '@/components/ui/JobCard/JobCard';
+import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
 import styles from './page.module.css';
 
+// ─── Data ────────────────────────────────────────────────────────────────────
+
 const categories = [
-  { icon: '💻', name: 'Engineering', count: 1234 },
-  { icon: '🎨', name: 'Design', count: 567 },
-  { icon: '📊', name: 'Marketing', count: 890 },
-  { icon: '💼', name: 'Sales', count: 432 },
-  { icon: '🔧', name: 'Product', count: 321 },
-  { icon: '📝', name: 'Content', count: 234 },
+  { icon: Code,      name: 'Engineering', count: 1234, trending: true  },
+  { icon: Palette,   name: 'Design',      count: 567,  trending: false },
+  { icon: TrendingUp,name: 'Marketing',   count: 890,  trending: true  },
+  { icon: Users,     name: 'Sales',       count: 432,  trending: false },
+  { icon: Wrench,    name: 'Product',     count: 321,  trending: false },
+  { icon: FileText,  name: 'Content',     count: 234,  trending: false },
 ];
 
 const featuredJobs = [
@@ -21,9 +25,13 @@ const featuredJobs = [
     title: 'Senior Frontend Developer',
     company: 'TechCorp',
     location: 'Remote',
-    salary: '$120k - $180k',
-    tags: ['React', 'TypeScript', 'Remote'],
-    type: 'Full-time'
+    salary: '$120k – $180k',
+    type: 'Full-time',
+    tags: ['React', 'TypeScript', 'Next.js'],
+    isNew: true,
+    isFeatured: true,
+    postedDate: '2 days ago',
+    applicants: 45,
   },
   {
     id: 2,
@@ -31,9 +39,13 @@ const featuredJobs = [
     title: 'Product Designer',
     company: 'DesignHub',
     location: 'Berlin',
-    salary: '$90k - $130k',
-    tags: ['Figma', 'UI/UX', 'Hybrid'],
-    type: 'Full-time'
+    salary: '$90k – $130k',
+    type: 'Full-time',
+    tags: ['Figma', 'UI/UX', 'Design Systems'],
+    isNew: false,
+    isFeatured: false,
+    postedDate: '5 days ago',
+    applicants: 32,
   },
   {
     id: 3,
@@ -41,131 +53,139 @@ const featuredJobs = [
     title: 'DevOps Engineer',
     company: 'CloudScale',
     location: 'Amsterdam',
-    salary: '$110k - $160k',
-    tags: ['AWS', 'Kubernetes', 'Remote'],
-    type: 'Contract'
+    salary: '$110k – $160k',
+    type: 'Contract',
+    tags: ['AWS', 'Kubernetes', 'Docker'],
+    isNew: true,
+    isFeatured: false,
+    postedDate: '1 week ago',
+    applicants: 28,
   },
 ];
 
-const companies = ['🏢', '🎪', '🏛️', '🏰', '🏭', '🏗️', '🏦', '🏨'];
+const companies = [
+  { name: 'Google',    jobs: 45 },
+  { name: 'Microsoft', jobs: 32 },
+  { name: 'Spotify',   jobs: 28 },
+  { name: 'Netflix',   jobs: 19 },
+  { name: 'Amazon',    jobs: 56 },
+  { name: 'Meta',      jobs: 41 },
+  { name: 'Apple',     jobs: 23 },
+  { name: 'Tesla',     jobs: 17 },
+];
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const [keyword, setKeyword] = useState('');
-  const [location, setLocation] = useState('');
-
-  const handleSearch = () => {
-    console.log('Searching:', { keyword, location });
+  const handleSearch = (params: {
+    keyword: string;
+    location: string;
+    category: string;
+  }) => {
+    console.log('Search triggered:', params);
   };
 
   return (
     <MainLayout>
-      {/* Hero Section */}
+
+      {/* ── Hero ─────────────────────────────────────────────── */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
-            Find Your Dream Job in <span className={styles.gradient}>Europe</span>
+            Find Your Dream Job in{' '}
+            <span className={styles.gradient}>Europe</span>
           </h1>
+
           <p className={styles.heroSubtitle}>
-            Discover thousands of opportunities from top companies across Europe
+            Discover thousands of opportunities from top companies
+            across Europe
           </p>
 
-          {/* Premium Search Bar */}
-          <div className={styles.searchBar}>
-            <div className={styles.searchInput}>
-              <span className={styles.searchIcon}>🔍</span>
-              <Input
-                placeholder="Job title or keyword"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.searchDivider} />
-            <div className={styles.searchInput}>
-              <span className={styles.searchIcon}>📍</span>
-              <Input
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className={styles.input}
-              />
-            </div>
-            <Button
-              variant="primary"
-              onClick={handleSearch}
-              className={styles.searchButton}
-            >
-              Search Jobs
-            </Button>
-          </div>
+          <SearchBar onSearch={handleSearch} />
 
-          <div className={styles.heroCtas}>
-            <Button variant="primary" size="lg">Find Jobs</Button>
-            <Button variant="outline" size="lg">Post a Job</Button>
+          {/* Stats strip */}
+          <div className={styles.heroStats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>12,450+</span>
+              <span className={styles.statLabel}>Active Jobs</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>850+</span>
+              <span className={styles.statLabel}>Companies</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>50K+</span>
+              <span className={styles.statLabel}>Job Seekers</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Popular Categories */}
+      {/* ── Categories ───────────────────────────────────────── */}
       <section className={styles.section}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Popular Categories</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Popular Categories</h2>
+            <p className={styles.sectionSubtitle}>
+              Explore jobs by category
+            </p>
+          </div>
           <div className={styles.categoriesGrid}>
             {categories.map((cat) => (
-              <Card key={cat.name} className={styles.categoryCard}>
-                <span className={styles.categoryIcon}>{cat.icon}</span>
-                <h3 className={styles.categoryName}>{cat.name}</h3>
-                <p className={styles.categoryCount}>{cat.count} jobs</p>
-              </Card>
+              <CategoryCard key={cat.name} {...cat} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Jobs */}
+      {/* ── Featured Jobs ─────────────────────────────────────── */}
       <section className={styles.section}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Featured Jobs</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Featured Jobs</h2>
+            <p className={styles.sectionSubtitle}>
+              Hand-picked opportunities for you
+            </p>
+          </div>
           <div className={styles.jobsGrid}>
             {featuredJobs.map((job) => (
-              <Card key={job.id} className={styles.jobCard}>
-                <div className={styles.jobHeader}>
-                  <span className={styles.jobLogo}>{job.logo}</span>
-                  <Badge variant="secondary">{job.type}</Badge>
-                </div>
-                <h3 className={styles.jobTitle}>{job.title}</h3>
-                <p className={styles.jobCompany}>{job.company}</p>
-                <div className={styles.jobMeta}>
-                  <span>📍 {job.location}</span>
-                  <span>💰 {job.salary}</span>
-                </div>
-                <div className={styles.jobTags}>
-                  {job.tags.map((tag) => (
-                    <Badge key={tag} variant="outline">{tag}</Badge>
-                  ))}
-                </div>
-                <Button variant="primary" fullWidth className={styles.applyButton}>
-                  Apply Now
-                </Button>
-              </Card>
+              <JobCard key={job.id} {...job} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Top Companies */}
+      {/* ── Top Companies ─────────────────────────────────────── */}
       <section className={styles.section}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Top Companies Hiring</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Top Companies Hiring</h2>
+            <p className={styles.sectionSubtitle}>
+              Join industry-leading organizations
+            </p>
+          </div>
           <div className={styles.companiesGrid}>
-            {companies.map((logo, idx) => (
-              <div key={idx} className={styles.companyLogo}>
-                {logo}
+            {companies.map((company) => (
+              <div key={company.name} className={styles.companyCard}>
+                <span className={styles.companyName}>{company.name}</span>
+                <span className={styles.companyJobs}>
+                  {company.jobs} open positions
+                </span>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ── Footer separator ──────────────────────────────────── */}
+      <div className={styles.footerDivider} />
+
     </MainLayout>
   );
 }

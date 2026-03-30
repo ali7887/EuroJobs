@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApplicationsByUserId } from "@/lib/db-operations";
+import { getApplicationsByUserId } from "@/lib/db/XXXXdb-operations";
 
 export async function GET(
   request: NextRequest,

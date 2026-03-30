@@ -1,51 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui';
+import { Briefcase, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 import styles from './Header.module.css';
 
-export const Header: React.FC = () => {
+export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          JobBoard
+          <Briefcase size={24} />
+          <span>EuroJobs</span>
         </Link>
 
         <nav className={styles.nav}>
-          <Link href="/jobs" className={styles.navLink}>Jobs</Link>
-          <Link href="/companies" className={styles.navLink}>Companies</Link>
-          <Link href="/pricing" className={styles.navLink}>Pricing</Link>
+          <Link href="/jobs">Find Jobs</Link>
+          <Link href="/companies">Companies</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
         </nav>
 
         <div className={styles.actions}>
-          <Button variant="ghost" size="sm">Sign In</Button>
-          <Button variant="primary" size="sm">Post a Job</Button>
+          <Link href="/signin" className={styles.signIn}>Sign In</Link>
+          <Link href="/post-job" className={styles.postJob}>Post a Job</Link>
         </div>
 
-        <button
-          className={styles.mobileMenuButton}
+        <button 
+          className={styles.mobileToggle}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
         >
-          <span className={styles.hamburger}></span>
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {mobileMenuOpen && (
         <div className={styles.mobileMenu}>
-          <Link href="/jobs" className={styles.mobileLink}>Jobs</Link>
-          <Link href="/companies" className={styles.mobileLink}>Companies</Link>
-          <Link href="/pricing" className={styles.mobileLink}>Pricing</Link>
-          <div className={styles.mobileActions}>
-            <Button variant="ghost" size="sm" fullWidth>Sign In</Button>
-            <Button variant="primary" size="sm" fullWidth>Post a Job</Button>
-          </div>
+          <Link href="/jobs">Find Jobs</Link>
+          <Link href="/companies">Companies</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <Link href="/signin">Sign In</Link>
+          <Link href="/post-job" className={styles.mobilePostJob}>Post a Job</Link>
         </div>
       )}
     </header>
   );
-};
+}

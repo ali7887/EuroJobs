@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import JobCard from "./JobCard";
-import { Job } from "@/lib/db-operations";
+import { Job } from "@/lib/db/XXXXdb-operations";
 
 export default function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);

@@ -1,4 +1,4 @@
-import { getDb, Job, User, Application } from "./db";
+/* import { getDb, Job, User, Application } from "./db";
 import { randomUUID } from "crypto";
 
 export async function createJob(jobData: Omit<Job, "id" | "postedAt">) {
@@ -95,4 +95,5 @@ export async function getApplicationsByUserId(userId: string) {
   return db.data.applications.filter((a) => a.userId === userId);
 }
 
-export { Job, Application };
+export type { Job, Application };
+ */

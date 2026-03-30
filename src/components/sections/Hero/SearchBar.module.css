@@ -1,7 +1,8 @@
 /**
+/**
  * Advanced URL-Driven Search Bar Styles
  * Premium glassmorphism design with micro-interactions
- */
+ 
 
 .searchBar {
   width: 100%;
@@ -242,3 +243,4 @@
     padding: 14px 24px;
   }
 }
+

@@ -1,7 +1,7 @@
 // src/app/jobs/page.tsx
+import { Loader } from '@/components/ui';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { Loader } from '../ui';
 
 function JobsContent() {
   const searchParams = useSearchParams();

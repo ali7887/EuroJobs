@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Card from "../ui/Card";
-import { Application } from "@/lib/db-operations";
+import { Application } from "@/lib/db/XXXXdb-operations";
 
 interface ApplicationListProps {
   userId: string;

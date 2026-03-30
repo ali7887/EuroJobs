@@ -1,24 +1,56 @@
 {
-  "jobs": [],
-  "users": [
+  "companies": [
     {
-      "email": "john@example.com",
-      "passwordHash": "hashed_password_here",
-      "name": "John Doe",
-      "role": "job_seeker",
-      "id": "ad2159d4-d378-4148-bd3b-2887864d4135",
-      "createdAt": "2026-03-27T14:10:26.118Z"
+      "id": "1",
+      "name": "Tech Corp",
+      "logo": "/logos/tech-corp.png",
+      "website": "https://techcorp.local"
+    },
+    {
+      "id": "4f625832-8c82-4c26-aef4-a7d693276454",
+      "name": "Test Company",
+      "logo": "/logos/test.png",
+      "website": "https://test.local"
     }
   ],
-  "applications": [
+  "categories": [
     {
-      "jobId": "JOB_ID_HERE",
-      "coverLetter": "I am very interested in this position...",
-      "userId": "USER_ID_HERE",
-      "status": "pending",
-      "resumeUrl": "https://example.com/resume.pdf",
-      "id": "99ae7dca-3b8b-4e58-a303-1402543b1634",
-      "appliedAt": "2026-03-27T14:06:11.532Z"
+      "id": "1",
+      "name": "Engineering",
+      "slug": "engineering"
+    },
+    {
+      "id": "57da58a4-6c71-46b7-bc67-512b881b83e5",
+      "name": "Software Development",
+      "slug": "software-development"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1",
+      "title": "Senior Frontend Developer",
+      "description": "Build amazing user interfaces with React and Next.js",
+      "location": "Remote",
+      "salary": "$120k - $150k",
+      "type": "FULL_TIME",
+      "companyId": "1",
+      "categoryId": "1",
+      "published": true,
+      "createdAt": "2026-03-29T14:00:00.000Z",
+      "updatedAt": "2026-03-29T14:00:00.000Z"
+    },
+    {
+      "id": "976d4534-a4d2-4928-9eb1-f8a4c7c8545e",
+      "title": "Full Stack Developer",
+      "description": "Build amazing web applications with modern technologies",
+      "location": "Tehran, Iran",
+      "salary": "50M - 80M Toman",
+      "type": "FULL_TIME",
+      "companyId": "4f625832-8c82-4c26-aef4-a7d693276454",
+      "categoryId": "57da58a4-6c71-46b7-bc67-512b881b83e5",
+      "published": true,
+      "createdAt": "2026-03-29T17:56:14.544Z",
+      "updatedAt": "2026-03-29T17:56:14.546Z"
     }
   ]
 }

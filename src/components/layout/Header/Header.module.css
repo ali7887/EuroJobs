@@ -1,9 +1,11 @@
 .header {
   position: sticky;
   top: 0;
-  background-color: var(--color-neutral-0);
-  border-bottom: 1px solid var(--color-neutral-200);
-  z-index: var(--z-sticky);
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
 }
 
 .container {
@@ -12,94 +14,104 @@
   padding: var(--space-4) var(--space-6);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-8);
+  justify-content: space-between;gap: var(--space-8);
 }
 
 .logo {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
   text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.logo:hover {
+  color: var(--color-primary);
 }
 
 .nav {
   display: flex;
-  gap: var(--space-6);
+  align-items: center;
+  gap: 2rem;
+  /* REMOVED: margin: 3rem auto; */
 }
 
-.navLink {
-  color: var(--color-neutral-700);
+.nav a {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
   text-decoration: none;
-  font-weight: var(--font-weight-medium);
   transition: color var(--transition-fast);
+  position: relative;
 }
 
-.navLink:hover {
-  color: var(--color-primary-700);
+.nav a:hover {
+  color: var(--color-text-primary);
+}
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-base);
+}
+
+.nav a:hover::after {
+  width: 100%;
 }
 
 .actions {
   display: flex;
-  gap: var(--space-3);
+  align-items: center;
+  gap: 2rem;
 }
 
-.mobileMenuButton {
+.signIn {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.signIn:hover {
+  color: var(--color-text-primary);
+}
+
+.postJob {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: white;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.postJob:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.mobileToggle {
   display: none;
   background: none;
   border: none;
+  color: var(--color-text-primary);
   cursor: pointer;
-  padding: var(--space-2);
-}
-
-.hamburger {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background-color: var(--color-neutral-700);
-  position: relative;
-}
-
-.hamburger::before,
-.hamburger::after {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 2px;
-  background-color: var(--color-neutral-700);
-  left: 0;
-}
-
-.hamburger::before {
-  top: -8px;
-}
-
-.hamburger::after {
-  bottom: -8px;
 }
 
 .mobileMenu {
   display: none;
-  padding: var(--space-4) var(--space-6);
-  border-top: 1px solid var(--color-neutral-200);
-  background-color: var(--color-neutral-0);
-}
-
-.mobileLink {
-  display: block;
-  padding: var(--space-3) 0;
-  color: var(--color-neutral-700);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium);
-}
-
-.mobileActions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-200);
 }
 
 @media (max-width: 768px) {
@@ -108,11 +120,29 @@
     display: none;
   }
 
-  .mobileMenuButton {
+  .mobileToggle {
     display: block;
   }
 
   .mobileMenu {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .mobileMenu a {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    text-decoration: none;}
+
+  .mobilePostJob {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    text-align: center;
   }
 }

@@ -1,0 +1,127 @@
+/* src/components/ui/JobCard/JobCard.module.css */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary);
+}
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.companyLogo {
+  width: 56px;
+  height: 56px;
+  background: var(--muted);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+.company {
+  font-size: 0.9375rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+/* ========== META ========== */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.metaItem {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========== TAGS ========== */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: var(--muted);
+  color: var(--foreground);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.posted {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+.applyBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.applyBtn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.applyBtn:active {
+  transform: scale(0.98);
+}
