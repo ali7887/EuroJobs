@@ -1,17 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getApplicationsByJobId } from "@/lib/db/XXXXdb-operations";
+import { NextRequest, NextResponse } from 'next/server';
+import { ApplicationService } from '@/lib/services/application.service';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { jobId: string } }
+  { params }: { params: Promise<{ jobId: string }> }
 ) {
-  try {
-    const applications = await getApplicationsByJobId(params.jobId);
-    return NextResponse.json(applications);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch applications" },
-      { status: 500 }
-    );
-  }
+  const { jobId } = await params;
+  const applications = await ApplicationService.getApplicationsByJob(jobId);
+  return NextResponse.json(applications);
 }

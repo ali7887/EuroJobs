@@ -1,19 +1,27 @@
-import { Job, Company } from '../db/schema';
+// src/lib/types/job.types.ts
+import { Job } from '../db/schema';
 
-export type JobWithCompany = Job & {
-  company: Company;
+export type JobQuery = {
+  categoryId?: string;
+  companyId?: string;
+  type?: Job['type'];
+  location?: string;
+  search?: string;
 };
 
-export type JobListItem = Pick<Job, 'id' | 'title' | 'location' | 'salary' | 'type' | 'createdAt'> & {
-  company: Pick<Company, 'id' | 'name' | 'logo'>;
-};
+export type JobCreate = Omit<Job, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type PaginatedResponse<T> = {
   data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+};
+
+export type JobListItem = Job & {
+  company?: { name: string; logo: string };
+};
+
+export type JobWithCompany = Job & {
+  company: { id: string; name: string; logo: string };
 };

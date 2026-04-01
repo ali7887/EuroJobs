@@ -1,0 +1,4010 @@
+﻿
+
+=== D:\project\NEW\job-board-saas\src\app\globals.css ===
+:root {
+  /* ========== COLOR SYSTEM ========== */
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: rgba(99, 102, 241, 0.1);
+  
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+  
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  
+  /* ========== NEUTRALS ========== */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  
+  /* ========== TYPOGRAPHY ========== */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: 2.25rem;
+  --font-size-4xl: 3rem;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* ========== SPACING ========== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  
+  /* ========== SHADOWS ========== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* ========== BORDER RADIUS ========== */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* ========== TRANSITIONS ========== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\layout.tsx ===
+import type { Metadata } from 'next';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'Job Board SaaS - Find Your Dream Job in Europe',
+  description: 'Modern job board platform with AI-powered features',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\page.module.css ===
+/* src/app/page.module.css */
+
+/* ========== CONTAINER ========== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== SECTION ========== */
+.section {
+  padding: 80px 0;
+}
+
+.section:nth-child(even) {
+  background: var(--color-bg-secondary);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  padding: 120px 0 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  z-index: 1;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.gradient {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  opacity: 0.95;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroStats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 48px;
+  padding: 24px 32px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stat {
+  text-align: center;
+}
+
+.statValue {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== CATEGORIES GRID ========== */
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+}
+
+/* ========== JOBS GRID ========== */
+.jobsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+/* ========== COMPANIES GRID ========== */
+.companiesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+}
+
+.companyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 32px;
+  background: var(--color-bg-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-base);
+  min-width: 200px;
+}
+
+.companyCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
+}
+
+.companyName {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.companyJobs {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ========== FOOTER ========== */
+.footerDivider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 80px 0 0;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .jobsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.125rem;
+  }
+
+  .heroStats {
+    gap: 20px;
+    padding: 20px 24px;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .categoriesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .companiesGrid {
+    gap: 16px;
+  }
+
+  .companyCard {
+    min-width: 150px;padding: 20px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroStats {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .statDivider {
+    display: none;
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\page.tsx ===
+'use client';
+
+import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react';
+import { MainLayout } from '@/components/layout';
+import { SearchBar } from '@/components/sections/Hero';
+import { JobCard } from '@/components/ui/JobCard/JobCard';
+import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
+import styles from './page.module.css';
+
+// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+const categories = [
+  { icon: Code,      name: 'Engineering', count: 1234, trending: true  },
+  { icon: Palette,   name: 'Design',      count: 567,  trending: false },
+  { icon: TrendingUp,name: 'Marketing',   count: 890,  trending: true  },
+  { icon: Users,     name: 'Sales',       count: 432,  trending: false },
+  { icon: Wrench,    name: 'Product',     count: 321,  trending: false },
+  { icon: FileText,  name: 'Content',     count: 234,  trending: false },
+];
+
+const featuredJobs = [
+  {
+    id: 1,
+    logo: 'ðŸš€',
+    title: 'Senior Frontend Developer',
+    company: 'TechCorp',
+    location: 'Remote',
+    salary: '$120k â€“ $180k',
+    type: 'Full-time',
+    tags: ['React', 'TypeScript', 'Next.js'],
+    isNew: true,
+    isFeatured: true,
+    postedDate: '2 days ago',
+    applicants: 45,
+  },
+  {
+    id: 2,
+    logo: 'ðŸŽ¯',
+    title: 'Product Designer',
+    company: 'DesignHub',
+    location: 'Berlin',
+    salary: '$90k â€“ $130k',
+    type: 'Full-time',
+    tags: ['Figma', 'UI/UX', 'Design Systems'],
+    isNew: false,
+    isFeatured: false,
+    postedDate: '5 days ago',
+    applicants: 32,
+  },
+  {
+    id: 3,
+    logo: 'âš¡',
+    title: 'DevOps Engineer',
+    company: 'CloudScale',
+    location: 'Amsterdam',
+    salary: '$110k â€“ $160k',
+    type: 'Contract',
+    tags: ['AWS', 'Kubernetes', 'Docker'],
+    isNew: true,
+    isFeatured: false,
+    postedDate: '1 week ago',
+    applicants: 28,
+  },
+];
+
+const companies = [
+  { name: 'Google',    jobs: 45 },
+  { name: 'Microsoft', jobs: 32 },
+  { name: 'Spotify',   jobs: 28 },
+  { name: 'Netflix',   jobs: 19 },
+  { name: 'Amazon',    jobs: 56 },
+  { name: 'Meta',      jobs: 41 },
+  { name: 'Apple',     jobs: 23 },
+  { name: 'Tesla',     jobs: 17 },
+];
+
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export default function HomePage() {
+  const handleSearch = (params: {
+    keyword: string;
+    location: string;
+    category: string;
+  }) => {
+    console.log('Search triggered:', params);
+  };
+
+  return (
+    <MainLayout>
+
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>
+            Find Your Dream Job in{' '}
+            <span className={styles.gradient}>Europe</span>
+          </h1>
+
+          <p className={styles.heroSubtitle}>
+            Discover thousands of opportunities from top companies
+            across Europe
+          </p>
+
+          <SearchBar onSearch={handleSearch} />
+
+          {/* Stats strip */}
+          <div className={styles.heroStats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>12,450+</span>
+              <span className={styles.statLabel}>Active Jobs</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>850+</span>
+              <span className={styles.statLabel}>Companies</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>50K+</span>
+              <span className={styles.statLabel}>Job Seekers</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Categories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Popular Categories</h2>
+            <p className={styles.sectionSubtitle}>
+              Explore jobs by category
+            </p>
+          </div>
+          <div className={styles.categoriesGrid}>
+            {categories.map((cat) => (
+              <CategoryCard key={cat.name} {...cat} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Featured Jobs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Featured Jobs</h2>
+            <p className={styles.sectionSubtitle}>
+              Hand-picked opportunities for you
+            </p>
+          </div>
+          <div className={styles.jobsGrid}>
+            {featuredJobs.map((job) => (
+              <JobCard key={job.id} {...job} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Top Companies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Top Companies Hiring</h2>
+            <p className={styles.sectionSubtitle}>
+              Join industry-leading organizations
+            </p>
+          </div>
+          <div className={styles.companiesGrid}>
+            {companies.map((company) => (
+              <div key={company.name} className={styles.companyCard}>
+                <span className={styles.companyName}>{company.name}</span>
+                <span className={styles.companyJobs}>
+                  {company.jobs} open positions
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Footer separator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className={styles.footerDivider} />
+
+    </MainLayout>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\applications\page.tsx ===
+import ApplicationList from "@/components/applications/ApplicationList";
+
+export default function ApplicationsPage() {
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">
+          My Applications
+        </h1>
+        <ApplicationList userId="temp-user-id" />
+      </div>
+    </main>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\applications\route.ts ===
+import { NextRequest, NextResponse } from "next/server";
+import { createApplication } from "@/lib/db/XXXXdb-operations";
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const application = await createApplication(body);
+    return NextResponse.json(application, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create application" },
+      { status: 500 }
+    );
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\applications\job\[jobId]\route.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\applications\user\[userId]\route.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\jobs\page.tsx ===
+// src/app/jobs/page.tsx
+import { Loader } from '@/components/ui';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+
+function JobsContent() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get('keyword');
+  const location = searchParams.get('location');
+  const category = searchParams.get('category');
+
+  // Fetch jobs based on these params
+  // ...
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={<Loader fullScreen />}>
+      <JobsContent />
+    </Suspense>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\jobs\route.ts ===
+import { NextRequest, NextResponse } from "next/server";
+import { getJobs, createJob } from "@/lib/db/XXXXdb-operations";
+
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get("status") || undefined;
+    const type = searchParams.get("type") || undefined;
+
+    const jobs = await getJobs({ status, type });
+    return NextResponse.json(jobs);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch jobs" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const job = await createJob(body);
+    return NextResponse.json(job, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create job" },
+      { status: 500 }
+    );
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\jobs\new\page.tsx ===
+import JobForm from "@/components/jobs/JobForm";
+
+export default function NewJobPage() {
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">
+          Post a New Job
+        </h1>
+        <JobForm />
+      </div>
+    </main>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\jobs\[id]\pages.tsx ===
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\jobs\[id]\route.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\users\route.ts ===
+import { NextRequest, NextResponse } from "next/server";
+import { createUser } from "@/lib/db/XXXXdb-operations";
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const user = await createUser(body);
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create user" },
+      { status: 500 }
+    );
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\app\api\users\[id]\route.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\components\applications\ApplicationForm.tsx ===
+"use client";
+
+import { useState } from "react";
+import Input from "../ui/Input";
+import Button from "../ui/Button/Button";
+
+interface ApplicationFormProps {
+  jobId: string;
+}
+
+export default function ApplicationForm({ jobId }: ApplicationFormProps) {
+  const [formData, setFormData] = useState({
+    coverLetter: "",
+    resumeUrl: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const response = await fetch("/api/applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jobId,
+        userId: "temp-user-id", // Replace with actual user ID
+        ...formData,
+        status: "pending",
+      }),
+    });
+
+    if (response.ok) {
+      alert("Application submitted successfully!");
+      setFormData({ coverLetter: "", resumeUrl: "" });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-8">
+      <h3 className="text-2xl font-bold mb-4">Apply for this position</h3>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Cover Letter
+        </label>
+        <textarea
+          value={formData.coverLetter}
+          onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg h-40"
+          required
+        />
+      </div>
+
+      <Input
+        label="Resume URL"
+        type="url"
+        value={formData.resumeUrl}
+        onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
+        placeholder="https://example.com/resume.pdf"
+        required
+      />
+
+      <Button type="submit" className="w-full">
+        Submit Application
+      </Button>
+    </form>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\applications\ApplicationList.tsx ===
+"use client";
+
+import { useState, useEffect } from "react";
+import Card from "../ui/Card";
+import { Application } from "@/lib/db/XXXXdb-operations";
+
+interface ApplicationListProps {
+  userId: string;
+}
+
+export default function ApplicationList({ userId }: ApplicationListProps) {
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  const fetchApplications = async () => {
+    const response = await fetch(`/api/applications/user/${userId}`);
+    const data = await response.json();
+    setApplications(data);
+    setLoading(false);
+  };
+
+  if (loading) return <div>Loading applications...</div>;
+
+  return (
+    <div className="space-y-4">
+      {applications.map((app) => (
+        <Card key={app.id}>
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-lg">Job ID: {app.jobId}</h3>
+              <p className="text-sm text-gray-500">
+                Applied: {new Date(app.appliedAt).toLocaleDateString()}
+              </p>
+            </div>
+            <span className={`px-3 py-1 rounded-full text-sm ${
+              app.status === "pending" ? "bg-yellow-100 text-yellow-800" :
+              app.status === "accepted" ? "bg-green-100 text-green-800" :
+              "bg-red-100 text-red-800"
+            }`}>
+              {app.status}
+            </span>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\jobs\JobCard.tsx ===
+'use client';
+
+import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react';
+import { MainLayout } from '@/components/layout';
+import { SearchBar } from '@/components/sections/Hero';
+import { JobCard } from '@/components/ui/JobCard/JobCard';
+import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
+import styles from './page.module.css';
+
+// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+const categories = [
+  { icon: Code,      name: 'Engineering', count: 1234, trending: true  },
+  { icon: Palette,   name: 'Design',      count: 567,  trending: false },
+  { icon: TrendingUp,name: 'Marketing',   count: 890,  trending: true  },
+  { icon: Users,     name: 'Sales',       count: 432,  trending: false },
+  { icon: Wrench,    name: 'Product',     count: 321,  trending: false },
+  { icon: FileText,  name: 'Content',     count: 234,  trending: false },
+];
+
+const featuredJobs = [
+  {
+    id: 1,
+    logo: 'ðŸš€',
+    title: 'Senior Frontend Developer',
+    company: 'TechCorp',
+    location: 'Remote',
+    salary: '$120k â€“ $180k',
+    type: 'Full-time',
+    tags: ['React', 'TypeScript', 'Next.js'],
+    isNew: true,
+    isFeatured: true,
+    postedDate: '2 days ago',
+    applicants: 45,
+  },
+  {
+    id: 2,
+    logo: 'ðŸŽ¯',
+    title: 'Product Designer',
+    company: 'DesignHub',
+    location: 'Berlin',
+    salary: '$90k â€“ $130k',
+    type: 'Full-time',
+    tags: ['Figma', 'UI/UX', 'Design Systems'],
+    isNew: false,
+    isFeatured: false,
+    postedDate: '5 days ago',
+    applicants: 32,
+  },
+  {
+    id: 3,
+    logo: 'âš¡',
+    title: 'DevOps Engineer',
+    company: 'CloudScale',
+    location: 'Amsterdam',
+    salary: '$110k â€“ $160k',
+    type: 'Contract',
+    tags: ['AWS', 'Kubernetes', 'Docker'],
+    isNew: true,
+    isFeatured: false,
+    postedDate: '1 week ago',
+    applicants: 28,
+  },
+];
+
+const companies = [
+  { name: 'Google',    jobs: 45 },
+  { name: 'Microsoft', jobs: 32 },
+  { name: 'Spotify',   jobs: 28 },
+  { name: 'Netflix',   jobs: 19 },
+  { name: 'Amazon',    jobs: 56 },
+  { name: 'Meta',      jobs: 41 },
+  { name: 'Apple',     jobs: 23 },
+  { name: 'Tesla',     jobs: 17 },
+];
+
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export default function HomePage() {
+  const handleSearch = (params: {
+    keyword: string;
+    location: string;
+    category: string;
+  }) => {
+    console.log('Search triggered:', params);
+  };
+
+  return (
+    <MainLayout>
+
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>
+            Find Your Dream Job in{' '}
+            <span className={styles.gradient}>Europe</span>
+          </h1>
+
+          <p className={styles.heroSubtitle}>
+            Discover thousands of opportunities from top companies
+            across Europe
+          </p>
+
+          <SearchBar onSearch={handleSearch} />
+
+          {/* Stats strip */}
+          <div className={styles.heroStats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>12,450+</span>
+              <span className={styles.statLabel}>Active Jobs</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>850+</span>
+              <span className={styles.statLabel}>Companies</span>
+            </div>
+
+            <div className={styles.statDivider} />
+
+            <div className={styles.stat}>
+              <span className={styles.statValue}>50K+</span>
+              <span className={styles.statLabel}>Job Seekers</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Categories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Popular Categories</h2>
+            <p className={styles.sectionSubtitle}>
+              Explore jobs by category
+            </p>
+          </div>
+          <div className={styles.categoriesGrid}>
+            {categories.map((cat) => (
+              <CategoryCard key={cat.name} {...cat} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Featured Jobs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Featured Jobs</h2>
+            <p className={styles.sectionSubtitle}>
+              Hand-picked opportunities for you
+            </p>
+          </div>
+          <div className={styles.jobsGrid}>
+            {featuredJobs.map((job) => (
+              <JobCard postedAt={''} key={job.id} {...job} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Top Companies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Top Companies Hiring</h2>
+            <p className={styles.sectionSubtitle}>
+              Join industry-leading organizations
+            </p>
+          </div>
+          <div className={styles.companiesGrid}>
+            {companies.map((company) => (
+              <div key={company.name} className={styles.companyCard}>
+                <span className={styles.companyName}>{company.name}</span>
+                <span className={styles.companyJobs}>
+                  {company.jobs} open positions
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* â”€â”€ Footer separator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className={styles.footerDivider} />
+
+    </MainLayout>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\jobs\JobForm.tsx ===
+"use client";
+
+import { useState } from "react";
+import Input from "../ui/Input";
+import Button from "../ui/Button/Button";
+
+export default function JobForm() {
+  const [formData, setFormData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    type: "full-time",
+    salary: "",
+    description: "",
+    requirements: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const response = await fetch("/api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...formData,
+        salary: parseInt(formData.salary),
+        employerId: "temp-employer-id", // Replace with actual user ID
+        status: "active",
+      }),
+    });
+
+    if (response.ok) {
+      alert("Job posted successfully!");
+      setFormData({
+        title: "",
+        company: "",
+        location: "",
+        type: "full-time",
+        salary: "",
+        description: "",
+        requirements: "",
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+      <Input
+        label="Job Title"
+        value={formData.title}
+        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+        required
+      />
+
+      <Input
+        label="Company"
+        value={formData.company}
+        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+        required
+      />
+
+      <Input
+        label="Location"
+        value={formData.location}
+        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+        required
+      />
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Job Type
+        </label>
+        <select
+          value={formData.type}
+          onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+        >
+          <option value="full-time">Full Time</option>
+          <option value="part-time">Part Time</option>
+          <option value="contract">Contract</option>
+        </select>
+      </div>
+
+      <Input
+        label="Salary"
+        type="number"
+        value={formData.salary}
+        onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+        required
+      />
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description
+        </label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg h-32"
+          required
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Requirements
+        </label>
+        <textarea
+          value={formData.requirements}
+          onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg h-32"
+          required
+        />
+      </div>
+
+      <Button type="submit" className="w-full">
+        Post Job
+      </Button>
+    </form>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\jobs\JobList.tsx ===
+"use client";
+
+import { useState, useEffect } from "react";
+import JobCard from "./JobCard";
+import { Job } from "@/lib/db/XXXXdb-operations";
+
+export default function JobList() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState({ status: "active", type: "" });
+
+  useEffect(() => {
+    fetchJobs();
+  }, [filter]);
+
+  const fetchJobs = async () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filter.status) params.append("status", filter.status);
+    if (filter.type) params.append("type", filter.type);
+
+    const response = await fetch(`/api/jobs?${params}`);
+    const data = await response.json();
+    setJobs(data);
+    setLoading(false);
+  };
+
+  if (loading) return <div className="text-center py-8">Loading jobs...</div>;
+
+  return (
+    <div>
+      <div className="mb-6 flex gap-4">
+        <select
+          value={filter.type}
+          onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+          className="px-4 py-2 border border-gray-300 rounded-lg"
+        >
+          <option value="">All Types</option>
+          <option value="full-time">Full Time</option>
+          <option value="part-time">Part Time</option>
+          <option value="contract">Contract</option>
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {jobs.map((job) => (
+          <JobCard key={job.id} job={job} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\jobs\jobs.module.css ===
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.header {
+  margin-bottom: var(--space-8);
+}
+
+.header h1 {
+  margin-bottom: var(--space-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.jobCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.jobCard h3 {
+  font-size: var(--font-size-lg);
+  margin: 0;
+}
+
+.company {
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-medium);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+}
+
+.salary {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-700);
+}
+
+.jobDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.description {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.description h4 {
+  margin-bottom: var(--space-2);
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\jobs\page.tsx ===
+// src/app/jobs/page.tsx
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { Loader } from '../ui';
+
+function JobsContent() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get('keyword');
+  const location = searchParams.get('location');
+  const category = searchParams.get('category');
+
+  // Fetch jobs based on these params
+  // ...
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={<Loader fullScreen />}>
+      <JobsContent />
+    </Suspense>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\index.ts ===
+export { Header } from './Header';
+export { Footer } from './Footer';
+export { MainLayout } from './MainLayout';
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Footer\Footer.module.css ===
+.footer {
+  background-color: var(--color-neutral-900);
+  color: var(--color-neutral-300);
+  margin-top: auto;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr); /* â† first column wider */
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.columnTitle {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-0);
+  margin-bottom: var(--space-2);
+}
+
+.description {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-neutral-400);
+}
+
+.link {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-300);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.link:hover {
+  color: var(--color-primary-400);
+}
+
+.bottom {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-neutral-800);
+  text-align: center;
+}
+
+.copyright {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr; /* â† 2 columns on mobile */
+    gap: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr; /* â† stack on small mobile */
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Footer\Footer.tsx ===
+import React from 'react';
+import Link from 'next/link';
+import styles from './Footer.module.css';
+
+export const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          <div className={styles.column}>
+            <h3 className={styles.columnTitle}>JobBoard</h3>
+            <p className={styles.description}>
+              Modern job board platform connecting talent with opportunities.
+            </p>
+          </div>
+
+          <div className={styles.column}>
+            <h4 className={styles.columnTitle}>For Job Seekers</h4>
+            <Link href="/jobs" className={styles.link}>Browse Jobs</Link>
+            <Link href="/companies" className={styles.link}>Companies</Link>
+            <Link href="/resources" className={styles.link}>Resources</Link>
+          </div>
+
+          <div className={styles.column}>
+            <h4 className={styles.columnTitle}>For Employers</h4>
+            <Link href="/post-job" className={styles.link}>Post a Job</Link>
+            <Link href="/pricing" className={styles.link}>Pricing</Link>
+            <Link href="/solutions" className={styles.link}>Solutions</Link>
+          </div>
+
+          <div className={styles.column}>
+            <h4 className={styles.columnTitle}>Company</h4>
+            <Link href="/about" className={styles.link}>About Us</Link>
+            <Link href="/contact" className={styles.link}>Contact</Link>
+            <Link href="/privacy" className={styles.link}>Privacy Policy</Link>
+            <Link href="/terms" className={styles.link}>Terms of Service</Link>
+          </div>
+        </div>
+
+        <div className={styles.bottom}>
+          <p className={styles.copyright}>
+            Â© {currentYear} JobBoard. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Footer\index.ts ===
+export { Footer } from './Footer';
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Header\Header.module.css ===
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;gap: var(--space-8);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.logo:hover {
+  color: var(--color-primary);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  /* REMOVED: margin: 3rem auto; */
+}
+
+.nav a {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  position: relative;
+}
+
+.nav a:hover {
+  color: var(--color-text-primary);
+}
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-base);
+}
+
+.nav a:hover::after {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.signIn {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.signIn:hover {
+  color: var(--color-text-primary);
+}
+
+.postJob {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: white;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.postJob:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.mobileToggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav,
+  .actions {
+    display: none;
+  }
+
+  .mobileToggle {
+    display: block;
+  }
+
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .mobileMenu a {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    text-decoration: none;}
+
+  .mobilePostJob {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Header\Header.tsx ===
+'use client';
+
+import Link from 'next/link';
+import { Briefcase, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import styles from './Header.module.css';
+
+export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <header className={styles.header}>
+      <div className={styles.container}>
+        <Link href="/" className={styles.logo}>
+          <Briefcase size={24} />
+          <span>EuroJobs</span>
+        </Link>
+
+        <nav className={styles.nav}>
+          <Link href="/jobs">Find Jobs</Link>
+          <Link href="/companies">Companies</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+        </nav>
+
+        <div className={styles.actions}>
+          <Link href="/signin" className={styles.signIn}>Sign In</Link>
+          <Link href="/post-job" className={styles.postJob}>Post a Job</Link>
+        </div>
+
+        <button 
+          className={styles.mobileToggle}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <Link href="/jobs">Find Jobs</Link>
+          <Link href="/companies">Companies</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <Link href="/signin">Sign In</Link>
+          <Link href="/post-job" className={styles.mobilePostJob}>Post a Job</Link>
+        </div>
+      )}
+    </header>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\Header\index.ts ===
+export { Header } from './Header';
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\MainLayout\index.ts ===
+export { MainLayout } from './MainLayout';
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\MainLayout\MainLayout.module.css ===
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\layout\MainLayout\MainLayout.tsx ===
+import React from 'react';
+import { Header } from '../Header';
+import { Footer } from '../Footer';
+import styles from './MainLayout.module.css';
+
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  return (
+    <div className={styles.layout}>
+      <Header />
+      <main className={styles.main}>{children}</main>
+      <Footer />
+    </div>
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\components\sections\Hero\index.ts ===
+/**
+ * Hero Section Exports
+ * Barrel export for clean imports
+ */
+export { default as SearchBar } from './SearchBar';
+
+
+=== D:\project\NEW\job-board-saas\src\components\sections\Hero\SearchBar.module.css ===
+/**
+/**
+ * Advanced URL-Driven Search Bar Styles
+ * Premium glassmorphism design with micro-interactions
+ 
+
+.searchBar {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/**
+ * Main Container
+ * Glassmorphism effect with backdrop blur and semi-transparent background
+ */
+.searchBar__container {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 10px 20px rgba(0, 0, 0, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * Premium glow effect on focus-within
+ * Activates when any input inside is focused
+ */
+.searchBar__container:focus-within {
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 10px 20px rgba(0, 0, 0, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.06),
+    0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/**
+ * Individual Input Field Container
+ */
+.searchBar__field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  transition: background-color 0.2s ease;
+}
+
+.searchBar__field:focus-within {
+  background-color: rgba(59, 130, 246, 0.03);
+  border-radius: 8px;
+}
+
+/**
+ * Label Styling
+ * Small, uppercase, subtle color
+ */
+.searchBar__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: hsl(220, 10%, 50%);
+  margin-bottom: 2px;
+}
+
+/**
+ * Text Input Styling
+ * Clean, minimal, focus on content
+ */
+.searchBar__input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: hsl(220, 20%, 20%);
+  outline: none;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.searchBar__input::placeholder {
+  color: hsl(220, 10%, 60%);
+  font-weight: 400;
+}
+
+/**
+ * Select Dropdown Styling
+ * Custom styled to match input fields
+ */
+.searchBar__select {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: hsl(220, 20%, 20%);
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 20px;
+}
+
+.searchBar__select:hover {
+  color: hsl(220, 60%, 40%);
+}
+
+/**
+ * Vertical Separator Between Fields
+ * Hidden on mobile
+ */
+.searchBar__separator {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.08),
+    rgba(0, 0, 0, 0)
+  );
+  flex-shrink: 0;
+}
+
+/**
+ * Search Button
+ * Magnetic hover effect with enhanced shadow
+ */
+.searchBar__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, hsl(220, 80%, 50%), hsl(220, 80%, 45%));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 2px 4px rgba(59, 130, 246, 0.2),
+    0 4px 8px rgba(59, 130, 246, 0.15);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.searchBar__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 8px rgba(59, 130, 246, 0.25),
+    0 8px 16px rgba(59, 130, 246, 0.2),
+    0 12px 24px rgba(59, 130, 246, 0.15);
+  background: linear-gradient(135deg, hsl(220, 80%, 55%), hsl(220, 80%, 50%));
+}
+
+.searchBar__button:active {
+  transform: translateY(0);box-shadow: 
+    0 2px 4px rgba(59, 130, 246, 0.2),
+    0 4px 8px rgba(59, 130, 246, 0.15);
+}
+
+.searchBar__buttonText {
+  display: inline;
+}
+
+.searchBar__buttonIcon {
+  flex-shrink: 0;
+}
+
+/**
+ * Mobile Responsive Design
+ * Stack vertically on screens < 768px
+ */
+@media (max-width: 768px) {
+  .searchBar__container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 16px;
+  }
+
+  .searchBar__field {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .searchBar__field:last-of-type {
+    border-bottom: none;
+  }
+
+  .searchBar__field:focus-within {
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  /* Hide separators on mobile */
+  .searchBar__separator {
+    display: none;
+  }
+
+  .searchBar__button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;padding: 16px 24px;
+  }
+
+  .searchBar__buttonText {
+    display: inline;
+  }
+}
+
+/**
+ * Tablet Responsive (768px - 1024px)
+ * Slightly reduce padding
+ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .searchBar__container {
+    padding: 6px;
+  }
+
+  .searchBar__field {
+    padding: 10px 12px;
+  }
+
+  .searchBar__button {
+    padding: 14px 24px;
+  }
+}
+
+
+
+=== D:\project\NEW\job-board-saas\src\components\sections\Hero\SearchBar.tsx ===
+'use client';
+
+import { useState, useEffect, useCallback, FormEvent } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import styles from './SearchBar.module.css';
+
+/**
+ * TypeScript Interfaces
+ * Strict typing for search parameters and component props
+ */
+interface SearchParams {
+  keyword: string;
+  location: string;
+  category: string;
+}
+
+interface SearchBarProps {
+  onSearch?: (params: SearchParams) => void;
+}
+
+/**
+ * Job categories for the dropdown
+ * In production, this would come from an API or database
+ */
+const JOB_CATEGORIES = [
+  { value: '', label: 'All Categories' },
+  { value: 'frontend', label: 'Frontend Development' },
+  { value: 'backend', label: 'Backend Development' },
+  { value: 'fullstack', label: 'Full Stack Development' },
+  { value: 'mobile', label: 'Mobile Development' },
+  { value: 'devops', label: 'DevOps & Infrastructure' },
+  { value: 'design', label: 'UI/UX Design' },
+  { value: 'data', label: 'Data Science & Analytics' },
+  { value: 'product', label: 'Product Management' },
+  { value: 'marketing', label: 'Marketing & Growth' },
+];
+
+/**
+ * Advanced URL-Driven Search Bar Component
+ * 
+ * Senior-level features:
+ * 1. URL state synchronization (reads from and writes to URL params)
+ * 2. Debounced search to prevent excessive URL updates
+ * 3. Pre-filled inputs from URL on mount (shareable links)
+ * 4. Type-safe with strict TypeScript interfaces
+ * 5. Accessible with proper ARIA labels
+ * 6. Premium glassmorphism UI with micro-interactions
+ */
+export default function SearchBar({ onSearch }: SearchBarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  /**
+   * Local state for form inputs
+   * Initialized from URL params on mount
+   */
+  const [keyword, setKeyword] = useState('');
+  const [location, setLocation] = useState('');
+  const [category, setCategory] = useState('');
+
+  /**
+   * Initialize form values from URL on component mount
+   * This enables shareable search links
+   */
+  useEffect(() => {
+    setKeyword(searchParams.get('keyword') || '');
+    setLocation(searchParams.get('location') || '');
+    setCategory(searchParams.get('category') || '');
+  }, [searchParams]);
+
+  /**
+   * Update URL with current search parameters
+   * Uses Next.js App Router navigation without full page reload
+   */
+  const updateURL = useCallback(
+    (params: SearchParams) => {
+      const urlParams = new URLSearchParams();
+
+      // Only add non-empty parameters to keep URL clean
+      if (params.keyword) urlParams.set('keyword', params.keyword);
+      if (params.location) urlParams.set('location', params.location);
+      if (params.category) urlParams.set('category', params.category);
+
+      const queryString = urlParams.toString();
+      const newURL = queryString ? `${pathname}?${queryString}` : pathname;
+
+      // Push to URL without full page reload
+      router.push(newURL, { scroll: false });
+    },
+    [pathname, router]
+  );
+
+  /**
+   * Handle form submission
+   * Updates URL and triggers optional callback
+   */
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const params: SearchParams = { keyword, location, category };
+
+    // Update URL
+    updateURL(params);
+
+    // Trigger optional callback (for parent component)
+    if (onSearch) {
+      onSearch(params);
+    }
+  };
+
+  return (
+    <form className={styles.searchBar} onSubmit={handleSubmit}>
+      <div className={styles.searchBar__container}>
+        {/* Keyword Input */}
+        <div className={styles.searchBar__field}>
+          <label htmlFor="keyword" className={styles.searchBar__label}>
+            Job Title or Keyword
+          </label>
+          <input
+            id="keyword"
+            type="text"
+            placeholder="e.g. Frontend Developer"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className={styles.searchBar__input}
+            aria-label="Search by job title or keyword"
+          />
+        </div>
+
+        {/* Separator */}
+        <div className={styles.searchBar__separator} aria-hidden="true" />
+
+        {/* Location Input */}
+        <div className={styles.searchBar__field}>
+          <label htmlFor="location" className={styles.searchBar__label}>
+            Location
+          </label>
+          <input
+            id="location"
+            type="text"
+            placeholder="e.g. Berlin, Remote"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className={styles.searchBar__input}
+            aria-label="Search by location"
+          />
+        </div>
+
+        {/* Separator */}
+        <div className={styles.searchBar__separator} aria-hidden="true" />
+
+        {/* Category Dropdown */}
+        <div className={styles.searchBar__field}>
+          <label htmlFor="category" className={styles.searchBar__label}>
+            Category
+          </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className={styles.searchBar__select}
+            aria-label="Filter by job category"
+          >
+            {JOB_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Search Button */}
+        <button
+          type="submit"
+          className={styles.searchBar__button}
+          aria-label="Search jobs"
+        >
+          <span className={styles.searchBar__buttonText}>Search Jobs</span><svg
+            className={styles.searchBar__buttonIcon}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </form>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Card.tsx ===
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function Card({ children, className = "" }: CardProps) {
+  return (
+    <div className={`bg-white rounded-lg shadow-md p-6 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\index.ts ===
+export { Button } from './Button/Button';
+export { default as Input } from './Input';
+export { Card } from './Card/Card';
+export { Badge } from './Badge/Badge';
+export { Modal } from './Modal/Modal';
+export { default as Loader } from './Loader/Loader';
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Input.tsx ===
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+}
+
+export default function Input({ label, className = "", ...props }: InputProps) {
+  return (
+    <div className="mb-4">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+      )}
+      <input
+        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+        {...props}
+      />
+    </div>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Badge\Badge.module.css ===
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sm {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.md {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+/* Variants */
+.default {
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-700);
+}
+
+.success {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.warning {
+  background-color: var(--color-warning-light);
+  color: hsl(45, 100%, 35%);
+}
+
+.error {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.info {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Badge\Badge.tsx ===
+import React from 'react';
+import styles from './Badge.module.css';
+
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'secondary';
+  size?: 'sm' | 'md';
+}
+
+export const Badge: React.FC<BadgeProps> = ({
+  children,
+  variant = 'default',
+  size = 'md',
+  className = '',
+  ...props
+}) => {
+  const classes = [styles.badge, styles[variant], styles[size], className].filter(Boolean).join(' ');
+
+  return (
+    <span className={classes} {...props}>
+      {children}
+    </span>
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Badge\index.ts ===
+export { Badge } from './Badge';
+export type { BadgeProps } from './Badge';
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Button\Button.module.css ===
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.md {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+.lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-size-md);
+}
+
+/* Variants */
+.primary {
+  background-color: var(--color-primary-700);
+  color: var(--color-neutral-0);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+  box-shadow: var(--shadow-md);
+}
+
+.secondary {
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-neutral-300);
+}
+
+.danger {
+  background-color: var(--color-error);
+  color: var(--color-neutral-0);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: hsl(0, 84%, 55%);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-primary-700);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--color-primary-50);
+}
+
+/* Full Width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Loading State */
+.loading {
+  position: relative;
+  color: transparent;
+}
+
+.spinner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Button\Button.tsx ===
+import React from 'react';
+import styles from './Button.module.css';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  loading?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  loading = false,
+  disabled,
+  className = '',
+  ...props
+}) => {
+  const classes = [
+    styles.button,
+    styles[variant],
+    styles[size],
+    fullWidth && styles.fullWidth,
+    loading && styles.loading,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <button className={classes} disabled={disabled || loading} {...props}>
+      {loading ? <span className={styles.spinner} /> : children}
+    </button>
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Button\index.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Card\Card.module.css ===
+.card {
+  background-color: var(--color-neutral-0);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+/* Variants */
+.default {
+  border: 1px solid var(--color-neutral-200);
+}
+
+.bordered {
+  border: 2px solid var(--color-neutral-300);
+}
+
+.elevated {
+  box-shadow: var(--shadow-md);
+}
+
+.elevated:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Padding */
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: var(--space-4);
+}
+
+.padding-md {
+  padding: var(--space-6);
+}
+
+.padding-lg {
+  padding: var(--space-8);
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Card\Card.tsx ===
+import React from 'react';
+import styles from './Card.module.css';
+
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'bordered' | 'elevated';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+}
+
+export const Card: React.FC<CardProps> = ({
+  children,
+  variant = 'default',
+  padding = 'md',
+  className = '',
+  ...props
+}) => {
+  const classes = [styles.card, styles[variant], styles[`padding-${padding}`], className]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <div className={classes} {...props}>
+      {children}
+    </div>
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Card\index.ts ===
+export { Card } from './card';
+export type { CardProps } from './card';
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\CategoryCard\CategoryCard.module.css ===
+/* src/components/ui/CategoryCard/CategoryCard.module.css */
+
+.card {
+  padding: var(--space-8);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
+}
+
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-base);
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1);
+  background: var(--color-primary);
+  color: white;
+}
+
+.name {
+  font-size: var(--font-size-lg);       /* FIXED: was --text-lg */
+  font-weight: var(--font-weight-semibold); /* FIXED: was --font-semibold */
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.count {
+  font-size: var(--font-size-sm);       /* FIXED: was --text-sm */
+  color: var(--color-text-secondary);
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\CategoryCard\CategoryCard.tsx ===
+import { LucideIcon } from 'lucide-react';
+import styles from './CategoryCard.module.css';
+
+interface CategoryCardProps {
+  icon: LucideIcon;
+  name: string;
+  count: number;
+}
+
+export function CategoryCard({ icon: Icon, name, count }: CategoryCardProps) {
+  return (
+    <article className={styles.card}>
+      <div className={styles.iconWrapper}>
+        <Icon size={32} strokeWidth={1.5} />
+      </div>
+      <h3 className={styles.name}>{name}</h3>
+      <p className={styles.count}>{count.toLocaleString()} jobs</p>
+    </article>
+  );
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Input\Input\Input.module.css ===
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+}
+
+.input {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-900);
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--color-neutral-400);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+}
+
+.input:disabled {
+  background-color: var(--color-neutral-100);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input.error {
+  border-color: var(--color-error);
+}
+
+.input.error:focus {
+  box-shadow: 0 0 0 3px var(--color-error-light);
+}
+
+.errorText {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+.helperText {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Input\Input\input.tsx ===
+import React from 'react';
+import styles from './Input.module.css';
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  fullWidth?: boolean;
+}
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ label, error, helperText, fullWidth = false, className = '', id, ...props }, ref) => {
+    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const hasError = Boolean(error);
+
+    return (
+      <div className={`${styles.wrapper} ${fullWidth ? styles.fullWidth : ''}`}>
+        {label && (
+          <label htmlFor={inputId} className={styles.label}>
+            {label}
+          </label>
+        )}
+        <input
+          ref={ref}
+          id={inputId}
+          className={`${styles.input} ${hasError ? styles.error : ''} ${className}`}
+          aria-invalid={hasError}
+          aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
+          {...props}
+        />
+        {error && (
+          <span id={`${inputId}-error`} className={styles.errorText}>
+            {error}
+          </span>
+        )}
+        {!error && helperText && (
+          <span id={`${inputId}-helper`} className={styles.helperText}>
+            {helperText}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\JobCard\JobCard.module.css ===
+/* src/components/ui/JobCard/JobCard.module.css */
+
+.card {
+  position: relative;
+  padding: var(--space-6);
+  padding-top: calc(var(--space-6) + 8px); /* extra room for badge/bookmark */
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  cursor:pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary-light);
+}
+
+/* â”€â”€ Bookmark â”€â”€ */
+.bookmark {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  padding: var(--space-2);
+  background: var(--color-bg-secondary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 1;
+}
+
+.bookmark:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* â”€â”€ Badge â”€â”€ */
+.badge {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);           /* FIXED: was --text-xs */
+  font-weight: var(--font-weight-semibold); /* FIXED: was --font-semibold */
+  color: var(--color-success);
+  background: rgba(16, 185, 129, 0.1);     /* FIXED: was --color-success-bg (undefined) */
+  border-radius: var(--radius-full);
+  z-index: 1;
+}
+
+/* â”€â”€ Header â”€â”€ */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-top: var(--space-6); /* pushes below badge/bookmark row */
+  margin-bottom: var(--space-4);
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-2xl);          /* FIXED: was --text-2xl */
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-lg);           /* FIXED: was --text-lg */
+  font-weight: var(--font-weight-semibold); /* FIXED: was --font-semibold */
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.company {
+  font-size: var(--font-size-sm);           /* FIXED: was --text-sm */
+  color: var(--color-text-secondary);
+}
+
+/* â”€â”€ Meta â”€â”€ */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);           /* FIXED: was --text-sm */
+  color: var(--color-text-secondary);
+}
+
+.metaItem svg {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* â”€â”€ Tags â”€â”€ */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.tag {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);           /* FIXED: was --text-xs */
+  font-weight: var(--font-weight-medium);   /* FIXED: was --font-medium */
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-sm);
+}
+
+/* â”€â”€ Footer â”€â”€ */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.posted {
+  font-size: var(--font-size-sm);           /* FIXED: was --text-sm */
+  color: var(--color-text-muted);
+}
+
+.applyButton {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--font-size-sm);           /* FIXED: was --text-sm */
+  font-weight: var(--font-weight-semibold); /* FIXED: was --font-semibold */
+  color: white;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.applyButton:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* â”€â”€ Responsive â”€â”€ */
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-5);
+    padding-top: calc(var(--space-5) + 8px);
+  }
+
+  .meta {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\JobCard\JobCard.tsx ===
+// ============================================================
+// JobCard.tsx â€” Featured Job Card Component
+// Job Board / Recruitment Platform SaaS
+// Fixes: Proper 2-col layout, tag overflow, button alignment
+// ============================================================
+
+import React from "react";
+import styles from "./JobCard.module.css";
+
+// â”€â”€ TYPES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+export interface JobCardProps {
+  id: string;
+  title: string;
+  company: string;
+  companyLogo?: string;
+  companyInitial?: string;
+  location: string;
+  type: "Full-time" | "Part-time" | "Contract" | "Remote" | "Hybrid";
+  salary?: {
+    min: number;
+    max: number;
+    currency?: string;
+  };
+  tags?: string[];
+  postedAt: string;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  isSaved?: boolean;
+  applicantCount?: number;
+  onApply?: (id: string) => void;
+  onSave?: (id: string) => void;
+  onView?: (id: string) => void;
+}
+
+// â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function formatSalary(salary: JobCardProps["salary"]): string {
+  if (!salary) return "";
+  const { min, max, currency = "$" } = salary;
+  const fmt = (n: number) =>
+    n >= 1000 ? `${currency}${(n / 1000).toFixed(0)}k` : `${currency}${n}`;
+  return `${fmt(min)} â€“ ${fmt(max)}`;
+}
+
+function getTypeClass(type: JobCardProps["type"]): string {
+  const map: Record<JobCardProps["type"], string> = {
+    "Full-time": styles.typeFull,
+    "Part-time": styles.typePart,
+    "Contract":  styles.typeContract,
+    "Remote":    styles.typeRemote,
+    "Hybrid":    styles.typeHybrid,
+  };
+  return map[type] ?? styles.typeFull;
+}
+
+// â”€â”€ COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+export const JobCard: React.FC<JobCardProps> = ({
+  id,
+  title,
+  company,
+  companyLogo,
+  companyInitial,
+  location,
+  type,
+  salary,
+  tags = [],
+  postedAt,
+  isFeatured = false,
+  isNew = false,
+  isSaved = false,
+  applicantCount,
+  onApply,
+  onSave,
+  onView,
+}) => {
+  // Limit tags to max 3 to prevent overflow
+  const visibleTags = tags.slice(0, 3);
+  const overflowCount = tags.length - visibleTags.length;
+
+  return (
+    <article
+      className={`${styles.card} ${isFeatured ? styles.featured : ""}`}
+      role="article"
+      aria-label={`${title} at ${company}`}
+    >
+      {/* â”€â”€ CARD HEADER â”€â”€ */}
+      <div className={styles.cardHeader}>
+        {/* Company Logo / Initial */}
+        <div className={styles.logoWrapper}>
+          {companyLogo ? (
+            <img
+              src={companyLogo}
+              alt={`${company} logo`}
+              className={styles.logoImage}
+              width={44}
+              height={44}
+            />
+          ) : (
+            <div className={styles.logoFallback} aria-hidden="true">
+              {companyInitial ?? company.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+
+        {/* Badges */}
+        <div className={styles.badges}>
+          {isNew && (
+            <span className={styles.badgeNew} aria-label="New listing">
+              New
+            </span>
+          )}
+          {isFeatured && (
+            <span className={styles.badgeFeatured} aria-label="Featured job">
+              Featured
+            </span>
+          )}
+        </div>
+
+        {/* Save Button */}
+        <button
+          className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
+          onClick={() => onSave?.(id)}
+          aria-label={isSaved ? "Remove from saved" : "Save job"}
+          type="button"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill={isSaved ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+          </svg>
+        </button>
+      </div>
+
+      {/* â”€â”€ CARD BODY â”€â”€ */}
+      <div className={styles.cardBody}>
+        {/* Job Title */}
+        <h3 className={styles.jobTitle}>
+          <button
+            className={styles.titleButton}
+            onClick={() => onView?.(id)}
+            type="button"
+          >
+            {title}
+          </button>
+        </h3>
+
+        {/* Company Name */}
+        <p className={styles.companyName}>{company}</p>
+
+        {/* Meta Info */}
+        <div className={styles.metaRow}>
+          {/* Location */}
+          <span className={styles.metaItem}>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {location}
+          </span>
+
+          {/* Salary */}
+          {salary && (
+            <span className={styles.metaItem}>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+              {formatSalary(salary)}
+            </span>
+          )}
+        </div>
+
+        {/* Job Type Badge */}
+        <div className={styles.typeRow}>
+          <span className={`${styles.typeBadge} ${getTypeClass(type)}`}>
+            {type}
+          </span>
+          {applicantCount !== undefined && (
+            <span className={styles.applicants}>
+              {applicantCount} applicants
+            </span>
+          )}
+        </div>
+
+        {/* Tags */}
+        {visibleTags.length > 0 && (
+          <div className={styles.tagsRow}>
+            {visibleTags.map((tag) => (
+              <span key={tag} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
+            {overflowCount > 0 && (
+              <span className={styles.tagOverflow}>+{overflowCount}</span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* â”€â”€ CARD FOOTER â”€â”€ */}
+      <div className={styles.cardFooter}>
+        <span className={styles.postedAt}>{postedAt}</span>
+        <button
+          className={styles.applyButton}
+          onClick={() => onApply?.(id)}
+          type="button"
+          aria-label={`Apply for ${title}`}
+        >
+          Apply Now
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+    </article>
+  );
+};
+
+export default JobCard;
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Loader\Loader.module.css ===
+.spinner {
+  border: 3px solid var(--color-neutral-200);
+  border-top-color: var(--color-primary-600);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+}
+
+.lg {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+.fullScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: var(--z-modal);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Loader\Loader.tsx ===
+import styles from './Loader.module.css';
+
+interface LoaderProps {
+  size?: 'sm' | 'md' | 'lg';
+  fullScreen?: boolean;
+}
+
+export default function Loader({ size = 'md', fullScreen = false }: LoaderProps) {
+  if (fullScreen) {
+    return (
+      <div className={styles.fullScreen}>
+        <div className={`${styles.spinner} ${styles[size]}`} />
+      </div>
+    );
+  }
+
+  return <div className={`${styles.spinner} ${styles[size]}`} />;
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Modal\index.ts ===
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Modal\Modal.module.css ===
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  animation: fadeIn var(--transition-fast);
+}
+
+.modal {
+  background-color: var(--color-neutral-0);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: var(--z-modal);
+  animation: slideUp var(--transition-base);
+}
+
+/* Sizes */
+.sm {
+  width: 90%;
+  max-width: 400px;
+}
+
+.md {
+  width: 90%;
+  max-width: 600px;
+}
+
+.lg {
+  width: 90%;
+  max-width: 900px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: var(--font-size-3xl);
+  line-height: 1;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.closeButton:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.content {
+  padding: var(--space-6);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\components\ui\Modal\Modal.tsx ===
+'use client';
+
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import styles from './Modal.module.css';
+
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 'md' }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={`${styles.modal} ${styles[size]}`} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.header}>
+          {title && <h3 className={styles.title}>{title}</h3>}
+          <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">Ã—
+          </button>
+        </div>
+        <div className={styles.content}>{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
+};
+
+
+=== D:\project\NEW\job-board-saas\src\lib\constants.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\lib\utils.ts ===
+
+
+=== D:\project\NEW\job-board-saas\src\lib\db\db.ts ===
+import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
+import path from 'path';
+import { Database } from './schema';
+
+const file = path.join(process.cwd(), 'data', 'db.json');
+const adapter = new JSONFile<Database>(file);
+const defaultData: Database = { jobs: [], companies: [], categories: [] };
+
+export const db = new Low<Database>(adapter, defaultData);
+
+export async function initDB() {
+  await db.read();
+  db.data ||= defaultData;
+  await db.write();
+}
+
+
+=== D:\project\NEW\job-board-saas\src\lib\db\schema.ts ===
+export type Company = {
+  id: string;
+  name: string;
+  logo: string;
+  website?: string;
+};
+
+export type Job = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  salary?: string;
+  type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'REMOTE';
+  companyId: string;
+  categoryId?: string;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export type Database = {
+  jobs: Job[];
+  companies: Company[];
+  categories: Category[];
+};
+
+
+=== D:\project\NEW\job-board-saas\src\lib\db\test-db.ts ===
+import { db, initDB } from './db';
+import { randomUUID } from 'crypto';
+
+async function testDatabase() {
+  console.log('ðŸ§ª Testing LowDB...\n');
+
+  // Initialize
+  await initDB();
+  console.log('âœ… Database initialized');
+
+  // Add test company
+  const company = {
+    id: randomUUID(),
+    name: 'Test Company',
+    logo: '/logos/test.png',
+    website: 'https://test.local',
+  };
+  db.data.companies.push(company);
+
+  // Add test category
+  const category = {
+    id: randomUUID(),
+    name: 'Software Development',
+    slug: 'software-development',
+  };
+  db.data.categories.push(category);
+
+  // Add test job
+  const job = {
+    id: randomUUID(),
+    title: 'Full Stack Developer',
+    description: 'Build amazing web applications with modern technologies',
+    location: 'Tehran, Iran',
+    salary: '50M - 80M Toman',
+    type: 'FULL_TIME' as const,
+    companyId: company.id,
+    categoryId: category.id,
+    published: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  db.data.jobs.push(job);
+
+  await db.write();
+  console.log('âœ… Test data written\n');
+
+  // Read and display
+  await db.read();
+  console.log('ðŸ“Š Database Contents:');
+  console.log(`- Companies: ${db.data.companies.length}`);
+  console.log(`- Categories: ${db.data.categories.length}`);
+  console.log(`- Jobs: ${db.data.jobs.length}\n`);
+
+  console.log('ðŸ“ Sample Job:');
+  console.log(JSON.stringify(db.data.jobs[0], null, 2));
+
+  console.log('\nâœ… Database test complete!');
+}
+
+testDatabase().catch(console.error);
+
+
+=== D:\project\NEW\job-board-saas\src\lib\db\XXXXdb-operations.ts ===
+/* import { getDb, Job, User, Application } from "./db";
+import { randomUUID } from "crypto";
+
+export async function createJob(jobData: Omit<Job, "id" | "postedAt">) {
+  const db = await getDb();
+  const job: Job = {
+    ...jobData,
+    id: randomUUID(),
+    postedAt: new Date().toISOString(),
+  };
+  db.data.jobs.push(job);
+  await db.write();
+  return job;
+}
+
+export async function getJobs(filters?: { status?: string; type?: string }) {
+  const db = await getDb();
+  let jobs = db.data.jobs;
+  
+  if (filters?.status) {
+    jobs = jobs.filter((j) => j.status === filters.status);
+  }
+  if (filters?.type) {
+    jobs = jobs.filter((j) => j.type === filters.type);
+  }
+  
+  return jobs;
+}
+
+export async function getJobById(id: string) {
+  const db = await getDb();
+  return db.data.jobs.find((j) => j.id === id);
+}
+
+export async function updateJob(id: string, updates: Partial<Job>) {
+  const db = await getDb();
+  const index = db.data.jobs.findIndex((j) => j.id === id);
+  if (index !== -1) {
+    db.data.jobs[index] = { ...db.data.jobs[index], ...updates };
+    await db.write();
+    return db.data.jobs[index];
+  }
+  return null;
+}
+
+export async function deleteJob(id: string) {
+  const db = await getDb();
+  const index = db.data.jobs.findIndex((j) => j.id === id);
+  if (index !== -1) {
+    db.data.jobs.splice(index, 1);
+    await db.write();
+    return true;
+  }
+  return false;
+}
+
+export async function createUser(userData: Omit<User, "id" | "createdAt">) {
+  const db = await getDb();
+  const user: User = {
+    ...userData,
+    id: randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
+  db.data.users.push(user);
+  await db.write();
+  return user;
+}
+
+export async function getUserById(id: string) {
+  const db = await getDb();
+  return db.data.users.find((u) => u.id === id);
+}
+
+export async function createApplication(
+  appData: Omit<Application, "id" | "appliedAt">
+) {
+  const db = await getDb();
+  const application: Application = {
+    ...appData,
+    id: randomUUID(),
+    appliedAt: new Date().toISOString(),
+  };
+  db.data.applications.push(application);
+  await db.write();
+  return application;
+}
+
+export async function getApplicationsByJobId(jobId: string) {
+  const db = await getDb();
+  return db.data.applications.filter((a) => a.jobId === jobId);
+}
+
+export async function getApplicationsByUserId(userId: string) {
+  const db = await getDb();
+  return db.data.applications.filter((a) => a.userId === userId);
+}
+
+export type { Job, Application };
+ */
+
+
+=== D:\project\NEW\job-board-saas\src\lib\repositories\job.repository.ts ===
+import { db, initDB } from '../db/db';
+import { Job } from '../db/schema';
+import { JobQuery, JobWithCompany } from '../types/job.types';
+import { randomUUID } from 'crypto';
+
+export class JobRepository {
+  async findWithFilters(query: JobQuery) {
+    await initDB();
+    
+    let filtered = db.data.jobs.filter(job => job.published);
+
+    if (query.search) {
+      const search = query.search.toLowerCase();
+      filtered = filtered.filter(job =>
+        job.title.toLowerCase().includes(search) ||
+        job.description.toLowerCase().includes(search)
+      );
+    }
+
+    if (query.location) {
+      filtered = filtered.filter(job =>
+        job.location.toLowerCase().includes(query.location!.toLowerCase())
+      );
+    }
+
+    if (query.type) {
+      filtered = filtered.filter(job => job.type === query.type);
+    }
+
+    if (query.category) {
+      filtered = filtered.filter(job => job.categoryId === query.category);
+    }
+
+    const total = filtered.length;
+    const start = (query.page - 1) * query.limit;
+    const jobs = filtered.slice(start, start + query.limit);
+
+    const jobsWithCompany = jobs.map(job => ({
+      ...job,
+      company: db.data.companies.find(c => c.id === job.companyId)!,
+    }));
+
+    return { jobs: jobsWithCompany, total };
+  }
+
+  async findById(id: string): Promise<JobWithCompany | null> {
+    await initDB();
+    const job = db.data.jobs.find(j => j.id === id);
+    if (!job) return null;
+
+    const company = db.data.companies.find(c => c.id === job.companyId);
+    return { ...job, company: company! };
+  }
+
+  async create(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'published'>): Promise<Job> {
+    await initDB();
+    
+    const job: Job = {
+      ...data,
+      id: randomUUID(),
+      published: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    db.data.jobs.push(job);
+    await db.write();
+    return job;
+  }
+
+  async update(id: string, data: Partial<Job>): Promise<Job | null> {
+    await initDB();
+    
+    const index = db.data.jobs.findIndex(j => j.id === id);
+    if (index === -1) return null;
+
+    db.data.jobs[index] = {
+      ...db.data.jobs[index],
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await db.write();
+    return db.data.jobs[index];
+  }
+
+  async delete(id: string): Promise<boolean> {
+    await initDB();
+    
+    const index = db.data.jobs.findIndex(j => j.id === id);
+    if (index === -1) return false;
+
+    db.data.jobs.splice(index, 1);
+    await db.write();
+    return true;
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\lib\services\job.service.ts ===
+import { JobRepository } from '../repositories/job.repository';
+import { JobQuery, JobCreate, PaginatedResponse, JobListItem } from '../types/job.types';
+import { jobQuerySchema, jobCreateSchema } from '../validators/job.validator';
+
+export class JobService {
+  private repository = new JobRepository();
+
+  async getJobs(query: unknown): Promise<PaginatedResponse<JobListItem>> {
+    const validated = jobQuerySchema.parse(query);
+    const { jobs, total } = await this.repository.findWithFilters(validated);
+
+    return {
+      data: jobs,
+      pagination: {
+        page: validated.page,
+        limit: validated.limit,
+        total,
+        totalPages: Math.ceil(total / validated.limit),
+      },
+    };
+  }
+
+  async getJobById(id: string) {
+    const job = await this.repository.findById(id);
+    if (!job) throw new Error('Job not found');
+    return job;
+  }
+
+  async createJob(data: unknown) {
+    const validated = jobCreateSchema.parse(data);
+    return this.repository.create(validated);
+  }
+
+  async updateJob(id: string, data: unknown) {
+    const validated = jobCreateSchema.partial().parse(data);
+    const updated = await this.repository.update(id, validated);
+    if (!updated) throw new Error('Job not found');
+    return updated;
+  }
+
+  async deleteJob(id: string) {
+    const deleted = await this.repository.delete(id);
+    if (!deleted) throw new Error('Job not found');
+    return { success: true };
+  }
+}
+
+
+=== D:\project\NEW\job-board-saas\src\lib\types\job.types.ts ===
+import { Job, Company } from '../db/schema';
+
+export type JobWithCompany = Job & {
+  company: Company;
+};
+
+export type JobListItem = Pick<Job, 'id' | 'title' | 'location' | 'salary' | 'type' | 'createdAt'> & {
+  company: Pick<Company, 'id' | 'name' | 'logo'>;
+};
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
+
+=== D:\project\NEW\job-board-saas\src\lib\validators\job.validator.ts ===
+import { z } from 'zod';
+
+export const jobQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  search: z.string().optional(),
+  location: z.string().optional(),
+  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']).optional(),
+  category: z.string().optional(),
+});
+
+export const jobCreateSchema = z.object({
+  title: z.string().min(3).max(200),
+  description: z.string().min(50),
+  location: z.string().min(2),
+  salary: z.string().optional(),
+  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']),
+  companyId: z.string(),
+  categoryId: z.string().optional(),
+});
+
+export type JobQuery = z.infer<typeof jobQuerySchema>;
+export type JobCreate = z.infer<typeof jobCreateSchema>;
+
+
+=== D:\project\NEW\job-board-saas\src\styles\globals.css ===
+:root {
+  /* ========== COLOR SYSTEM ========== */
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: rgba(99, 102, 241, 0.1);
+  
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+  
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  
+  /* ========== NEUTRALS ========== */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  
+  /* ========== TYPOGRAPHY ========== */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: 2.25rem;
+  --font-size-4xl: 3rem;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* ========== SPACING ========== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  
+  /* ========== SHADOWS ========== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* ========== BORDER RADIUS ========== */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* ========== TRANSITIONS ========== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+/* src/styles/globals.css - REPLACE ENTIRE FILE */
+
+:root {
+  /* ========== COLOR SYSTEM ========== */
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: rgba(99, 102, 241, 0.1);
+  
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+  
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  
+  /* ========== NEUTRALS ========== */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  
+  /* ========== TYPOGRAPHY ========== */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: 2.25rem;
+  --font-size-4xl: 3rem;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* ========== SPACING ========== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  
+  /* ========== SHADOWS ========== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* ========== BORDER RADIUS ========== */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* ========== TRANSITIONS ========== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+=== D:\project\NEW\job-board-saas\src\types\index.ts ===
+
+

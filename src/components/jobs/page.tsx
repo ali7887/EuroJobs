@@ -1,21 +1,26 @@
-// src/app/jobs/page.tsx
-import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
-import { Loader } from '../ui';
+﻿"use client";
+
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import JobList from "./JobList";
 
 function JobsContent() {
   const searchParams = useSearchParams();
-  const keyword = searchParams.get('keyword');
-  const location = searchParams.get('location');
-  const category = searchParams.get('category');
+  const keyword  = searchParams.get("keyword")  ?? undefined;
+  const location = searchParams.get("location") ?? undefined;
+  const category = searchParams.get("category") ?? undefined;
 
-  // Fetch jobs based on these params
-  // ...
+  return (
+    <main className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
+      <JobList keyword={keyword} location={location} category={category} />
+    </main>
+  );
 }
 
 export default function JobsPage() {
   return (
-    <Suspense fallback={<Loader fullScreen />}>
+    <Suspense fallback={<div>Loading...</div>}>
       <JobsContent />
     </Suspense>
   );

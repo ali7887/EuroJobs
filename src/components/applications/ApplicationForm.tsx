@@ -1,66 +1,42 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import Input from "../ui/Input";
-import Button from "../ui/Button/Button";
+import { Button } from "../ui/Button/Button";
 
 interface ApplicationFormProps {
   jobId: string;
+  onSuccess?: () => void;
 }
 
-export default function ApplicationForm({ jobId }: ApplicationFormProps) {
-  const [formData, setFormData] = useState({
-    coverLetter: "",
-    resumeUrl: "",
-  });
+export default function ApplicationForm({ jobId, onSuccess }: ApplicationFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    const response = await fetch("/api/applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jobId,
-        userId: "temp-user-id", // Replace with actual user ID
-        ...formData,
-        status: "pending",
-      }),
-    });
-
-    if (response.ok) {
-      alert("Application submitted successfully!");
-      setFormData({ coverLetter: "", resumeUrl: "" });
+    setLoading(true);
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, message }),
+      });
+      if (res.ok) onSuccess?.();
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8">
-      <h3 className="text-2xl font-bold mb-4">Apply for this position</h3>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Cover Letter
-        </label>
-        <textarea
-          value={formData.coverLetter}
-          onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg h-40"
-          required
-        />
-      </div>
-
-      <Input
-        label="Resume URL"
-        type="url"
-        value={formData.resumeUrl}
-        onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
-        placeholder="https://example.com/resume.pdf"
-        required
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Cover letter..."
+        className="w-full border rounded p-2 min-h-[120px]"
       />
-
-      <Button type="submit" className="w-full">
-        Submit Application
+      <Button type="submit" disabled={loading}>
+        {loading ? "Submitting..." : "Apply Now"}
       </Button>
     </form>
   );

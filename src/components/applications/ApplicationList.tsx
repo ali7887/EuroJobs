@@ -1,51 +1,32 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from "react";
-import Card from "../ui/Card";
-import { Application } from "@/lib/db/XXXXdb-operations";
+import { useEffect, useState } from "react";
+import { Application } from "@/lib/db/schema";
 
-interface ApplicationListProps {
-  userId: string;
-}
-
-export default function ApplicationList({ userId }: ApplicationListProps) {
+export default function ApplicationList({ jobId }: { jobId?: string }) {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async () => {
-    const response = await fetch(`/api/applications/user/${userId}`);
-    const data = await response.json();
-    setApplications(data);
-    setLoading(false);
-  };
+    const url = jobId
+      ? `/api/applications/job/${jobId}`
+      : "/api/applications";
+    fetch(url)
+      .then((r) => r.json())
+      .then((d) => setApplications(d))
+      .finally(() => setLoading(false));
+  }, [jobId]);
 
   if (loading) return <div>Loading applications...</div>;
 
   return (
-    <div className="space-y-4">
+    <ul className="space-y-2">
       {applications.map((app) => (
-        <Card key={app.id}>
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold text-lg">Job ID: {app.jobId}</h3>
-              <p className="text-sm text-gray-500">
-                Applied: {new Date(app.appliedAt).toLocaleDateString()}
-              </p>
-            </div>
-            <span className={`px-3 py-1 rounded-full text-sm ${
-              app.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-              app.status === "accepted" ? "bg-green-100 text-green-800" :
-              "bg-red-100 text-red-800"
-            }`}>
-              {app.status}
-            </span>
-          </div>
-        </Card>
+        <li key={app.id} className="border rounded p-3">
+          <p className="text-sm font-medium">Job: {app.jobId}</p>
+          <p className="text-sm text-muted-foreground">Status: {app.status}</p>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

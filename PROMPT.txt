@@ -1,4 +1,4 @@
-  1- "🎭 ROLE DEFINITION
+🎭 ROLE DEFINITION
 You are simultaneously:
 
 🏗️ Senior Full-Stack Developer — writes clean, minimal, fully-typed code
@@ -1464,4 +1464,446 @@ important!:
 -- i have build this project with your assist but i want to continue the project in this new chat for better performance
 --you have already build main page and header and hero and footer section just like attaching screen shot-check for problems and issues in layout and styles
 --remember i will fine tune and adjust and finalize the style and layout of this project in near future
---so start to build rest of the project
+--so start to build rest of the project"
+2- updated prompt:"-dont use prisma or postgres or mongo db
+-just use lowDB, because i want to build this project in my local system. i have no "no access to international and free internet"...so build and deploy  everything in my local system (windows 10 with vs code IDE)"
+3-updated poromp:"📊 PROJECT ANALYSIS & CONTINUATION PLAN
+I’ve analyzed all your prompts and the screenshot. Here’s my comprehensive assessment:
+
+✅ CURRENT STATE VERIFICATION
+Completed Components (from screenshot):
+
+✅ Header with navigation (Find Jobs, Companies, About, Contact)
+✅ Hero section with search bar (3 inputs: keyword, location, category)
+✅ Stats display (12,450+ Active Jobs, 850+ Job Seekers, 50K+ Job Seekers)
+✅ Popular Categories section (6 category cards)
+✅ Featured Jobs section (3 job cards with FEATURED badges)
+✅ Top Companies Hiring section (company grid)
+✅ Footer with links
+Visual Issues Detected:
+
+⚠️ Search bar button appears cut off on right edge
+⚠️ Inconsistent spacing in Popular Categories grid
+⚠️ Featured Jobs cards need better visual hierarchy
+⚠️ Footer links section needs better organization
+🎯 STRATEGIC EXECUTION PLAN
+Based on your 7 prompts, I’m prioritizing:
+
+Phase 1: Architecture Foundation (START HERE)
+Goal: Build production-grade backend without touching existing UI
+
+What I’ll Create:
+
+src/
+
+├── modules/
+
+│ ├── jobs/
+
+│ │ ├── jobs.types.ts
+
+│ │ ├── jobs.repository.ts
+
+│ │ ├── jobs.service.ts
+
+│ │ └── jobs.validation.ts
+
+│ ├── applications/
+
+│ │ ├── applications.types.ts
+
+│ │ ├── applications.repository.ts
+
+│ │ ├── applications.service.ts
+
+│ │ └── applications.validation.ts
+
+│ └── users/
+
+│ ├── users.types.ts
+
+│ ├── users.repository.ts
+
+│ ├── users.service.ts
+
+│ └── users.validation.ts
+
+├── lib/
+
+│ ├── db/
+
+│ │ ├── lowdb.client.ts
+
+│ │ └── base.repository.ts
+
+│ ├── middleware/
+
+│ │ ├── auth.middleware.ts
+
+│ │ ├── validation.middleware.ts
+
+│ │ └── rate-limit.middleware.ts
+
+│ └── utils/
+
+│ ├── api-response.ts
+
+│ └── error-handler.ts
+
+Phase 2: AI Features Implementation
+ChatWidget (career assistant)
+JobMatcher (AI recommendations)
+SmartSearch (intelligent query parsing)
+Phase 3: Three.js Enhancement
+Populate empty src/components/three/ folder
+Interactive network graph
+Particle effects
+Phase 4: Testing Infrastructure
+Vitest setup
+Unit tests for services
+Integration tests for API routes
+Phase 5: Prisma Schema
+Complete schema with relations
+Migration guide from LowDB
+🚀 IMMEDIATE ACTION
+I will now execute Phase 1 with these deliverables:
+
+Repository Pattern - Abstract all LowDB operations
+Service Layer - Business logic separation
+Zod Validation - Runtime type safety
+Middleware Chain - Auth mock, validation, rate limiting
+API Route Refactoring - Use new architecture
+Error Handling - Centralized error responses
+Estimated Files: ~25 core architecture files
+
+Key Decisions:
+
+✅ Keep existing UI untouched
+✅ Module-based structure (domain-driven)
+✅ Type-safe at compile + runtime
+✅ Migration-ready for PostgreSQL
+✅ Portfolio-grade code quality"
+4- this phase is succesfully completed:"🏗️ PHASE 1: LOCAL ARCHITECTURE (LowDB)
+📦 Install LowDB
+bash
+pnpm add lowdb
+📁 Updated Structure
+src/
+
+├── lib/
+
+│ ├── db/
+
+│ │ ├── db.ts # LowDB instance
+
+│ │ └── schema.ts # Database schema types
+
+│ ├── repositories/
+
+│ │ └── job.repository.ts
+
+│ ├── services/
+
+│ │ └── job.service.ts
+
+│ ├── validators/
+
+│ │ └── job.validator.ts
+
+│ └── types/
+
+│ └── job.types.ts
+
+└── data/
+
+└── db.json # Local JSON database
+
+1️⃣ Database Schema
+src/lib/db/schema.ts
+
+typescript
+export type Company = {
+  id: string;
+  name: string;
+  logo: string;
+  website?: string;
+};
+
+export type Job = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  salary?: string;
+  type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'REMOTE';
+  companyId: string;
+  categoryId?: string;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export type Database = {
+  jobs: Job[];
+  companies: Company[];
+  categories: Category[];
+};
+2️⃣ LowDB Instance
+src/lib/db/db.ts
+
+typescript
+import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
+import path from 'path';
+import { Database } from './schema';
+
+const file = path.join(process.cwd(), 'data', 'db.json');
+const adapter = new JSONFile<Database>(file);
+const defaultData: Database = { jobs: [], companies: [], categories: [] };
+
+export const db = new Low<Database>(adapter, defaultData);
+
+export async function initDB() {
+  await db.read();
+  db.data ||= defaultData;
+  await db.write();
+}
+3️⃣ TypeScript Types
+src/lib/types/job.types.ts
+
+typescript
+import { Job, Company } from '../db/schema';
+
+export type JobWithCompany = Job & {
+  company: Company;
+};
+
+export type JobListItem = Pick<Job, 'id' | 'title' | 'location' | 'salary' | 'type' | 'createdAt'> & {
+  company: Pick<Company, 'id' | 'name' | 'logo'>;
+};
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};
+4️⃣ Zod Validators
+src/lib/validators/job.validator.ts
+
+typescript
+import { z } from 'zod';
+
+export const jobQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  search: z.string().optional(),
+  location: z.string().optional(),
+  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']).optional(),
+  category: z.string().optional(),
+});
+
+export const jobCreateSchema = z.object({
+  title: z.string().min(3).max(200),
+  description: z.string().min(50),
+  location: z.string().min(2),
+  salary: z.string().optional(),
+  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']),
+  companyId: z.string(),
+  categoryId: z.string().optional(),
+});
+
+export type JobQuery = z.infer<typeof jobQuerySchema>;
+export type JobCreate = z.infer<typeof jobCreateSchema>;
+5️⃣ Job Repository
+src/lib/repositories/job.repository.ts
+
+typescript
+import { db, initDB } from '../db/db';
+import { Job } from '../db/schema';
+import { JobQuery, JobWithCompany } from '../types/job.types';
+import { randomUUID } from 'crypto';
+
+export class JobRepository {
+  async findWithFilters(query: JobQuery) {
+    await initDB();
+    
+    let filtered = db.data.jobs.filter(job => job.published);
+
+    if (query.search) {
+      const search = query.search.toLowerCase();
+      filtered = filtered.filter(job =>
+        job.title.toLowerCase().includes(search) ||
+        job.description.toLowerCase().includes(search)
+      );
+    }
+
+    if (query.location) {
+      filtered = filtered.filter(job =>
+        job.location.toLowerCase().includes(query.location!.toLowerCase())
+      );
+    }
+
+    if (query.type) {
+      filtered = filtered.filter(job => job.type === query.type);
+    }
+
+    if (query.category) {
+      filtered = filtered.filter(job => job.categoryId === query.category);
+    }
+
+    const total = filtered.length;
+    const start = (query.page - 1) * query.limit;
+    const jobs = filtered.slice(start, start + query.limit);
+
+    const jobsWithCompany = jobs.map(job => ({
+      ...job,
+      company: db.data.companies.find(c => c.id === job.companyId)!,
+    }));
+
+    return { jobs: jobsWithCompany, total };
+  }
+
+  async findById(id: string): Promise<JobWithCompany | null> {
+    await initDB();
+    const job = db.data.jobs.find(j => j.id === id);
+    if (!job) return null;
+
+    const company = db.data.companies.find(c => c.id === job.companyId);
+    return { ...job, company: company! };
+  }
+
+  async create(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'published'>): Promise<Job> {
+    await initDB();
+    
+    const job: Job = {
+      ...data,
+      id: randomUUID(),
+      published: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    db.data.jobs.push(job);
+    await db.write();
+    return job;
+  }
+
+  async update(id: string, data: Partial<Job>): Promise<Job | null> {
+    await initDB();
+    
+    const index = db.data.jobs.findIndex(j => j.id === id);
+    if (index === -1) return null;
+
+    db.data.jobs[index] = {
+      ...db.data.jobs[index],
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await db.write();
+    return db.data.jobs[index];
+  }
+
+  async delete(id: string): Promise<boolean> {
+    await initDB();
+    
+    const index = db.data.jobs.findIndex(j => j.id === id);
+    if (index === -1) return false;
+
+    db.data.jobs.splice(index, 1);
+    await db.write();
+    return true;
+  }
+}
+6️⃣ Job Service
+src/lib/services/job.service.ts
+
+typescript
+import { JobRepository } from '../repositories/job.repository';
+import { JobQuery, JobCreate, PaginatedResponse, JobListItem } from '../types/job.types';
+import { jobQuerySchema, jobCreateSchema } from '../validators/job.validator';
+
+export class JobService {
+  private repository = new JobRepository();
+
+  async getJobs(query: unknown): Promise<PaginatedResponse<JobListItem>> {
+    const validated = jobQuerySchema.parse(query);
+    const { jobs, total } = await this.repository.findWithFilters(validated);
+
+    return {
+      data: jobs,
+      pagination: {
+        page: validated.page,
+        limit: validated.limit,
+        total,
+        totalPages: Math.ceil(total / validated.limit),
+      },
+    };
+  }
+
+  async getJobById(id: string) {
+    const job = await this.repository.findById(id);
+    if (!job) throw new Error('Job not found');
+    return job;
+  }
+
+  async createJob(data: unknown) {
+    const validated = jobCreateSchema.parse(data);
+    return this.repository.create(validated);
+  }
+
+  async updateJob(id: string, data: unknown) {
+    const validated = jobCreateSchema.partial().parse(data);
+    const updated = await this.repository.update(id, validated);
+    if (!updated) throw new Error('Job not found');
+    return updated;
+  }
+
+  async deleteJob(id: string) {
+    const deleted = await this.repository.delete(id);
+    if (!deleted) throw new Error('Job not found');
+    return { success: true };
+  }
+}
+7️⃣ Seed Data (Optional)
+data/db.json
+
+json
+{
+  "companies": [
+    {
+      "id": "1",
+      "name": "Tech Corp",
+      "logo": "/logos/tech-corp.png",
+      "website": "https://techcorp.local"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Engineering",
+      "slug": "engineering"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1",
+      "title": "Senior Frontend Developer",
+      "description": "Build amazing user interfaces with React and Next.js",
+      "location": "Remote",
+      "salary": "$120k - $150k",
+      "type": "FULL_TIME",
+      "companyId": "1",
+      "categoryId": "1",
+      "published": true,
+      "createdAt": "2026-"

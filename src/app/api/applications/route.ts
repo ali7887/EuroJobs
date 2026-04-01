@@ -1,15 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createApplication } from "@/lib/db/XXXXdb-operations";
+import { NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
 
-export async function POST(request: NextRequest) {
+export async function GET() {
   try {
-    const body = await request.json();
-    const application = await createApplication(body);
-    return NextResponse.json(application, { status: 201 });
+    const all = await applicationService.getApplications();
+    return NextResponse.json(all);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to create application" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch applications" }, { status: 500 });
   }
 }

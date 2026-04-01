@@ -1,32 +1,60 @@
-export type Company = {
+export interface Company {
   id: string;
   name: string;
-  logo: string;
+  logo?: string;
   website?: string;
-};
-
-export type Job = {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  salary?: string;
-  type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'REMOTE';
-  companyId: string;
-  categoryId?: string;
-  published: boolean;
+  description?: string;
+  location?: string;
   createdAt: string;
-  updatedAt: string;
-};
+}
 
-export type Category = {
+export interface Category {
   id: string;
   name: string;
   slug: string;
-};
+}
 
-export type Database = {
+export interface Job {
+  status: string;
+  salary: any;
+  id: string;
+  title: string;
+  description: string;
+  companyId: string;
+  categoryId: string;
+  location: string;
+  type: "full-time" | "part-time" | "contract" | "remote";
+  salaryMin?: number;
+  salaryMax?: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: "admin" | "employer" | "jobseeker";
+  createdAt: string;
+}
+
+export interface Application {
+  id: string;
+  jobId: string;
+  userId: string;
+  status: "pending" | "reviewed" | "accepted" | "rejected";
+  coverLetter?: string;
+  resumeUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Database {
   jobs: Job[];
   companies: Company[];
   categories: Category[];
-};
+  users: User[];
+  applications: Application[];
+}

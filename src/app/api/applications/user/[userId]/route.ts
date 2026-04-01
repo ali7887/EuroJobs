@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApplicationsByUserId } from "@/lib/db/XXXXdb-operations";
+import { applicationService } from "@/lib/services/application.service";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const applications = await getApplicationsByUserId(params.userId);
+    const { userId } = await params;
+    const applications = await applicationService.getApplicationsByUser(userId);
     return NextResponse.json(applications);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch applications" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch applications" }, { status: 500 });
   }
 }

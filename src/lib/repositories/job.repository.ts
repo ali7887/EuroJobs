@@ -1,97 +1,84 @@
-import { db, initDB } from '../db/db';
-import { Job } from '../db/schema';
-import { JobQuery, JobWithCompany } from '../types/job.types';
-import { randomUUID } from 'crypto';
+import { db, initDB } from "@/lib/db/db";
+import { Job } from "@/lib/db/schema";
+import { v4 as uuidv4 } from "uuid";
+
+export interface JobQuery {
+  search?: string;
+  categoryId?: string;
+  location?: string;
+  type?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedJobs {
+  data: Job[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
 export class JobRepository {
-  async findWithFilters(query: JobQuery) {
+  async findAll(query: JobQuery = {}): Promise<PaginatedJobs> {
     await initDB();
-    
-    let filtered = db.data.jobs.filter(job => job.published);
+    const { search, categoryId, location, type, page = 1, limit = 10 } = query;
 
-    if (query.search) {
-      const search = query.search.toLowerCase();
-      filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(search) ||
-        job.description.toLowerCase().includes(search)
+    let jobs = db.data!.jobs.filter((j) => j.isActive);
+
+    if (search) {
+      const q = search.toLowerCase();
+      jobs = jobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.description.toLowerCase().includes(q)
       );
     }
-
-    if (query.location) {
-      filtered = filtered.filter(job =>
-        job.location.toLowerCase().includes(query.location!.toLowerCase())
-      );
+    if (categoryId) jobs = jobs.filter((j) => j.categoryId === categoryId);
+    if (location) {
+      const q = location.toLowerCase();
+      jobs = jobs.filter((j) => j.location.toLowerCase().includes(q));
     }
+    if (type) jobs = jobs.filter((j) => j.type === type);
 
-    if (query.type) {
-      filtered = filtered.filter(job => job.type === query.type);
-    }
+    const total = jobs.length;
+    const totalPages = Math.ceil(total / limit);
+    const start = (page - 1) * limit;
+    const data = jobs.slice(start, start + limit);
 
-    if (query.category) {
-      filtered = filtered.filter(job => job.categoryId === query.category);
-    }
-
-    const total = filtered.length;
-    const start = (query.page - 1) * query.limit;
-    const jobs = filtered.slice(start, start + query.limit);
-
-    const jobsWithCompany = jobs.map(job => ({
-      ...job,
-      company: db.data.companies.find(c => c.id === job.companyId)!,
-    }));
-
-    return { jobs: jobsWithCompany, total };
+    return { data, total, page, limit, totalPages };
   }
 
-  async findById(id: string): Promise<JobWithCompany | null> {
+  async findById(id: string): Promise<Job | undefined> {
     await initDB();
-    const job = db.data.jobs.find(j => j.id === id);
-    if (!job) return null;
-
-    const company = db.data.companies.find(c => c.id === job.companyId);
-    return { ...job, company: company! };
+    return db.data!.jobs.find((j) => j.id === id);
   }
 
-  async create(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'published'>): Promise<Job> {
+  async create(input: Omit<Job, "id" | "createdAt" | "updatedAt">): Promise<Job> {
     await initDB();
-    
-    const job: Job = {
-      ...data,
-      id: randomUUID(),
-      published: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    db.data.jobs.push(job);
+    const now = new Date().toISOString();
+    const job: Job = { id: uuidv4(), ...input, createdAt: now, updatedAt: now };
+    db.data!.jobs.push(job);
     await db.write();
     return job;
   }
 
-  async update(id: string, data: Partial<Job>): Promise<Job | null> {
+  async update(id: string, input: Partial<Omit<Job, "id" | "createdAt">>): Promise<Job | null> {
     await initDB();
-    
-    const index = db.data.jobs.findIndex(j => j.id === id);
-    if (index === -1) return null;
-
-    db.data.jobs[index] = {
-      ...db.data.jobs[index],
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
-
+    const idx = db.data!.jobs.findIndex((j) => j.id === id);
+    if (idx === -1) return null;
+    db.data!.jobs[idx] = { ...db.data!.jobs[idx], ...input, updatedAt: new Date().toISOString() };
     await db.write();
-    return db.data.jobs[index];
+    return db.data!.jobs[idx];
   }
 
   async delete(id: string): Promise<boolean> {
     await initDB();
-    
-    const index = db.data.jobs.findIndex(j => j.id === id);
-    if (index === -1) return false;
-
-    db.data.jobs.splice(index, 1);
+    const before = db.data!.jobs.length;
+    db.data!.jobs = db.data!.jobs.filter((j) => j.id !== id);
     await db.write();
-    return true;
+    return db.data!.jobs.length < before;
   }
 }
+
+export const jobRepository = new JobRepository();
