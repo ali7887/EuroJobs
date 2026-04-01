@@ -2,15 +2,15 @@
 import { v4 as uuidv4 } from "uuid";
 
 async function seed() {
+  const userId = uuidv4();
   const companyId = uuidv4();
   const company = {
     id: companyId,
     name: "Acme Corp",
-    logo: "/logos/acme.png",
+    logoUrl: "/logos/acme.png",
     website: "https://acme.com",
+    createdBy: userId,
     createdAt: new Date().toISOString(),
-    status: "active" as const,
-    isActive: true,
   };
   db.data!.companies.push(company);
 
@@ -20,15 +20,13 @@ async function seed() {
     title: "Senior TypeScript Developer",
     description: "Build amazing products.",
     location: "Remote",
-    salary: "$120,000",
-    type: "full-time" as const,
+    jobType: "full-time" as const,
+    salaryMin: 120000,
+    salaryMax: 150000,
     companyId,
     categoryId: uuidv4(),
-    published: true,
-    status: "active" as const,
     isActive: true,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   };
   db.data!.jobs.push(job);
 

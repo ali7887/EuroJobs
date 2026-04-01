@@ -10,15 +10,13 @@ interface JobListProps {
   category?: string;
 }
 
-const mapJobType = (type: string): "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid" => {
+const mapJobType = (type?: string): "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid" => {
   const map: Record<string, "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid"> = {
-    'FULL_TIME': 'Full-time',
-    'PART_TIME': 'Part-time',
-    'CONTRACT': 'Contract',
-    'REMOTE': 'Remote',
-    'HYBRID': 'Hybrid',
-  };
-  return map[type] || 'Full-time';
+    'full-time': 'Full-time',
+    'part-time': 'Part-time',
+    'contract': 'Contract',
+    'remote': 'Remote',};
+  return map[type || ''] || 'Full-time';
 };
 
 export default function JobList({ keyword, location, category }: JobListProps) {
@@ -42,13 +40,9 @@ export default function JobList({ keyword, location, category }: JobListProps) {
 
   if (loading) return <div>Loading...</div>;
 
-  const parseSalary = (sal?: string) => {
-    if (!sal) return undefined;
-    const match = sal.match(/(\d+)k?\s*[-–]\s*(\d+)k?/i);
-    if (match) {
-      return { min: parseInt(match[1]) * 1000, max: parseInt(match[2]) * 1000, currency: '$' };
-    }
-    return undefined;
+  const formatSalary = (min?: number, max?: number) => {
+    if (!min && !max) return undefined;
+    return { min: min || 0, max: max || 0, currency: '$' };
   };
 
   return (
@@ -59,9 +53,9 @@ export default function JobList({ keyword, location, category }: JobListProps) {
           id={job.id}
           title={job.title}
           company={job.companyId}
-          location={job.location}
-          salary={parseSalary(job.salary)}
-          type={mapJobType(job.type)}
+          location={job.location || 'Not specified'}
+          salary={formatSalary(job.salaryMin, job.salaryMax)}
+          type={mapJobType(job.jobType)}
           postedAt={new Date(job.createdAt).toLocaleDateString()}
         />
       ))}

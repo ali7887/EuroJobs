@@ -6,7 +6,7 @@ export interface JobQuery {
   search?: string;
   categoryId?: string;
   location?: string;
-  type?: string;
+  jobType?: string;
   page?: number;
   limit?: number;
 }
@@ -22,7 +22,7 @@ export interface PaginatedJobs {
 export class JobRepository {
   async findAll(query: JobQuery = {}): Promise<PaginatedJobs> {
     await initDB();
-    const { search, categoryId, location, type, page = 1, limit = 10 } = query;
+    const { search, categoryId, location, jobType, page = 1, limit = 10 } = query;
 
     let jobs = db.data!.jobs.filter((j) => j.isActive);
 
@@ -37,9 +37,9 @@ export class JobRepository {
     if (categoryId) jobs = jobs.filter((j) => j.categoryId === categoryId);
     if (location) {
       const q = location.toLowerCase();
-      jobs = jobs.filter((j) => j.location.toLowerCase().includes(q));
+      jobs = jobs.filter((j) => j.location?.toLowerCase().includes(q));
     }
-    if (type) jobs = jobs.filter((j) => j.type === type);
+    if (jobType) jobs = jobs.filter((j) => j.jobType === jobType);
 
     const total = jobs.length;
     const totalPages = Math.ceil(total / limit);

@@ -4,7 +4,7 @@ import { Job } from '../db/schema';
 export type JobQuery = {
   categoryId?: string;
   companyId?: string;
-  type?: Job['type'];
+  type?: string;
   location?: string;
   search?: string;
 };

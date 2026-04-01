@@ -25,7 +25,7 @@ export class JobService {
       return {
         ...job,
         companyName: company?.name ?? "Unknown",
-        companyLogo: company?.logo,
+        companyLogo: company?.logoUrl,
       };
     });
 
@@ -36,7 +36,7 @@ export class JobService {
     const job = await jobRepository.findById(id);
     if (!job) return null;
     const company = await companyRepository.findById(job.companyId);
-    return { ...job, companyName: company?.name ?? "Unknown", companyLogo: company?.logo };
+    return { ...job, companyName: company?.name ?? "Unknown", companyLogo: company?.logoUrl };
   }
 
   async createJob(input: Omit<Job, "id" | "createdAt" | "updatedAt">): Promise<Job> {
