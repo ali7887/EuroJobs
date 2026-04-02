@@ -1,22 +1,26 @@
-﻿import { NextResponse } from "next/server";
+﻿// src/app/applications/route.ts
+import { NextResponse } from "next/server";
 import { applicationService } from "@/lib/services/application.service";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+
     if (id) {
       const application = await applicationService.getApplicationById(id);
       if (!application)
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       return NextResponse.json(application);
     }
-    const all = await applicationService.getApplications();
+
+    // ✅ اصلاح: استفاده از متد مناسب برای گرفتن همه رکوردها
+    const all = await applicationService.getAllApplications();
     return NextResponse.json(all);
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
-}
+} // ✅ آکولاد بسته فراموش شده هم اضافه شد!
 
 export async function POST(req: Request) {
   try {

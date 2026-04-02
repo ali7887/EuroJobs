@@ -1,54 +1,64 @@
-import { jobRepository, JobQuery, PaginatedJobs } from "@/lib/repositories/job.repository";
-import { companyRepository } from "@/lib/repositories/company.repository";
-import { Job } from "@/lib/db/schema";
-
-export interface JobListItem extends Job {
-  companyName: string;
-  companyLogo?: string;
-}
-
-export interface PaginatedJobListItems {
-  data: JobListItem[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+// src/lib/services/job.service.ts
+import { JobRepository } from '../repositories/job.repository';
+import { PaginatedResponse, JobListItem } from '../types/job.types';
+import { jobQuerySchema, jobCreateSchema } from '../validators/job.validator';
 
 export class JobService {
-  async getJobs(query: JobQuery = {}): Promise<PaginatedJobListItems> {
-    const result: PaginatedJobs = await jobRepository.findAll(query);
-    const companies = await companyRepository.findAll();
+  private repository = new JobRepository();
 
-    const data: JobListItem[] = result.data.map((job) => {
-      const company = companies.find((c) => c.id === job.companyId);
-      return {
-        ...job,
-        companyName: company?.name ?? "Unknown",
-        companyLogo: company?.logo,
-      };
+  async getJobs(query: unknown): Promise<PaginatedResponse<JobListItem>> {
+    const validated = jobQuerySchema.parse(query);
+    
+    // ✅ findAll نه findById
+    const result = await this.repository.findAll({
+      search: validated.search,
+      location: validated.location,
+      jobType: validated.type,
+      categoryId: validated.category,
+      page: validated.page,
+      limit: validated.limit,
     });
 
-    return { ...result, data };
+    // ✅ ساختار مستقیم بدون 'pagination'
+    return {
+      data: result.data as JobListItem[],
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages,
+    };
   }
 
-  async getJobById(id: string): Promise<JobListItem | null> {
-    const job = await jobRepository.findById(id);
-    if (!job) return null;
-    const company = await companyRepository.findById(job.companyId);
-    return { ...job, companyName: company?.name ?? "Unknown", companyLogo: company?.logo, };
+  async getJobById(id: string) {
+    const job = await this.repository.findById(id);
+    if (!job) throw new Error('Job not found');
+    return job;
   }
 
-  async createJob(input: Omit<Job, "id" | "createdAt" | "updatedAt">): Promise<Job> {
-    return jobRepository.create(input);
+  async createJob(data: unknown) {
+    const validated = jobCreateSchema.parse(data);
+    
+    return this.repository.create({
+      ...validated,
+      published: validated.published ?? false,
+      isActive: validated.isActive ?? true,
+      jobType: validated.jobType ?? validated.type,
+      status: '',
+      jobEmbeddings: ''
+    });
   }
 
-  async updateJob(id: string, input: Partial<Omit<Job, "id" | "createdAt">>): Promise<Job | null> {
-    return jobRepository.update(id, input);
+  async updateJob(id: string, data: unknown) {
+    const validated = jobCreateSchema.partial().parse(data);
+    const updated = await this.repository.update(id, validated);
+    if (!updated) throw new Error('Job not found');
+    return updated;
   }
 
-  async deleteJob(id: string): Promise<boolean> {
-    return jobRepository.delete(id);
+  async deleteJob(id: string) {
+    const deleted = await this.repository.delete(id);
+    if (!deleted) throw new Error('Job not found');
+    return { success: true };
   }
 }
 

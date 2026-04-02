@@ -11,18 +11,16 @@ export class CompanyService {
     return companyRepository.findById(id);
   }
 
+  // ✅ Company فاقد createdAt است - فقط 'id' را Omit کن
   async createCompany(
-    input: Omit<Company, 'id' | 'createdAt'>   // ✅ فقط 'id' حذف نیست
+    input: Omit<Company, 'id'>
   ): Promise<Company> {
-    return companyRepository.create({
-      ...input,
-      createdAt: new Date().toISOString(),      // ✅ اینجا تولید می‌شود
-    });
+    return companyRepository.create(input);
   }
 
   async updateCompany(
     id: string,
-    input: Partial<Omit<Company, 'id' | 'createdAt'>>
+    input: Partial<Omit<Company, 'id'>>
   ): Promise<Company | null> {
     return companyRepository.update(id, input);
   }

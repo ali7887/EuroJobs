@@ -34,13 +34,23 @@ export default function JobList({ keyword, location, category }: JobListProps) {
   useEffect(() => {
     async function fetchJobs() {
       const params = new URLSearchParams();
-      if (keyword) params.set('keyword', keyword);
+      if (keyword) params.set('search', keyword);
       if (location) params.set('location', location);
-      if (category) params.set('category', category);
+      if (category) params.set('categoryId', category);
 
       const res = await fetch(`/api/jobs?${params}`);
-      const data = await res.json();
-      setJobs(data);
+      const result = await res.json();
+
+      // ✅ API برمی‌گردونه: { data: [...], total, page, ... }
+      if (result.error) {
+        console.error('API Error:', result.error);
+        setJobs([]);
+      } else if (result.data && Array.isArray(result.data)) {
+        setJobs(result.data);
+      } else {
+        setJobs([]);
+      }
+      
       setLoading(false);
     }
     fetchJobs();
@@ -58,7 +68,7 @@ export default function JobList({ keyword, location, category }: JobListProps) {
           company={job.companyId}
           location={job.location ?? 'Not specified'}
           type={mapJobType(job.type)}
-          salary={job.salary}                          // ✅ مستقیم string
+          salary={job.salary}
           postedAt={new Date(job.createdAt).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',

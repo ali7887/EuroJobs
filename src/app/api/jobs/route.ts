@@ -8,14 +8,17 @@ export async function GET(req: NextRequest) {
       search: searchParams.get("search") ?? undefined,
       categoryId: searchParams.get("categoryId") ?? undefined,
       location: searchParams.get("location") ?? undefined,
-      jobType: searchParams.get("type") ?? undefined,
+      type: searchParams.get("type") ?? undefined,
       page: Number(searchParams.get("page") ?? 1),
       limit: Number(searchParams.get("limit") ?? 10),
     });
     return NextResponse.json(result);
   } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Failed to fetch jobs" }, { status: 500 });
+    console.error("GET /api/jobs error:", e);
+    return NextResponse.json(
+      { error: "Failed to fetch jobs" },
+      { status: 500 }
+    );
   }
 }
 
@@ -25,7 +28,10 @@ export async function POST(req: NextRequest) {
     const job = await jobService.createJob(body);
     return NextResponse.json(job, { status: 201 });
   } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Failed to create job" }, { status: 500 });
+    console.error("POST /api/jobs error:", e);
+    return NextResponse.json(
+      { error: "Failed to create job" },
+      { status: 500 }
+    );
   }
 }

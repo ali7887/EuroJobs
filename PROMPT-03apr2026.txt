@@ -1,4 +1,15 @@
-🎭 ROLE DEFINITION
+1-برای ساخت پروژه job recriutment saas یک فولدرو پروژه جداگانه"job-SAAS" در گپ چی پی تی ایجاد کردم که ازین به بعد از طریق این پروژه و فولدر "job-SAAS" ساخت پروژه را جلو ببرم بصورت متمرکز تر.و در صورتیکه چت اصلی ساخت پروژه به دلیلی از کار افتاد یا کند و یا سنگین شد ادامه پروژه با مشکل مواجه نشود.
+2-میخواهم چتهای فرعی که مشکلات ساخت پروژه را در انها مطرح میکنم و بهمراه چت اصلی   را  که برای ساخت این پروژه که تا کنون فایلها و کدها را برایم ایجاد کرده به ان فولدر منتقل کنم.
+3-نظرات و ایده ایت را برای ساخت بهتر و حرفهای تر این پروژه را بگو توسط این روش جدید که میخواهم بکار بگیرم بگو
+4-پراپمت اصلی را بهت میدهم ان را ابتدا دقیقا بررسی وانالیز کن بررسی کن و  تمام موارد و کارهایی را که تاکنون انجام شده به ان پرامپت اضافه کن بصورت دقیق و کامل و با جزییات و حرفه ای که در قسمت تنظیمات/دستورالعمل‌ها وارد کنم تا پروژه مرحله به مرحله انجام شود.
+5-"-پروژه حتما از gsap,framer motion,three.js استفاده کند
+-همانطور که میدانی ui,ux واستایل و دیزاین ظاهری سایت طراحی و انجام شده علاوه بر ان یک سری موارد دیگری هم انجام شده که آنها دوباره ساخته نشوند و دوباره کاری نشود.حتما دقت کن به این نکته.
+-موارد مربوط به فیچرهای AI  که قرار است در این پروژه استفاده شود را در پرامپت جدید مجددا تاکید کن
+-موارد مربوط به تستینگ و احیانا jest , cypress ,gitactions و هر چه مورد نیاز است بمانند یک پروژه اصلی و حرفه ای واینترپرایز حتما لحاظ شود
+-دقت کن که پروژه قرار است بصورت لوکال فعلا در سیستم خودم ساخته شود چون اینترنت بین المللی ندارم."
+6-همه مواردی را که بهت گفتم در پرامپت جدید  اضافه کن به این پراپمت قبلی:
+
+"1-🎭 ROLE DEFINITION
 You are simultaneously:
 
 🏗️ Senior Full-Stack Developer — writes clean, minimal, fully-typed code
@@ -1617,293 +1628,152 @@ src/
 └── data/
 
 └── db.json # Local JSON database
-
-1️⃣ Database Schema
-src/lib/db/schema.ts
-
-typescript
-export type Company = {
-  id: string;
-  name: string;
-  logo: string;
-  website?: string;
-};
-
-export type Job = {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  salary?: string;
-  type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'REMOTE';
-  companyId: string;
-  categoryId?: string;
-  published: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Category = {
-  id: string;
-  name: string;
-  slug: string;
-};
-
-export type Database = {
-  jobs: Job[];
-  companies: Company[];
-  categories: Category[];
-};
-2️⃣ LowDB Instance
-src/lib/db/db.ts
-
-typescript
-import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
-import path from 'path';
-import { Database } from './schema';
-
-const file = path.join(process.cwd(), 'data', 'db.json');
-const adapter = new JSONFile<Database>(file);
-const defaultData: Database = { jobs: [], companies: [], categories: [] };
-
-export const db = new Low<Database>(adapter, defaultData);
-
-export async function initDB() {
-  await db.read();
-  db.data ||= defaultData;
-  await db.write();
-}
-3️⃣ TypeScript Types
-src/lib/types/job.types.ts
-
-typescript
-import { Job, Company } from '../db/schema';
-
-export type JobWithCompany = Job & {
-  company: Company;
-};
-
-export type JobListItem = Pick<Job, 'id' | 'title' | 'location' | 'salary' | 'type' | 'createdAt'> & {
-  company: Pick<Company, 'id' | 'name' | 'logo'>;
-};
-
-export type PaginatedResponse<T> = {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-};
-4️⃣ Zod Validators
-src/lib/validators/job.validator.ts
-
-typescript
-import { z } from 'zod';
-
-export const jobQuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(20),
-  search: z.string().optional(),
-  location: z.string().optional(),
-  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']).optional(),
-  category: z.string().optional(),
-});
-
-export const jobCreateSchema = z.object({
-  title: z.string().min(3).max(200),
-  description: z.string().min(50),
-  location: z.string().min(2),
-  salary: z.string().optional(),
-  type: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE']),
-  companyId: z.string(),
-  categoryId: z.string().optional(),
-});
-
-export type JobQuery = z.infer<typeof jobQuerySchema>;
-export type JobCreate = z.infer<typeof jobCreateSchema>;
-5️⃣ Job Repository
-src/lib/repositories/job.repository.ts
-
-typescript
-import { db, initDB } from '../db/db';
-import { Job } from '../db/schema';
-import { JobQuery, JobWithCompany } from '../types/job.types';
-import { randomUUID } from 'crypto';
-
-export class JobRepository {
-  async findWithFilters(query: JobQuery) {
-    await initDB();
-    
-    let filtered = db.data.jobs.filter(job => job.published);
-
-    if (query.search) {
-      const search = query.search.toLowerCase();
-      filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(search) ||
-        job.description.toLowerCase().includes(search)
-      );
-    }
-
-    if (query.location) {
-      filtered = filtered.filter(job =>
-        job.location.toLowerCase().includes(query.location!.toLowerCase())
-      );
-    }
-
-    if (query.type) {
-      filtered = filtered.filter(job => job.type === query.type);
-    }
-
-    if (query.category) {
-      filtered = filtered.filter(job => job.categoryId === query.category);
-    }
-
-    const total = filtered.length;
-    const start = (query.page - 1) * query.limit;
-    const jobs = filtered.slice(start, start + query.limit);
-
-    const jobsWithCompany = jobs.map(job => ({
-      ...job,
-      company: db.data.companies.find(c => c.id === job.companyId)!,
-    }));
-
-    return { jobs: jobsWithCompany, total };
-  }
-
-  async findById(id: string): Promise<JobWithCompany | null> {
-    await initDB();
-    const job = db.data.jobs.find(j => j.id === id);
-    if (!job) return null;
-
-    const company = db.data.companies.find(c => c.id === job.companyId);
-    return { ...job, company: company! };
-  }
-
-  async create(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'published'>): Promise<Job> {
-    await initDB();
-    
-    const job: Job = {
-      ...data,
-      id: randomUUID(),
-      published: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    db.data.jobs.push(job);
-    await db.write();
-    return job;
-  }
-
-  async update(id: string, data: Partial<Job>): Promise<Job | null> {
-    await initDB();
-    
-    const index = db.data.jobs.findIndex(j => j.id === id);
-    if (index === -1) return null;
-
-    db.data.jobs[index] = {
-      ...db.data.jobs[index],
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await db.write();
-    return db.data.jobs[index];
-  }
-
-  async delete(id: string): Promise<boolean> {
-    await initDB();
-    
-    const index = db.data.jobs.findIndex(j => j.id === id);
-    if (index === -1) return false;
-
-    db.data.jobs.splice(index, 1);
-    await db.write();
-    return true;
+"{
+  "name": "job-board-saas",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "prepare": "husky",
+    "test:db": "tsx src/lib/db/test-db.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "lowdb": "^7.0.1",
+    "lucide-react": "^1.7.0",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9",
+    "eslint-config-next": "^15.1.6",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^2.1.8"
   }
 }
-6️⃣ Job Service
-src/lib/services/job.service.ts
 
-typescript
-import { JobRepository } from '../repositories/job.repository';
-import { JobQuery, JobCreate, PaginatedResponse, JobListItem } from '../types/job.types';
-import { jobQuerySchema, jobCreateSchema } from '../validators/job.validator';
+"
 
-export class JobService {
-  private repository = new JobRepository();
+"
+file list:"D:\project\NEW\job-board-saas\.git
+D:\project\NEW\job-board-saas\.github
+D:\project\NEW\job-board-saas\.husky
+D:\project\NEW\job-board-saas\.next
+D:\project\NEW\job-board-saas\data
+D:\project\NEW\job-board-saas\docs
+D:\project\NEW\job-board-saas\project-state
+D:\project\NEW\job-board-saas\public
+D:\project\NEW\job-board-saas\src
+D:\project\NEW\job-board-saas\.env.example
+D:\project\NEW\job-board-saas\.env.local
+D:\project\NEW\job-board-saas\.gitignore
+D:\project\NEW\job-board-saas\AGENTS.md
+D:\project\NEW\job-board-saas\backup-.bundle
+D:\project\NEW\job-board-saas\CLAUDE.md
+D:\project\NEW\job-board-saas\code-lib.txt
+D:\project\NEW\job-board-saas\code-src.txt
+D:\project\NEW\job-board-saas\code.txt
+D:\project\NEW\job-board-saas\code_dump.txt
+D:\project\NEW\job-board-saas\collect-src.js
+D:\project\NEW\job-board-saas\eslint.config.mjs
+D:\project\NEW\job-board-saas\FILE_LIST.txt
+D:\project\NEW\job-board-saas\full_context.txt
+D:\project\NEW\job-board-saas\list.txt
+D:\project\NEW\job-board-saas\next-env.d.ts
+D:\project\NEW\job-board-saas\next.config.ts
+D:\project\NEW\job-board-saas\package-lock.json
+D:\project\NEW\job-board-saas\package.json
+D:\project\NEW\job-board-saas\PROMPT.txt
+D:\project\NEW\job-board-saas\README.md
+D:\project\NEW\job-board-saas\tsconfig.json
+D:\project\NEW\job-board-saas\tsconfig.tsbuildinfo
 
-  async getJobs(query: unknown): Promise<PaginatedResponse<JobListItem>> {
-    const validated = jobQuerySchema.parse(query);
-    const { jobs, total } = await this.repository.findWithFilters(validated);
-
-    return {
-      data: jobs,
-      pagination: {
-        page: validated.page,
-        limit: validated.limit,
-        total,
-        totalPages: Math.ceil(total / validated.limit),
-      },
-    };
-  }
-
-  async getJobById(id: string) {
-    const job = await this.repository.findById(id);
-    if (!job) throw new Error('Job not found');
-    return job;
-  }
-
-  async createJob(data: unknown) {
-    const validated = jobCreateSchema.parse(data);
-    return this.repository.create(validated);
-  }
-
-  async updateJob(id: string, data: unknown) {
-    const validated = jobCreateSchema.partial().parse(data);
-    const updated = await this.repository.update(id, validated);
-    if (!updated) throw new Error('Job not found');
-    return updated;
-  }
-
-  async deleteJob(id: string) {
-    const deleted = await this.repository.delete(id);
-    if (!deleted) throw new Error('Job not found');
-    return { success: true };
-  }
-}
-7️⃣ Seed Data (Optional)
-data/db.json
-
-json
-{
-  "companies": [
-    {
-      "id": "1",
-      "name": "Tech Corp",
-      "logo": "/logos/tech-corp.png",
-      "website": "https://techcorp.local"
-    }
-  ],
-  "categories": [
-    {
-      "id": "1",
-      "name": "Engineering",
-      "slug": "engineering"
-    }
-  ],
-  "jobs": [
-    {
-      "id": "1",
-      "title": "Senior Frontend Developer",
-      "description": "Build amazing user interfaces with React and Next.js",
-      "location": "Remote",
-      "salary": "$120k - $150k",
-      "type": "FULL_TIME",
-      "companyId": "1",
-      "categoryId": "1",
-      "published": true,
-      "createdAt": "2026-"
+D:\project\NEW\job-board-saas\data\db.json
+D:\project\NEW\job-board-saas\docs\api-flow.md
+D:\project\NEW\job-board-saas\docs\architecture-diagram.md
+D:\project\NEW\job-board-saas\docs\database-diagram.md
+D:\project\NEW\job-board-saas\docs\system-design.md
+D:\project\NEW\job-board-saas\project-state\DECISIONS.md
+D:\project\NEW\job-board-saas\project-state\NEXT_TASKS.md
+D:\project\NEW\job-board-saas\project-state\PROGRESS.md
+D:\project\NEW\job-board-saas\project-state\PROJECT_STATE.md
+D:\project\NEW\job-board-saas\public\fonts
+D:\project\NEW\job-board-saas\public\icons
+D:\project\NEW\job-board-saas\public\images
+D:\project\NEW\job-board-saas\public\models
+D:\project\NEW\job-board-saas\public\file.svg
+D:\project\NEW\job-board-saas\public\globe.svg
+D:\project\NEW\job-board-saas\public\next.svg
+D:\project\NEW\job-board-saas\public\vercel.svg
+D:\project\NEW\job-board-saas\public\window.svg
+D:\project\NEW\job-board-saas\src\app
+D:\project\NEW\job-board-saas\src\components
+D:\project\NEW\job-board-saas\src\hooks
+D:\project\NEW\job-board-saas\src\lib
+D:\project\NEW\job-board-saas\src\styles
+D:\project\NEW\job-board-saas\src\tests
+D:\project\NEW\job-board-saas\src\types
+D:\project\NEW\job-board-saas\src\app\(dashboard)
+D:\project\NEW\job-board-saas\src\app\(marketing)
+D:\project\NEW\job-board-saas\src\app\api
+D:\project\NEW\job-board-saas\src\app\applications
+D:\project\NEW\job-board-saas\src\app\jobs
+D:\project\NEW\job-board-saas\src\app\profile
+D:\project\NEW\job-board-saas\src\app\favicon.ico
+D:\project\NEW\job-board-saas\src\app\globals.css
+D:\project\NEW\job-board-saas\src\app\layout.tsx
+D:\project\NEW\job-board-saas\src\app\page.module.css
+D:\project\NEW\job-board-saas\src\app\page.tsx
+D:\project\NEW\job-board-saas\src\app\(dashboard)\admin
+D:\project\NEW\job-board-saas\src\app\(dashboard)\candidate
+D:\project\NEW\job-board-saas\src\app\(dashboard)\employer
+D:\project\NEW\job-board-saas\src\app\(marketing)\about
+D:\project\NEW\job-board-saas\src\app\(marketing)\blog
+D:\project\NEW\job-board-saas\src\app\(marketing)\candidates
+D:\project\NEW\job-board-saas\src\app\(marketing)\companies
+D:\project\NEW\job-board-saas\src\app\(marketing)\contact
+D:\project\NEW\job-board-saas\src\app\(marketing)\jobs
+D:\project\NEW\job-board-saas\src\app\(marketing)\pricing
+D:\project\NEW\job-board-saas\src\app\(marketing)\blog\[slug]
+D:\project\NEW\job-board-saas\src\app\(marketing)\jobs\[slug]
+D:\project\NEW\job-board-saas\src\app\api\ai
+D:\project\NEW\job-board-saas\src\app\api\analytics
+D:\project\NEW\job-board-saas\src\app\api\applications
+D:\project\NEW\job-board-saas\src\app\api\jobs
+D:\project\NEW\job-board-saas\src\app\api\users
+D:\project\NEW\job-board-saas\src\app\api\ai\chat
+D:\project\NEW\job-board-saas\src\app\"

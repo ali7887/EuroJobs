@@ -1,54 +1,82 @@
-import { db, initDB } from '@/lib/db/db';
-import { Application } from '@/lib/db/schema';
+import { db, initDB } from '../db/db';
+import { Application, ApplicationStatus } from '../db/schema';
+import { randomUUID } from 'crypto';
 
 export class ApplicationRepository {
-  async create(data: Application): Promise<Application> {
-    await initDB();
-    db.data!.applications.push(data);
-    await db.write();
-    return data;
-  }
-
-  async findById(id: string): Promise<Application | undefined> {
-    await initDB();
-    return db.data!.applications.find((a) => a.id === id);
-  }
-
   async findAll(): Promise<Application[]> {
     await initDB();
     return db.data!.applications;
   }
 
-  async findByJobId(jobId: string): Promise<Application[]> {
+  async findById(id: string): Promise<Application | null> {
     await initDB();
-    return db.data!.applications.filter((a) => a.jobId === jobId);
+    return db.data!.applications.find(a => a.id === id) ?? null;
   }
 
-  async findByUserId(userId: string): Promise<Application[]> {
+  async findByUser(userId: string): Promise<Application[]> {
     await initDB();
-    return db.data!.applications.filter((a) => a.userId === userId);
+    return db.data!.applications.filter(a => a.userId === userId);
   }
 
-  async update(id: string, data: Partial<Application>): Promise<Application | undefined> {
+  async findByJob(jobId: string): Promise<Application[]> {
     await initDB();
-    const idx = db.data!.applications.findIndex((a) => a.id === id);
-    if (idx === -1) return undefined;
-    db.data!.applications[idx] = {
-      ...db.data!.applications[idx],
+    return db.data!.applications.filter(a => a.jobId === jobId);
+  }
+
+  // بررسی درخواست تکراری
+  async findDuplicate(jobId: string, userId: string): Promise<Application | null> {
+    await initDB();
+    return (
+      db.data!.applications.find(
+        a => a.jobId === jobId && a.userId === userId,
+      ) ?? null
+    );
+  }
+
+  async create(
+    data: Omit<Application, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Application> {
+    await initDB();
+
+    const application: Application = {
+      id: randomUUID(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       ...data,
+    };
+
+    db.data!.applications.push(application);
+    await db.write();
+    return application;
+  }
+
+  async updateStatus(
+    id: string,
+    status: ApplicationStatus,
+  ): Promise<Application | null> {
+    await initDB();
+
+    const index = db.data!.applications.findIndex(a => a.id === id);
+    if (index === -1) return null;
+
+    db.data!.applications[index] = {
+      ...db.data!.applications[index],
+      status,
       updatedAt: new Date().toISOString(),
     };
+
     await db.write();
-    return db.data!.applications[idx];
+    return db.data!.applications[index];
   }
 
   async delete(id: string): Promise<boolean> {
     await initDB();
-    const before = db.data!.applications.length;
-    db.data!.applications = db.data!.applications.filter((a) => a.id !== id);
+
+    const index = db.data!.applications.findIndex(a => a.id === id);
+    if (index === -1) return false;
+
+    db.data!.applications.splice(index, 1);
     await db.write();
-    return db.data!.applications.length < before;
+    return true;
   }
 }
-
-export const applicationRepository = new ApplicationRepository();

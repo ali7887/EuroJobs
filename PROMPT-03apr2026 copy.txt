@@ -1,0 +1,93 @@
+##اکنون می‌خواهیم فاز بعدی پروژه را شروع کنیم: Authentication System با JWT.
+
+##لطفاً این فاز را به‌صورت مرحله‌ای و با رعایت معماری فعلی پروژه پیاده‌سازی کن.
+
+##فاز Authentication باید شامل مراحل زیر باشد:
+
+STEP 1 — نصب dependency ها
+
+jsonwebtoken
+@types/jsonwebtoken
+STEP 2 — ایجاد Auth Service
+
+فایل:
+
+src/lib/services/auth.service.ts
+
+وظایف:
+
+login(email, password)
+استفاده از userService.verifyCredentials
+تولید JWT token با payload شامل:
+userId
+role
+استفاده از SECRET از environment variable
+expiresIn = 7d
+STEP 3 — ایجاد Auth Validator
+
+src/lib/validators/auth.validator.ts
+
+Schema ها:
+
+loginSchema
+email
+password
+STEP 4 — ایجاد Auth API Routes
+
+src/app/api/auth/login/route.ts
+
+POST /api/auth/login
+
+Flow:
+
+request → validator → authService.login → return token + user
+
+Response:
+
+{
+
+token: string,
+
+user: SafeUser
+
+}
+
+STEP 5 — ساخت Auth Middleware
+
+middleware.ts در root پروژه
+
+وظایف:
+
+خواندن Authorization header
+استخراج Bearer token
+verify کردن JWT
+attach کردن user به request
+STEP 6 — Protect کردن routes
+
+مثلاً:
+
+/api/applications
+
+/api/jobs (برای create)
+
+/api/users
+
+فقط کاربران authenticated اجازه دسترسی داشته باشند.
+
+STEP 7 — Role-based Authorization (RBAC)
+
+roles:
+
+JOBSEEKER
+
+EMPLOYER
+
+ADMIN
+
+قوانین اولیه:
+
+JOBSEEKER → apply job
+EMPLOYER → create job
+ADMIN → مدیریت همه چیز
+##لطفاً این فاز را مرحله به مرحله پیاده‌سازی کن و کد کامل هر فایل را ارائه بده.
+
