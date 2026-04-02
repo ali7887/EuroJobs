@@ -1,39 +1,71 @@
-import { applicationRepository } from "@/lib/repositories/application.repository";
-import { Application } from "@/lib/db/schema";
+import { ApplicationRepository } from '../repositories/application.repository';
+import { Application } from '../db/schema';
 
 export class ApplicationService {
-  static getApplicationsByUser(userId: string) {
-    throw new Error('Method not implemented.');
-  }
-  static getApplicationsByJob(jobId: string) {
-    throw new Error('Method not implemented.');
-  }
-  async getApplications(): Promise<Application[]> {
-    return applicationRepository.findAll();
+  private repository: ApplicationRepository;
+
+  constructor() {
+    this.repository = new ApplicationRepository();
   }
 
-  async getApplicationById(id: string): Promise<Application | null> {
-    return (await applicationRepository.findById(id)) ?? null;
+  // ✅ متد مورد نیاز route‌ها
+  async getApplications(): Promise<Application[]> {
+    return this.repository.findAll();
+  }
+
+  async getApplicationById(id: string): Promise<Application | undefined> {
+    return this.repository.findById(id);
+  }
+
+  async getApplicationsByJobId(jobId: string): Promise<Application[]> {
+    return this.repository.findByJobId(jobId);
+  }
+
+  async getApplicationsByUserId(userId: string): Promise<Application[]> {
+    return this.repository.findByUserId(userId);
+  }
+
+  // ✅ alias‌های static برای route‌هایی که static صدا می‌زنند
+  static async getApplicationsByJob(jobId: string): Promise<Application[]> {
+    const repo = new ApplicationRepository();
+    return repo.findByJobId(jobId);
+  }
+
+  static async getApplicationsByUser(userId: string): Promise<Application[]> {
+    const repo = new ApplicationRepository();
+    return repo.findByUserId(userId);
   }
 
   async getApplicationsByJob(jobId: string): Promise<Application[]> {
-    return applicationRepository.findByJobId(jobId);
+    return this.repository.findByJobId(jobId);
   }
 
   async getApplicationsByUser(userId: string): Promise<Application[]> {
-    return applicationRepository.findByUserId(userId);
+    return this.repository.findByUserId(userId);
   }
 
-  async createApplication(input: Omit<Application, "id" | "createdAt" | "updatedAt">): Promise<Application> {
-    return applicationRepository.create(input);
+  async createApplication(
+    data: Omit<Application, 'id' | 'createdAt' | 'updatedAt' | 'status'>
+  ): Promise<Application> {
+    const application: Application = {
+      ...data,
+      id: crypto.randomUUID(),
+      status: 'PENDING',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return this.repository.create(application);
   }
 
-  async updateApplication(id: string, input: Partial<Omit<Application, "id" | "createdAt">>): Promise<Application | null> {
-    return applicationRepository.update(id, input);
+  async updateApplicationStatus(
+    id: string,
+    status: Application['status']
+  ): Promise<Application | undefined> {
+    return this.repository.update(id, { status });
   }
 
   async deleteApplication(id: string): Promise<boolean> {
-    return applicationRepository.delete(id);
+    return this.repository.delete(id);
   }
 }
 

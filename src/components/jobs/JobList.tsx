@@ -1,8 +1,9 @@
+// src/components/jobs/JobList.tsx
 'use client';
 
-import { useState, useEffect } from "react";
-import { JobCard } from "../ui/JobCard/JobCard";
-import { Job } from "@/lib/db/schema";
+import { useState, useEffect } from 'react';
+import { Job } from '@/lib/db/schema';
+import JobCard from '@/components/jobs/JobCard';
 
 interface JobListProps {
   keyword?: string;
@@ -10,13 +11,20 @@ interface JobListProps {
   category?: string;
 }
 
-const mapJobType = (type?: string): "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid" => {
-  const map: Record<string, "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid"> = {
+const mapJobType = (
+  type: string
+): 'Full-time' | 'Part-time' | 'Contract' | 'Remote' | 'Hybrid' => {
+  const map: Record<string, 'Full-time' | 'Part-time' | 'Contract' | 'Remote' | 'Hybrid'> = {
+    FULL_TIME: 'Full-time',
+    PART_TIME: 'Part-time',
+    CONTRACT: 'Contract',
+    REMOTE: 'Remote',
     'full-time': 'Full-time',
     'part-time': 'Part-time',
-    'contract': 'Contract',
-    'remote': 'Remote',};
-  return map[type || ''] || 'Full-time';
+    contract: 'Contract',
+    remote: 'Remote',
+  };
+  return map[type] ?? 'Full-time';
 };
 
 export default function JobList({ keyword, location, category }: JobListProps) {
@@ -26,9 +34,9 @@ export default function JobList({ keyword, location, category }: JobListProps) {
   useEffect(() => {
     async function fetchJobs() {
       const params = new URLSearchParams();
-      if (keyword) params.set("keyword", keyword);
-      if (location) params.set("location", location);
-      if (category) params.set("category", category);
+      if (keyword) params.set('keyword', keyword);
+      if (location) params.set('location', location);
+      if (category) params.set('category', category);
 
       const res = await fetch(`/api/jobs?${params}`);
       const data = await res.json();
@@ -40,23 +48,21 @@ export default function JobList({ keyword, location, category }: JobListProps) {
 
   if (loading) return <div>Loading...</div>;
 
-  const formatSalary = (min?: number, max?: number) => {
-    if (!min && !max) return undefined;
-    return { min: min || 0, max: max || 0, currency: '$' };
-  };
-
   return (
-    <div className="grid gap-4">
+    <div className="space-y-4">
       {jobs.map((job) => (
         <JobCard
           key={job.id}
           id={job.id}
           title={job.title}
           company={job.companyId}
-          location={job.location || 'Not specified'}
-          salary={formatSalary(job.salaryMin, job.salaryMax)}
-          type={mapJobType(job.jobType)}
-          postedAt={new Date(job.createdAt).toLocaleDateString()}
+          location={job.location ?? 'Not specified'}
+          type={mapJobType(job.type)}
+          salary={job.salary}                          // ✅ مستقیم string
+          postedAt={new Date(job.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+          })}
         />
       ))}
     </div>

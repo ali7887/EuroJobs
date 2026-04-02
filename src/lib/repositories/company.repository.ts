@@ -1,6 +1,6 @@
-import { db, initDB } from "@/lib/db/db";
-import { Company } from "@/lib/db/schema";
-import { v4 as uuidv4 } from "uuid";
+import { db, initDB } from '@/lib/db/db';
+import { Company } from '@/lib/db/schema';
+import { v4 as uuidv4 } from 'uuid';
 
 export class CompanyRepository {
   async findAll(): Promise<Company[]> {
@@ -13,15 +13,18 @@ export class CompanyRepository {
     return db.data!.companies.find((c) => c.id === id);
   }
 
-  async create(input: Omit<Company, "id" | "createdAt">): Promise<Company> {
+  async create(input: Omit<Company, 'id'>): Promise<Company> {
     await initDB();
-    const company: Company = { id: uuidv4(), ...input, createdAt: new Date().toISOString() };
+    const company: Company = { id: uuidv4(), ...input };
     db.data!.companies.push(company);
     await db.write();
     return company;
   }
 
-  async update(id: string, input: Partial<Omit<Company, "id" | "createdAt">>): Promise<Company | null> {
+  async update(
+    id: string,
+    input: Partial<Omit<Company, 'id'>>
+  ): Promise<Company | null> {
     await initDB();
     const idx = db.data!.companies.findIndex((c) => c.id === id);
     if (idx === -1) return null;

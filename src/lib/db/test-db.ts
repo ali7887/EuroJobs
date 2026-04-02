@@ -1,37 +1,46 @@
-﻿import { db } from "./db";
-import { v4 as uuidv4 } from "uuid";
+﻿// src/lib/db/test-db.ts
+import { db, initDB } from './db';
+import { Company, Job } from './schema';
 
-async function seed() {
-  const userId = uuidv4();
-  const companyId = uuidv4();
-  const company = {
-    id: companyId,
-    name: "Acme Corp",
-    logoUrl: "/logos/acme.png",
-    website: "https://acme.com",
-    createdBy: userId,
-    createdAt: new Date().toISOString(),
-  };
-  db.data!.companies.push(company);
+const company: Company = {
+  id: 'company-1',
+  name: 'TechCorp',
+  logo: '/logos/techcorp.png',
+  website: 'https://techcorp.com',
+  createdAt: new Date().toISOString(),  
+};
 
-  const jobId = uuidv4();
-  const job = {
-    id: jobId,
-    title: "Senior TypeScript Developer",
-    description: "Build amazing products.",
-    location: "Remote",
-    jobType: "full-time" as const,
-    salaryMin: 120000,
-    salaryMax: 150000,
-    companyId,
-    categoryId: uuidv4(),
-    isActive: true,
-    createdAt: new Date().toISOString(),
-  };
-  db.data!.jobs.push(job);
+const job: Job = {
+  id: 'job-1',
+  title: 'Senior TypeScript Developer',
+  description: 'We are looking for an experienced TypeScript developer.',
+  location: 'Remote',
+  salary: '80000-120000',               
+  salaryMin: 80000,                      
+  salaryMax: 120000,                     
+  type: 'REMOTE',
+  jobType: 'remote',
+  companyId: 'company-1',
+  categoryId: 'cat-1',
+  published: true,
+  isActive: true,                        
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+async function seedDatabase() {
+  await initDB();
+
+  db.data!.companies = [company];
+  db.data!.jobs = [job];
+  db.data!.categories = [
+    { id: 'cat-1', name: 'Engineering', slug: 'engineering' },
+  ];
+  db.data!.users = [];
+  db.data!.applications = [];
 
   await db.write();
-  console.log("✅ Seed complete");
+  console.log('✅ Database seeded successfully');
 }
 
-seed().catch(console.error);
+seedDatabase().catch(console.error);

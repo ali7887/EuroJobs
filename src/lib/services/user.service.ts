@@ -1,34 +1,45 @@
-import { userRepository } from "@/lib/repositories/user.repository";
-import { User } from "@/lib/db/schema";
+import { UserRepository } from '../repositories/user.repository';
+import { User } from '../db/schema';
 
 export class UserService {
-  async getUsers(): Promise<Omit<User, "passwordHash">[]> {
-    const users = await userRepository.findAll();
-    return users.map(({ passwordHash: _, ...u }) => u);
+  private repository: UserRepository;
+
+  constructor() {
+    this.repository = new UserRepository();
   }
 
-  async getUserById(id: string): Promise<Omit<User, "passwordHash"> | null> {
-    const user = await userRepository.findById(id);
-    if (!user) return null;
-    const { passwordHash: _, ...rest } = user;
-    return rest;
+  // ✅ متد مورد نیاز route
+  async getUsers(): Promise<User[]> {
+    return this.repository.findAll();
   }
 
-  async createUser(input: Omit<User, "id" | "createdAt">): Promise<Omit<User, "passwordHash">> {
-    const user = await userRepository.create(input);
-    const { passwordHash: _, ...rest } = user;
-    return rest;
+  async getUserById(id: string): Promise<User | undefined> {
+    return this.repository.findById(id);
   }
 
-  async updateUser(id: string, input: Partial<Omit<User, "id" | "createdAt">>): Promise<Omit<User, "passwordHash"> | null> {
-    const user = await userRepository.update(id, input);
-    if (!user) return null;
-    const { passwordHash: _, ...rest } = user;
-    return rest;
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.repository.findByEmail(email);
+  }
+
+  async createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+    const user: User = {
+      ...data,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return this.repository.create(user);
+  }
+
+  async updateUser(
+    id: string,
+    data: Partial<Omit<User, 'id' | 'createdAt'>>
+  ): Promise<User | undefined> {
+    return this.repository.update(id, data);
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    return userRepository.delete(id);
+    return this.repository.delete(id);
   }
 }
 

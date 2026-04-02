@@ -1,17 +1,25 @@
-// src/lib/types/application.types.ts
+import { Application } from "@/lib/db/schema";
 
-import { Application, User, Job } from '../db/schema';
+export type ApplicationStatus = "pending" | "reviewing" | "accepted" | "rejected";
 
-export type ApplicationCreate = Omit<Application, 'id' | 'createdAt' | 'updatedAt' | 'status'>;
+export interface ApplicationCreateInput {
+  jobId: string;
+  userId: string;
+  coverLetter?: string;
+  resumeUrl?: string;
+}
 
-export type ApplicationUpdate = Partial<Pick<Application, 'status' | 'notes' | 'interviewDate'>>;
+export interface ApplicationUpdateInput {
+  status?: ApplicationStatus;
+  reviewedAt?: string;
+  reviewedBy?: string;
+}
 
-export type ApplicationWithDetails = Application & {
-  user: Pick<User, 'id' | 'name' | 'email' | 'phone'>;
-  job: Pick<Job, 'id' | 'title' | 'companyId'>;
-};
-
-export type ApplicationListItem = Pick<Application, 'id' | 'status' | 'createdAt'> & {
+export interface ApplicationWithDetails extends Application {
   jobTitle: string;
-  applicantName: string;
-};
+  companyName: string;
+  userName: string;
+  userEmail: string;
+}
+
+export type { Application };

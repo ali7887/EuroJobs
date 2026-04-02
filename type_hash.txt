@@ -1,0 +1,519 @@
+﻿"Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS D:\project\NEW\job-board-saas> npx tsc --noEmit
+src/components/jobs/JobList.tsx:57:36 - error TS2551: Property 'salaryMin' does not exist on type 'Job'. Did you mean 'salary'?
+
+57           salary={formatSalary(job.salaryMin, job.salaryMax)}
+                                      ~~~~~~~~~
+
+  src/lib/db/schema.ts:8:3
+    8   salary?: string;
+        ~~~~~~
+    'salary' is declared here.
+
+src/components/jobs/JobList.tsx:57:51 - error TS2551: Property 'salaryMax' does not exist on type 'Job'. Did you mean 'salary'?
+
+57           salary={formatSalary(job.salaryMin, job.salaryMax)}
+                                                     ~~~~~~~~~
+
+  src/lib/db/schema.ts:8:3
+    8   salary?: string;
+        ~~~~~~
+    'salary' is declared here.
+
+src/components/jobs/JobList.tsx:58:32 - error TS2339: Property 'jobType' does not exist on type 
+'Job'.
+
+58           type={mapJobType(job.jobType)}
+                                  ~~~~~~~
+
+src/lib/db/test-db.ts:15:27 - error TS2345: Argument of type '{ id: string; name: string; logoUrl: string; website: string; createdBy: string; createdAt: string; }' is not assignable to parameter of type 'Company'.
+  Property 'updatedAt' is missing in type '{ id: string; name: string; logoUrl: string; website: string; createdBy: string; createdAt: string; }' but required in type 'Company'.
+
+15   db.data!.companies.push(company);
+                             ~~~~~~~
+
+  src/lib/db/schema.ts:24:3
+    24   updatedAt: string;
+         ~~~~~~~~~
+    'updatedAt' is declared here.
+
+src/lib/db/test-db.ts:31:22 - error TS2345: Argument of type '{ id: string; title: string; description: string; location: string; jobType: "full-time"; salaryMin: number; salaryMax: number; companyId: string; categoryId: string; isActive: boolean; createdAt: string; }' is not assignable 
+to parameter of type 'Job'.
+  Type '{ id: string; title: string; description: string; location: string; jobType: "full-time"; salaryMin: number; salaryMax: number; companyId: string; categoryId: string; isActive: boolean; createdAt: string; }' is missing the following properties from type 'Job': type, published, updatedAt
+
+31   db.data!.jobs.push(job);
+                        ~~~
+
+src/lib/repositories/application.repository.ts:18:14 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+18     await db.applications.create(application);
+                ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:23:15 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+23     return db.applications.findById(id);
+                 ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:27:15 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+27     return db.applications.findMany({ where: { jobId } });
+                 ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:31:15 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+31     return db.applications.findMany({ where: { userId } });
+                 ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:35:31 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+35     const existing = await db.applications.findById(id);
+                                 ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:43:14 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+43     await db.applications.update(id, updated);
+                ~~~~~~~~~~~~
+
+src/lib/repositories/application.repository.ts:48:15 - error TS2339: Property 'applications' does not exist on type 'Low<Database>'.
+
+48     return db.applications.delete(id);
+                 ~~~~~~~~~~~~
+
+src/lib/repositories/job.repository.ts:27:46 - error TS2339: Property 'isActive' does not exist 
+on type 'Job'.
+
+27     let jobs = db.data!.jobs.filter((j) => j.isActive);
+                                                ~~~~~~~~
+
+src/lib/repositories/job.repository.ts:42:46 - error TS2339: Property 'jobType' does not exist on type 'Job'.
+
+42     if (jobType) jobs = jobs.filter((j) => j.jobType === jobType);
+                                                ~~~~~~~
+
+src/lib/services/application.service.ts:12:34 - error TS2339: Property 'findAll' does not exist 
+on type '{ create(data: ApplicationCreateInput): Promise<Application>; findById(id: string): Promise<Application | null>; findByJobId(jobId: string): Promise<...>; findByUserId(userId: string): Promise<...>; update(id: string, data: ApplicationUpdateInput): Promise<...>; delete(id: string): Promise<...>; }'.
+
+12     return applicationRepository.findAll();
+                                    ~~~~~~~
+
+src/lib/services/application.service.ts:32:45 - error TS2345: Argument of type 'Partial<Omit<Application, "id" | "createdAt">>' is not assignable to parameter of type 'ApplicationUpdateInput'.  Types of property 'status' are incompatible.
+    Type '"pending" | "reviewed" | "interview" | "accepted" | "rejected" | undefined' is not assignable to type 'ApplicationStatus | undefined'.
+      Type '"reviewed"' is not assignable to type 'ApplicationStatus | undefined'.
+
+32     return applicationRepository.update(id, input);
+                                               ~~~~~
+
+src/lib/services/job.service.ts:28:31 - error TS2339: Property 'logoUrl' does not exist on type 
+'Company'.
+
+28         companyLogo: company?.logoUrl,
+                                 ~~~~~~~
+
+src/lib/services/job.service.ts:39:85 - error TS2339: Property 'logoUrl' does not exist on type 
+'Company'.
+
+39     return { ...job, companyName: company?.name ?? "Unknown", companyLogo: company?.logoUrl };
+                                                                                       ~~~~~~~  
+
+src/lib/services/user.service.ts:7:25 - error TS2339: Property 'passwordHash' does not exist on 
+type 'User'.
+
+7     return users.map(({ passwordHash: _, ...u }) => u);
+                          ~~~~~~~~~~~~
+
+src/lib/services/user.service.ts:13:13 - error TS2339: Property 'passwordHash' does not exist on type 'User'.
+
+13     const { passwordHash: _, ...rest } = user;
+               ~~~~~~~~~~~~
+
+src/lib/services/user.service.ts:19:13 - error TS2339: Property 'passwordHash' does not exist on type 'User'.
+
+19     const { passwordHash: _, ...rest } = user;
+               ~~~~~~~~~~~~
+
+src/lib/services/user.service.ts:26:13 - error TS2339: Property 'passwordHash' does not exist on type 'User'.
+
+26     const { passwordHash: _, ...rest } = user;
+               ~~~~~~~~~~~~
+
+
+Found 22 errors in 7 files.
+
+Errors  Files
+     3  src/components/jobs/JobList.tsx:57
+     2  src/lib/db/test-db.ts:15
+     7  src/lib/repositories/application.repository.ts:18
+     2  src/lib/repositories/job.repository.ts:27
+     2  src/lib/services/application.service.ts:12
+     2  src/lib/services/job.service.ts:28
+     4  src/lib/services/user.service.ts:7"
+all codes:
+"'use client';
+
+import { useState, useEffect } from "react";
+import { JobCard } from "../ui/JobCard/JobCard";
+import { Job } from "@/lib/db/schema";
+
+interface JobListProps {
+  keyword?: string;
+  location?: string;
+  category?: string;
+}
+
+const mapJobType = (type?: string): "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid" => {
+  const map: Record<string, "Remote" | "Full-time" | "Contract" | "Part-time" | "Hybrid"> = {
+    'full-time': 'Full-time',
+    'part-time': 'Part-time',
+    'contract': 'Contract',
+    'remote': 'Remote',};
+  return map[type || ''] || 'Full-time';
+};
+
+export default function JobList({ keyword, location, category }: JobListProps) {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchJobs() {
+      const params = new URLSearchParams();
+      if (keyword) params.set("keyword", keyword);
+      if (location) params.set("location", location);
+      if (category) params.set("category", category);
+
+      const res = await fetch(`/api/jobs?${params}`);
+      const data = await res.json();
+      setJobs(data);
+      setLoading(false);
+    }
+    fetchJobs();
+  }, [keyword, location, category]);
+
+  if (loading) return <div>Loading...</div>;
+
+  const formatSalary = (min?: number, max?: number) => {
+    if (!min && !max) return undefined;
+    return { min: min || 0, max: max || 0, currency: '$' };
+  };
+
+  return (
+    <div className="grid gap-4">
+      {jobs.map((job) => (
+        <JobCard
+          key={job.id}
+          id={job.id}
+          title={job.title}
+          company={job.companyId}
+          location={job.location || 'Not specified'}
+          salary={formatSalary(job.salaryMin, job.salaryMax)}
+          type={mapJobType(job.jobType)}
+          postedAt={new Date(job.createdAt).toLocaleDateString()}
+        />
+      ))}
+    </div>
+  );
+}
+import { db } from "./db";
+import { v4 as uuidv4 } from "uuid";
+
+async function seed() {
+  const userId = uuidv4();
+  const companyId = uuidv4();
+  const company = {
+    id: companyId,
+    name: "Acme Corp",
+    logoUrl: "/logos/acme.png",
+    website: "https://acme.com",
+    createdBy: userId,
+    createdAt: new Date().toISOString(),
+  };
+  db.data!.companies.push(company);
+
+  const jobId = uuidv4();
+  const job = {
+    id: jobId,
+    title: "Senior TypeScript Developer",
+    description: "Build amazing products.",
+    location: "Remote",
+    jobType: "full-time" as const,
+    salaryMin: 120000,
+    salaryMax: 150000,
+    companyId,
+    categoryId: uuidv4(),
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  };
+  db.data!.jobs.push(job);
+
+  await db.write();
+  console.log("✅ Seed complete");
+}
+
+seed().catch(console.error);
+import { db } from "@/lib/db/db";
+import { Application } from "@/lib/db/schema";
+import { ApplicationCreateInput, ApplicationUpdateInput } from "@/lib/types/application.types";
+
+export const applicationRepository = {
+  async create(data: ApplicationCreateInput): Promise<Application> {
+    const now = new Date().toISOString();
+    const application: Application = {
+      id: crypto.randomUUID(),
+      jobId: data.jobId,
+      userId: data.userId,
+      coverLetter: data.coverLetter,
+      resumeUrl: data.resumeUrl,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    };
+    await db.applications.create(application);
+    return application;
+  },
+
+  async findById(id: string): Promise<Application | null> {
+    return db.applications.findById(id);
+  },
+
+  async findByJobId(jobId: string): Promise<Application[]> {
+    return db.applications.findMany({ where: { jobId } });
+  },
+
+  async findByUserId(userId: string): Promise<Application[]> {
+    return db.applications.findMany({ where: { userId } });
+  },
+
+  async update(id: string, data: ApplicationUpdateInput): Promise<Application | null> {
+    const existing = await db.applications.findById(id);
+    if (!existing) return null;
+
+    const updated: Application = {
+      ...existing,
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+    await db.applications.update(id, updated);
+    return updated;
+  },
+
+  async delete(id: string): Promise<boolean> {
+    return db.applications.delete(id);
+  },
+};
+import { db, initDB } from "@/lib/db/db";
+import { Job } from "@/lib/db/schema";
+import { v4 as uuidv4 } from "uuid";
+
+export interface JobQuery {
+  search?: string;
+  categoryId?: string;
+  location?: string;
+  jobType?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedJobs {
+  data: Job[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export class JobRepository {
+  async findAll(query: JobQuery = {}): Promise<PaginatedJobs> {
+    await initDB();
+    const { search, categoryId, location, jobType, page = 1, limit = 10 } = query;
+
+    let jobs = db.data!.jobs.filter((j) => j.isActive);
+
+    if (search) {
+      const q = search.toLowerCase();
+      jobs = jobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.description.toLowerCase().includes(q)
+      );
+    }
+    if (categoryId) jobs = jobs.filter((j) => j.categoryId === categoryId);
+    if (location) {
+      const q = location.toLowerCase();
+      jobs = jobs.filter((j) => j.location?.toLowerCase().includes(q));
+    }
+    if (jobType) jobs = jobs.filter((j) => j.jobType === jobType);
+
+    const total = jobs.length;
+    const totalPages = Math.ceil(total / limit);
+    const start = (page - 1) * limit;
+    const data = jobs.slice(start, start + limit);
+
+    return { data, total, page, limit, totalPages };
+  }
+
+  async findById(id: string): Promise<Job | undefined> {
+    await initDB();
+    return db.data!.jobs.find((j) => j.id === id);
+  }
+
+  async create(input: Omit<Job, "id" | "createdAt" | "updatedAt">): Promise<Job> {
+    await initDB();
+    const now = new Date().toISOString();
+    const job: Job = { id: uuidv4(), ...input, createdAt: now, updatedAt: now };
+    db.data!.jobs.push(job);
+    await db.write();
+    return job;
+  }
+
+  async update(id: string, input: Partial<Omit<Job, "id" | "createdAt">>): Promise<Job | null> {
+    await initDB();
+    const idx = db.data!.jobs.findIndex((j) => j.id === id);
+    if (idx === -1) return null;
+    db.data!.jobs[idx] = { ...db.data!.jobs[idx], ...input, updatedAt: new Date().toISOString() };
+    await db.write();
+    return db.data!.jobs[idx];
+  }
+
+  async delete(id: string): Promise<boolean> {
+    await initDB();
+    const before = db.data!.jobs.length;
+    db.data!.jobs = db.data!.jobs.filter((j) => j.id !== id);
+    await db.write();
+    return db.data!.jobs.length < before;
+  }
+}
+
+export const jobRepository = new JobRepository();
+import { applicationRepository } from "@/lib/repositories/application.repository";
+import { Application } from "@/lib/db/schema";
+
+export class ApplicationService {
+  static getApplicationsByUser(userId: string) {
+    throw new Error('Method not implemented.');
+  }
+  static getApplicationsByJob(jobId: string) {
+    throw new Error('Method not implemented.');
+  }
+  async getApplications(): Promise<Application[]> {
+    return applicationRepository.findAll();
+  }
+
+  async getApplicationById(id: string): Promise<Application | null> {
+    return (await applicationRepository.findById(id)) ?? null;
+  }
+
+  async getApplicationsByJob(jobId: string): Promise<Application[]> {
+    return applicationRepository.findByJobId(jobId);
+  }
+
+  async getApplicationsByUser(userId: string): Promise<Application[]> {
+    return applicationRepository.findByUserId(userId);
+  }
+
+  async createApplication(input: Omit<Application, "id" | "createdAt" | "updatedAt">): Promise<Application> {
+    return applicationRepository.create(input);
+  }
+
+  async updateApplication(id: string, input: Partial<Omit<Application, "id" | "createdAt">>): Promise<Application | null> {
+    return applicationRepository.update(id, input);
+  }
+
+  async deleteApplication(id: string): Promise<boolean> {
+    return applicationRepository.delete(id);
+  }
+}
+
+export const applicationService = new ApplicationService();
+import { jobRepository, JobQuery, PaginatedJobs } from "@/lib/repositories/job.repository";
+import { companyRepository } from "@/lib/repositories/company.repository";
+import { Job } from "@/lib/db/schema";
+
+export interface JobListItem extends Job {
+  companyName: string;
+  companyLogo?: string;
+}
+
+export interface PaginatedJobListItems {
+  data: JobListItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export class JobService {
+  async getJobs(query: JobQuery = {}): Promise<PaginatedJobListItems> {
+    const result: PaginatedJobs = await jobRepository.findAll(query);
+    const companies = await companyRepository.findAll();
+
+    const data: JobListItem[] = result.data.map((job) => {
+      const company = companies.find((c) => c.id === job.companyId);
+      return {
+        ...job,
+        companyName: company?.name ?? "Unknown",
+        companyLogo: company?.logoUrl,
+      };
+    });
+
+    return { ...result, data };
+  }
+
+  async getJobById(id: string): Promise<JobListItem | null> {
+    const job = await jobRepository.findById(id);
+    if (!job) return null;
+    const company = await companyRepository.findById(job.companyId);
+    return { ...job, companyName: company?.name ?? "Unknown", companyLogo: company?.logoUrl };
+  }
+
+  async createJob(input: Omit<Job, "id" | "createdAt" | "updatedAt">): Promise<Job> {
+    return jobRepository.create(input);
+  }
+
+  async updateJob(id: string, input: Partial<Omit<Job, "id" | "createdAt">>): Promise<Job | null> {
+    return jobRepository.update(id, input);
+  }
+
+  async deleteJob(id: string): Promise<boolean> {
+    return jobRepository.delete(id);
+  }
+}
+
+export const jobService = new JobService();
+import { userRepository } from "@/lib/repositories/user.repository";
+import { User } from "@/lib/db/schema";
+
+export class UserService {
+  async getUsers(): Promise<Omit<User, "passwordHash">[]> {
+    const users = await userRepository.findAll();
+    return users.map(({ passwordHash: _, ...u }) => u);
+  }
+
+  async getUserById(id: string): Promise<Omit<User, "passwordHash"> | null> {
+    const user = await userRepository.findById(id);
+    if (!user) return null;
+    const { passwordHash: _, ...rest } = user;
+    return rest;
+  }
+
+  async createUser(input: Omit<User, "id" | "createdAt">): Promise<Omit<User, "passwordHash">> {
+    const user = await userRepository.create(input);
+    const { passwordHash: _, ...rest } = user;
+    return rest;
+  }
+
+  async updateUser(id: string, input: Partial<Omit<User, "id" | "createdAt">>): Promise<Omit<User, "passwordHash"> | null> {
+    const user = await userRepository.update(id, input);
+    if (!user) return null;
+    const { passwordHash: _, ...rest } = user;
+    return rest;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    return userRepository.delete(id);
+  }
+}
+
+export const userService = new UserService();
+"
