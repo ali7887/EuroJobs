@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AuthService } from '@/lib/auth/auth.service'
+import { authService } from '@/lib/auth/auth.service'
 import {
   getRefreshTokenFromCookie,
   clearRefreshTokenCookie
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const refreshToken = getRefreshTokenFromCookie(req)
 
     if (refreshToken) {
-      await AuthService.logout(refreshToken)
+      await authServicelogout(refreshToken)
     }
 
     const res = NextResponse.json({ success: true })
@@ -24,4 +24,8 @@ export async function POST(req: NextRequest) {
       { status: err.statusCode ?? 500 }
     )
   }
+}
+
+function authServicelogout(refreshToken: string) {
+  throw new Error('Function not implemented.')
 }

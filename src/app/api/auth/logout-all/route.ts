@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AuthService } from '@/lib/auth/auth.service'
+import { authService } from '@/lib/auth/auth.service'
 import { verifyAccessToken } from '@/lib/jwt/jwt.utils'
 import { clearRefreshTokenCookie } from '@/lib/auth/cookie.utilities'
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const payload = await verifyAccessToken(token)
 
-    await AuthService.logoutAll(payload.userId)
+    await authServicelogoutAll(payload.userId)
 
     const res = NextResponse.json({ success: true })
 
@@ -28,4 +28,8 @@ export async function POST(req: NextRequest) {
       { status: 401 }
     )
   }
+}
+
+function authServicelogoutAll(userId: string) {
+  throw new Error('Function not implemented.')
 }

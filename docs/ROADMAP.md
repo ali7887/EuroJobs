@@ -27,7 +27,7 @@ Implement a secure authentication system.
 
 Tasks
 
-Implement AuthService
+Implement authService.login
 
 Implement JWT utilities
 

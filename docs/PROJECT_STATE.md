@@ -274,7 +274,7 @@ Phase 2 — Authentication System
 
 Next Tasks
 
-1 Implement AuthService
+1 Implement authService.login
 
 2 Implement JWT utilities
 

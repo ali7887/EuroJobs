@@ -86,7 +86,7 @@ Define the current task clearly.
 
 Example:
 
-Implement AuthService with login and JWT token generation.
+Implement authService.login with login and JWT token generation.
 
 Step 2
 

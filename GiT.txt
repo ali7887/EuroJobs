@@ -1,0 +1,26 @@
+npm run test
+npm run type-check
+
+git add .
+
+git commit -m "feat(auth): implement login API with tests"
+
+
+git checkout -b feature/auth-login
+
+
+git push origin feature/auth-login
+
+
+### GitHub Actions:
+install
+type-check
+test
+build
+
+.github/workflows/ci.yml
+
+
+"ci": "npm run type-check && npm run test && npm run build"
+npm run ci
+

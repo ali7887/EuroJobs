@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { AuthService } from '@/lib/auth/auth.service'
-import { setRefreshTokenCookie } from '@/lib/auth/cookie.utilities'
+import { NextRequest, NextResponse } from "next/server"
+import { authService } from "@/lib/auth/auth.service"
+import { setRefreshTokenCookie } from "@/lib/auth/cookie.utilities"
 
 export async function POST(req: NextRequest) {
+
   try {
+
     const body = await req.json()
 
-    const result = await AuthService.login({
+    const result = await authService.login({
       email: body.email,
       password: body.password
     })
@@ -16,13 +18,20 @@ export async function POST(req: NextRequest) {
       accessToken: result.tokens.accessToken
     })
 
-    setRefreshTokenCookie(res, result.tokens.refreshToken)
+    setRefreshTokenCookie(
+      res,
+      result.tokens.refreshToken
+    )
 
     return res
-  } catch (err: any) {
+
+  } catch (error) {
+
     return NextResponse.json(
-      { error: err.message },
-      { status: err.statusCode ?? 500 }
+      { error: (error as Error).message },
+      { status: 401 }
     )
+
   }
+
 }

@@ -1,5 +1,5 @@
 --read and check and analyze these 5 prompts first:
-"prompt 1 :"MASTER_PROMPT.md
+"prompt-1:"MASTER_PROMPT.md
 Purpose
 You are assisting in the development of a production‑grade SaaS platform.
 
@@ -385,9 +385,173 @@ Continue development from the current state without repeating completed work.
 
 Final Goal
 Build a production‑grade SaaS job platform that demonstrates strong engineering ability and can serve as a flagship portfolio project."
+prompt-2:"AI_DEVELOPMENT_WORKFLOW.md
+Purpose
+This document defines the professional workflow for developing software with AI assistants such as Claude or ChatGPT.
 
-prompt 2:
-"### Project Overview  ###
+It prevents context loss, architectural drift, and inconsistent code generation.
+
+Core Principles
+AI should act as:
+
+Architect
+Senior Engineer
+Code Generator
+Code Reviewer
+Not as an uncontrolled code generator.
+
+Development must remain structured and phase‑based.
+
+Project Context System
+Every project must maintain a persistent state file.
+
+Required file:
+
+PROJECT_STATE.md
+
+This file contains:
+
+current progress
+architecture
+completed modules
+current phase
+next tasks
+When starting a new AI conversation, this file must be pasted to restore context.
+
+Master Prompt Strategy
+Large projects require a master prompt.
+
+The master prompt defines:
+
+architecture rules
+coding standards
+security requirements
+development phases
+constraints
+This ensures the AI produces consistent output across sessions.
+
+Phase-Based Development
+Each major system should be implemented in separate AI conversations.
+
+Recommended phase structure:
+
+Phase 1 — Architecture
+
+Phase 2 — Authentication
+
+Phase 3 — Core Backend
+
+Phase 4 — Frontend Integration
+
+Phase 5 — AI Features
+
+Phase 6 — Testing
+
+Phase 7 — Deployment
+
+This prevents context overflow.
+
+Context Reset Strategy
+Long conversations degrade AI performance.
+
+Symptoms:
+
+inconsistent code
+forgetting architecture
+hallucinated APIs
+repeated mistakes
+Solution:
+
+Start a new chat and restore context using:
+
+Master Prompt
+PROJECT_STATE.md
+Recommended Development Loop
+Step 1
+
+Define the current task clearly.
+
+Example:
+
+Implement authService.login with login and JWT token generation.
+
+Step 2
+
+Ask the AI to generate the implementation.
+
+Step 3
+
+Review the generated code.
+
+Step 4
+
+Refactor or request improvements.
+
+Step 5
+
+Update PROJECT_STATE.md.
+
+Code Generation Rules
+AI generated code must follow:
+
+strict TypeScript
+modular architecture
+separation of concerns
+secure defaults
+Never accept large code blocks without reviewing them.
+
+Architectural Protection
+To prevent architecture drift:
+
+Always remind the AI about:
+
+service layer
+repository layer
+validation layer
+DTO patterns
+The AI must not bypass layers.
+
+AI as Pair Programmer
+Treat the AI like a senior pair programmer.
+
+Responsibilities:
+
+AI:
+
+generate code
+explain architecture
+suggest improvements
+Developer:
+
+validate logic
+test functionality
+control architecture decisions
+Context Optimization Tips
+Avoid extremely long conversations.
+
+Prefer:
+
+multiple focused chats instead of one massive chat.
+
+Always maintain:
+
+PROJECT_STATE.md
+
+Long-Term Project Strategy
+Large projects should evolve through:
+
+Architecture → Core Systems → Features → Optimization → Deployment
+
+Do not jump randomly between systems.
+
+Follow the defined roadmap.
+
+Final Rule
+The AI is a powerful accelerator, but the developer must remain the architect.
+
+Maintain architectural discipline and documentation to ensure long-term scalability."
+
+prompt-3:"### Project Overview  ###
 Project Name
 
 # Job Board SaaS Platform
@@ -663,7 +827,7 @@ Phase 2 — Authentication System
 
 Next Tasks
 
-1 Implement AuthService
+1 Implement authService.login
 
 2 Implement JWT utilities
 
@@ -712,173 +876,7 @@ If development continues in a new AI conversation
 2 Ask the AI to continue development from the “Current Phase”
 
 3 The AI should continue implementation without repeating completed work"
-prompt3:
-"AI_DEVELOPMENT_WORKFLOW.md
-Purpose
-This document defines the professional workflow for developing software with AI assistants such as Claude or ChatGPT.
-
-It prevents context loss, architectural drift, and inconsistent code generation.
-
-Core Principles
-AI should act as:
-
-Architect
-Senior Engineer
-Code Generator
-Code Reviewer
-Not as an uncontrolled code generator.
-
-Development must remain structured and phase‑based.
-
-Project Context System
-Every project must maintain a persistent state file.
-
-Required file:
-
-PROJECT_STATE.md
-
-This file contains:
-
-current progress
-architecture
-completed modules
-current phase
-next tasks
-When starting a new AI conversation, this file must be pasted to restore context.
-
-Master Prompt Strategy
-Large projects require a master prompt.
-
-The master prompt defines:
-
-architecture rules
-coding standards
-security requirements
-development phases
-constraints
-This ensures the AI produces consistent output across sessions.
-
-Phase-Based Development
-Each major system should be implemented in separate AI conversations.
-
-Recommended phase structure:
-
-Phase 1 — Architecture
-
-Phase 2 — Authentication
-
-Phase 3 — Core Backend
-
-Phase 4 — Frontend Integration
-
-Phase 5 — AI Features
-
-Phase 6 — Testing
-
-Phase 7 — Deployment
-
-This prevents context overflow.
-
-Context Reset Strategy
-Long conversations degrade AI performance.
-
-Symptoms:
-
-inconsistent code
-forgetting architecture
-hallucinated APIs
-repeated mistakes
-Solution:
-
-Start a new chat and restore context using:
-
-Master Prompt
-PROJECT_STATE.md
-Recommended Development Loop
-Step 1
-
-Define the current task clearly.
-
-Example:
-
-Implement AuthService with login and JWT token generation.
-
-Step 2
-
-Ask the AI to generate the implementation.
-
-Step 3
-
-Review the generated code.
-
-Step 4
-
-Refactor or request improvements.
-
-Step 5
-
-Update PROJECT_STATE.md.
-
-Code Generation Rules
-AI generated code must follow:
-
-strict TypeScript
-modular architecture
-separation of concerns
-secure defaults
-Never accept large code blocks without reviewing them.
-
-Architectural Protection
-To prevent architecture drift:
-
-Always remind the AI about:
-
-service layer
-repository layer
-validation layer
-DTO patterns
-The AI must not bypass layers.
-
-AI as Pair Programmer
-Treat the AI like a senior pair programmer.
-
-Responsibilities:
-
-AI:
-
-generate code
-explain architecture
-suggest improvements
-Developer:
-
-validate logic
-test functionality
-control architecture decisions
-Context Optimization Tips
-Avoid extremely long conversations.
-
-Prefer:
-
-multiple focused chats instead of one massive chat.
-
-Always maintain:
-
-PROJECT_STATE.md
-
-Long-Term Project Strategy
-Large projects should evolve through:
-
-Architecture → Core Systems → Features → Optimization → Deployment
-
-Do not jump randomly between systems.
-
-Follow the defined roadmap.
-
-Final Rule
-The AI is a powerful accelerator, but the developer must remain the architect.
-
-Maintain architectural discipline and documentation to ensure long-term scalability."
-prompt4:"## System Overview
+4-"## System Overview
 The Job Board SaaS platform follows a Clean Layered Architecture designed to ensure:
 
 separation of concerns
@@ -1012,7 +1010,7 @@ UserService
 
 ApplicationService
 
-AuthService
+authService.login
 
 Rules
 
@@ -1202,589 +1200,327 @@ Business logic must remain independent of frameworks and databases.
 Security First
 
 Authentication and authorization must be enforced at the service layer."
-prompt5:"Project Development Roadmap
-This roadmap defines the structured evolution of the Job Board SaaS platform from architecture foundation to production deployment.
+prompt-5:"## System Overview
+The Job Board SaaS platform follows a Clean Layered Architecture designed to ensure:
 
-Each phase builds upon the previous one to ensure architectural stability and security.
+separation of concerns
+maintainability
+testability
+future database portability
+scalable SaaS architecture
+The system separates responsibilities across multiple layers so that business logic remains independent of infrastructure and framework concerns.
 
-### Phase 1 — Architecture Foundation ✅
-Goal
+## High-Level Architecture
+Client (Browser / Frontend UI)
 
-Establish a scalable and maintainable architecture.
+↓
 
-Completed Work
+Next.js App Router
 
-LowDB database setup
-repository pattern implementation
-service layer architecture
-validation layer using Zod
-initial API routes
-project structure definition
-Outcome
+↓
 
-A clean architecture foundation ready for feature development.
+API Routes (HTTP Layer)
 
-###Phase 2 — Authentication System 🚧
-Goal
+↓
 
-Implement a secure authentication system.
+Validation Layer
 
-Tasks
+↓
 
-Implement AuthService
+Service Layer (Business Logic)
 
-Implement JWT utilities
+↓
 
-Create login endpoint
+Repository Layer (Data Access)
 
-Create registration endpoint
+↓
 
-Implement refresh token flow
+Database Layer
 
-Secure logout mechanism
+## Technology Stack
+Frontend Framework
 
-Create authentication middleware
+Next.js 15 (App Router)
 
-Implement RBAC authorization middleware
+Language
 
-Add login rate limiting
+TypeScript (strict mode)
 
-Validate environment variables
+Runtime
 
-Outcome
+Node.js
 
-Production‑grade authentication and authorization.
+Database (Current)
 
-### Phase 3 — Job Management System
-Goal
+LowDB (JSON-based development database)
 
-Enable employers to create and manage job listings.
+Future Database
 
-Features
+PostgreSQL
 
-Create job posting
+Validation
 
-Update job posting
+Zod
 
-Delete job posting
+Authentication
 
-Search jobs
+JWT + Refresh Tokens
 
-Filter jobs by
+Password Hashing
 
-location
+bcrypt
 
-salary
+Testing (Planned)
 
-experience level
+Vitest / Playwright
 
-job type
+## Layered Architecture
+1. API Layer
+Location
 
-Pagination support
+src/app/api
 
-Outcome
+Responsibilities
 
-Core job marketplace functionality.
+handle HTTP requests
+validate request format
+call service layer
+format responses
+manage HTTP status codes
+Rules
 
-###Phase 4 — Application System
-Goal
+no business logic
+no database access
+must delegate to services
+Example routes
 
-Allow job seekers to apply for jobs and track applications.
+/api/jobs
 
-Features
+/api/applications
 
-Apply to job
+/api/users
 
-Application status tracking
+/api/auth
 
-Application withdrawal
+2. Validation Layer
+Tool
 
-Employer review of applicants
+Zod
 
-Applicant dashboard
+Responsibilities
 
-Outcome
+validate request body
+validate query parameters
+validate DTOs
+ensure runtime type safety
+Validation occurs before service logic executes.
 
-Complete job application workflow.
+3. Service Layer
+Location
 
-### Phase 5 — Employer Dashboard
-Goal
+src/lib/services
 
-Provide tools for employers to manage hiring.
+Responsibilities
 
-Features
+business logic
+authorization rules
+domain workflows
+orchestration between repositories
+Examples
 
-Employer job management
+JobService
 
-Applicant list
+UserService
 
-Application status updates
+ApplicationService
 
-Company profile management
+authService.login
 
-Analytics dashboard
+Rules
 
-Outcome
+no direct database calls
+only communicate with repositories
+enforce business rules
+4. Repository Layer
+Location
 
-Employer productivity tools.
+src/lib/repositories
 
-### Phase 6 — AI Features
-Goal
+Responsibilities
 
-Enhance the platform using AI capabilities.
+abstract database access
+perform CRUD operations
+isolate database technology
+Examples
 
-Planned Features
+JobRepository
 
-AI job recommendation
+UserRepository
 
-Resume matching
+ApplicationRepository
 
-Smart job search
+Advantages
 
-AI chat assistant for job seekers
+database implementation can change
+easier testing
+domain logic stays clean
+5. Database Layer
+Location
 
-Outcome
+src/lib/db
 
-AI-powered hiring experience.
+Files
 
-### Phase 7 — Testing Infrastructure
-Goal
+lowdb.client.ts
 
-Ensure system reliability and correctness.
+schema.ts
 
-Testing Layers
+Current Database
 
-Unit Testing
+LowDB (JSON database stored in data/db.json)
 
-services
+Purpose
 
-repositories
+lightweight development database
+allows rapid prototyping
+Future Plan
 
-validators
+Migrate to PostgreSQL without changing service layer logic.
 
-Integration Testing
+### Request Flow
+The request lifecycle follows this pattern:
 
-API endpoints
+Client Request
 
-End‑to‑End Testing
+↓
 
-User flows using Playwright
+API Route
 
-Outcome
+↓
 
-High confidence in production behavior.
+Request Validation (Zod)
 
-### Phase 8 — Performance Optimization
-Goal
+↓
 
-Improve scalability and responsiveness.
+Service Layer
 
-Tasks
+↓
 
-API pagination
+Repository Layer
 
-query optimization
+↓
 
-caching layer
+Database
 
-search indexing
+↓
 
-database optimization
+Service Response
 
-Outcome
+↓
 
-Improved system performance under load.
+API Response
 
-### Phase 9 — Documentation
-Goal
+### Error Handling Strategy
+Errors are categorized into:
 
-Provide comprehensive technical documentation.
+Validation Errors
 
-Documentation
+Business Logic Errors
 
-Architecture documentation
+Authentication Errors
 
-API documentation
+Authorization Errors
 
-Deployment guide
+Database Errors
 
-Developer onboarding guide
+Services throw structured errors which are translated into HTTP responses in the API layer.
 
-Outcome
+### Security Architecture
+Security is implemented across multiple layers.
 
-Maintainable and collaborative project environment.
+Authentication
 
-### Phase 10 — Production Hardening
-Goal
+JWT access tokens
 
-Prepare the system for real-world production use.
+Refresh tokens
 
-Tasks
+Token rotation
 
-Security audit
+Password Security
 
-rate limiting
+bcrypt hashing
 
-logging infrastructure
+Authorization
 
-error monitoring
+RBAC (Role Based Access Control)
 
-production environment configuration
+Roles
 
-CI/CD pipeline
+JOBSEEKER
 
-Outcome
+EMPLOYER
 
-Production-ready SaaS platform.""
+ADMIN
 
---then:
-"###We are currently implementing the authentication and token system.
+Additional protections
 
-During development TypeScript compilation started failing.
+login rate limiting
 
-The compiler now reports multiple errors across services, repositories, and routes.
+secure environment variable validation
 
-The system was previously working partially, but after recent refactors several type mismatches appeared.
+safe user DTOs
 
-###"TypeScript Error Summary (38 errors)
+### Data Transfer Objects (DTO)
+DTOs are used to prevent leaking sensitive fields.
 
-Main categories of errors:
+Example
 
-1. Type mismatch between domain types and DB schema
-   Example:
-   JobEmbeddingRecord missing required field "id".
+SafeUser
 
-2. Service method mismatch
-   Several API routes call methods that do not exist on ApplicationService:
-   - getApplicationsByJob
-   - create
-   - getByUser
-   - getByJob
-   - getAllApplications
+Contains
 
-3. Repository interface mismatch
-   TokenRepository methods referenced but not implemented:
-   - save
-   - findByTokenHash
-   - revokeAllByUserId
-   - markReplaced
-   - revoke
+id
 
-4. LowDB generic typing errors
-   LowDB adapter casting collections to generic T[] causing type conflicts.
+email
 
-5. Data model inconsistencies
-   Examples:
-   - salary expected object but string provided
-   - company vs companyId mismatch
-   - skills property missing
-   - enum casing mismatch (FULL_TIME vs full-time)
-   - UserRole casing mismatch (JOBSEEKER vs jobseeker)
+name
 
-6. Async mistakes
-   Example:
-   Promise<string> returned where string expected.
-   Missing await on payload.
+role
 
-7. Frontend type mismatch
-   Example:
-   companyId passed where component expects company:string.
-"
+Does NOT include
 
-###errors:"
-PS D:\project\NEW\job-board-saas> npx tsc --noEmit 
-src/app/api/ai/match/matcher.repository.ts:12:7 - error TS2741: Property 'id' is missing in type 'import("D:/project/NEW/job-board-saas/src/app/api/ai/match/matcher.types").JobEmbeddingRecord' but required in type 'import("D:/project/NEW/job-board-saas/src/lib/db/schema").JobEmbeddingRecord'.
+passwordHash
 
-12       db.data.jobEmbeddings[idx] = record;
-         ~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Future Architectural Evolution
+Planned improvements include:
 
-  src/lib/db/schema.ts:77:3
-    77   id: string;          // ← ضروری برای LowDBCollectionOperations<T extends { id: string }>
-         ~~
-    'id' is declared here.
+PostgreSQL migration
 
-src/app/api/ai/match/matcher.repository.ts:14:34 - error TS2345: Argument of type 'import("D:/project/NEW/job-board-saas/src/app/api/ai/match/matcher.types").JobEmbeddingRecord' is not assignable to parameter of type 'import("D:/project/NEW/job-board-saas/src/lib/db/schema").JobEmbeddingRecord'.
-  Property 'id' is missing in type 'import("D:/project/NEW/job-board-saas/src/app/api/ai/match/matcher.types").JobEmbeddingRecord' but required in type 'import("D:/project/NEW/job-board-saas/src/lib/db/schema").JobEmbeddingRecord'.
+Redis caching
 
-14       db.data.jobEmbeddings.push(record);
-                                    ~~~~~~
+search optimization
 
-  src/lib/db/schema.ts:77:3
-    77   id: string;          // ← ضروری برای LowDBCollectionOperations<T extends { id: string }>
-         ~~
-    'id' is declared here.
+AI-powered job recommendations
 
-src/app/api/applications/job/[jobId]/route.ts:9:49 - error TS2339: Property 'getApplicationsByJob' does not exist on type 'typeof ApplicationService'.
+horizontal scaling
 
-9   const applications = await ApplicationService.getApplicationsByJob(jobId);
-                                                  ~~~~~~~~~~~~~~~~~~~~
+microservice readiness
 
-src/app/api/applications/route.ts:22:50 - error TS2339: Property 'create' does not exist on type 'ApplicationService'.
+### Architectural Principles
+Single Responsibility
 
-22     const application = await applicationService.create({ ...body, userId });
-                                                    ~~~~~~
+Each layer must have one clear responsibility.
 
-src/app/api/applications/user/[userId]/route.ts:9:51 - error TS2339: Property 'getByUser' does not exist on type 'ApplicationService'.
+Dependency Direction
 
-9     const applications = await applicationService.getByUser(userId);
-                                                    ~~~~~~~~~
+Upper layers depend on lower layers.
 
-src/app/api/jobs/[id]/route.ts:9:51 - error TS2339: Property 'getByJob' does not exist on type 'ApplicationService'.
+API → Services → Repositories → Database
 
-9     const applications = await applicationService.getByJob(id);
-                                                    ~~~~~~~~
+Isolation
 
-src/app/api/jobs/route.ts:28:34 - error TS2554: Expected 3 arguments, but got 1.
+Business logic must remain independent of frameworks and databases.
 
-28     const job = await jobService.createJob(body);
-                                    ~~~~~~~~~
+Security First
 
-  src/lib/services/job.service.ts:42:34
-    42   async createJob(data: unknown, employerId: string, company: string) {
-                                        ~~~~~~~~~~~~~~~~~~
-    An argument for 'employerId' was not provided.
-
-src/app/applications/route.ts:18:42 - error TS2339: Property 'getAllApplications' does not exist on type 'ApplicationService'.
-
-18     const all = await applicationService.getAllApplications();
-                                            ~~~~~~~~~~~~~~~~~~
-
-src/components/jobs/JobList.tsx:68:11 - error TS2322: Type 'string | undefined' is not assignable to type 'string'.
-  Type 'undefined' is not assignable to type 'string'.
-
-68           company={job.companyId}
-             ~~~~~~~
-
-  src/components/jobs/JobCard.tsx:33:3
-    33   company: string;
-         ~~~~~~~
-    The expected type comes from property 'company' which is declared here on type 'IntrinsicAttributes & JobCardProps'
-
-src/lib/auth/token.service.ts:31:27 - error TS2339: Property 'save' does not exist on type 'typeof TokenRepository'.
-
-31     await TokenRepository.save(stored);
-                             ~~~~
-
-src/lib/auth/token.service.ts:37:44 - error TS2339: Property 'findByTokenHash' does not exist on type 'typeof TokenRepository'.
-
-37     const existing = await TokenRepository.findByTokenHash(rawRefreshToken);
-                                              ~~~~~~~~~~~~~~~
-
-src/lib/auth/token.service.ts:44:31 - error TS2339: Property 'revokeAllByUserId' does not exist on type 'typeof 
-TokenRepository'.
-
-44         await TokenRepository.revokeAllByUserId(revokedToken.userId);
-                                 ~~~~~~~~~~~~~~~~~
-
-src/lib/auth/token.service.ts:78:23 - error TS2339: Property 'markReplaced' does not exist on type 'typeof TokenRepository'.
-
-78       TokenRepository.markReplaced(existing.id, tokenId),
-                         ~~~~~~~~~~~~
-
-src/lib/auth/token.service.ts:79:23 - error TS2339: Property 'save' does not exist on type 'typeof TokenRepository'.
-
-79       TokenRepository.save(newStored),
-                         ~~~~
-
-src/lib/auth/token.service.ts:86:41 - error TS2339: Property 'findByTokenHash' does not exist on type 'typeof TokenRepository'.
-
-86     const token = await TokenRepository.findByTokenHash(rawRefreshToken);
-                                           ~~~~~~~~~~~~~~~
-
-src/lib/auth/token.service.ts:88:29 - error TS2339: Property 'revoke' does not exist on type 'typeof TokenRepository'.
-
-88       await TokenRepository.revoke(token.id);
-                               ~~~~~~
-
-src/lib/auth/token.service.ts:93:27 - error TS2339: Property 'revokeAllByUserId' does not exist on type 'typeof 
-TokenRepository'.
-
-93     await TokenRepository.revokeAllByUserId(userId);
-                             ~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:13:12 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-13     return this.getDB()[this.collectionName] as T[];
-              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:17:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-17     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:22:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-22     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:27:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-27     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:32:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-32     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:37:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-37     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/db/lowdb.adapter.ts:47:24 - error TS2352: Conversion of type 'User[] | Job[] | Company[] | Application[] | Category[] | JobEmbeddingRecord[] | StoredRefreshToken[]' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.      
-  Type 'StoredRefreshToken[]' is not comparable to type 'T[]'.
-    Type 'StoredRefreshToken' is not comparable to type 'T'.
-      'StoredRefreshToken' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint '{ id: string; }'.
-
-47     const collection = this.getDB()[this.collectionName] as T[];
-                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-src/lib/services/job.service.ts:51:7 - error TS2322: Type 'string | undefined' is not assignable to type '{ min: number; max: number; currency: string; } | undefined'.
-  Type 'string' is not assignable to type '{ min: number; max: number; currency: string; }'.
-
-51       salary: validated.salary,
-         ~~~~~~
-
-  src/lib/db/schema.ts:46:3
-    46   salary?: {
-         ~~~~~~
-    The expected type comes from property 'salary' which is declared here on type 'CreateJobInput'
-
-src/lib/services/job.service.ts:52:25 - error TS2339: Property 'skills' does not exist on type '{ title: string; description: string; location: string; type: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "REMOTE"; companyId: string; published: boolean; isActive: boolean; salary?: string | undefined; categoryId?: string | undefined; jobType?: string | undefined; }'.
-
-52       skills: validated.skills ?? [],
-                           ~~~~~~
-
-src/lib/services/job.service.ts:53:26 - error TS2551: Property 'company' does not exist on type '{ title: string; description: string; location: string; type: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "REMOTE"; companyId: string; published: boolean; isActive: boolean; salary?: string | undefined; categoryId?: string | undefined; jobType?: string | undefined; }'. Did you mean 'companyId'?
-
-53       company: validated.company ?? company,
-                            ~~~~~~~
-
-src/lib/services/job.service.ts:70:39 - error TS2345: Argument of type '{ type?: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "REMOTE" | JobType | undefined; title?: string | undefined; description?: string | undefined; location?: string | undefined; ... 5 more ...; jobType?: string | undefined; }' is not assignable to parameter of type 'Partial<Omit<Job, "id" | "createdAt" | "updatedAt">>'.
-  Types of property 'type' are incompatible.
-    Type '"FULL_TIME" | "PART_TIME" | "CONTRACT" | "REMOTE" | JobType | undefined' is not assignable to type 'JobType | undefined'.
-      Type '"FULL_TIME"' is not assignable to type 'JobType | undefined'. Did you mean '"full-time"'?
-
-70     return this.repository.update(id, updateData);
-                                         ~~~~~~~~~~
-
-src/lib/services/user.service.ts:36:7 - error TS2322: Type '"JOBSEEKER" | "EMPLOYER"' is not assignable to type 
-'UserRole'.
-  Type '"JOBSEEKER"' is not assignable to type 'UserRole'. Did you mean '"jobseeker"'?
-
-36       role: validated.role ?? 'jobseeker',
-         ~~~~
-
-  src/lib/db/schema.ts:16:3
-    16   role: UserRole;
-         ~~~~
-    The expected type comes from property 'role' which is declared here on type 'Omit<User, "id" | "createdAt" | "updatedAt">'
-
-src/lib/tokens/token.service.ts:8:3 - error TS2305: Module '"./token.repository"' has no exported member 'storeRefreshToken'.
-
-8   storeRefreshToken,
-    ~~~~~~~~~~~~~~~~~
-
-src/lib/tokens/token.service.ts:9:3 - error TS2305: Module '"./token.repository"' has no exported member 'findRefreshToken'.
-
-9   findRefreshToken,
-    ~~~~~~~~~~~~~~~~
-
-src/lib/tokens/token.service.ts:10:3 - error TS2305: Module '"./token.repository"' has no exported member 'revokeToken'.
-
-10   revokeToken,
-     ~~~~~~~~~~~
-
-src/lib/tokens/token.service.ts:11:3 - error TS2305: Module '"./token.repository"' has no exported member 'revokeAllUserTokens'.
-
-11   revokeAllUserTokens,
-     ~~~~~~~~~~~~~~~~~~~
-
-src/lib/tokens/token.service.ts:12:3 - error TS2305: Module '"./token.repository"' has no exported member 'verifyTokenHash'.
-
-12   verifyTokenHash,
-     ~~~~~~~~~~~~~~~
-
-src/lib/tokens/token.service.ts:14:10 - error TS2305: Module '"@/modules/users/user.repository"' has no exported member 'findById'.
-
-14 import { findById } from '@/modules/users/user.repository'
-            ~~~~~~~~
-
-src/lib/tokens/token.service.ts:32:12 - error TS2322: Type 'Promise<string>' is not assignable to type 'string'.
-32   return { accessToken, refreshToken }
-              ~~~~~~~~~~~
-
-  src/lib/tokens/token.service.ts:17:3
-    17   accessToken: string
-         ~~~~~~~~~~~
-    The expected type comes from property 'accessToken' which is declared here on type 'TokenPair'
-
-src/lib/tokens/token.service.ts:32:25 - error TS2322: Type 'Promise<string>' is not assignable to type 'string'.
-32   return { accessToken, refreshToken }
-                           ~~~~~~~~~~~~
-
-  src/lib/tokens/token.service.ts:18:3
-    18   refreshToken: string
-         ~~~~~~~~~~~~
-    The expected type comes from property 'refreshToken' which is declared here on type 'TokenPair'
-
-src/lib/tokens/token.service.ts:46:49 - error TS2339: Property 'tokenId' does not exist on type 'Promise<RefreshTokenPayload>'.
-
-46   const stored = await findRefreshToken(payload.tokenId)
-                                                   ~~~~~~~
-
-  src/lib/tokens/token.service.ts:46:49
-    46   const stored = await findRefreshToken(payload.tokenId)
-                                                       ~~~~~~~
-    Did you forget to use 'await'?
-
-
-Found 38 errors in 13 files.
-
-Errors  Files
-     2  src/app/api/ai/match/matcher.repository.ts:12
-     1  src/app/api/applications/job/[jobId]/route.ts:9
-     1  src/app/api/applications/route.ts:22
-     1  src/app/api/applications/user/[userId]/route.ts:9
-     1  src/app/api/jobs/[id]/route.ts:9
-     1  src/app/api/jobs/route.ts:28
-     1  src/app/applications/route.ts:18
-     1  src/components/jobs/JobList.tsx:68
-     8  src/lib/auth/token.service.ts:31
-     7  src/lib/db/lowdb.adapter.ts:13
-     4  src/lib/services/job.service.ts:51
-     1  src/lib/services/user.service.ts:36
-     9  src/lib/tokens/token.service.ts:8"
-
-###Task:
-
-Analyze the error patterns and identify the root architectural issues causing these problems.
-
-Do NOT rewrite the whole system.
-
-Instead:
-
-1. Identify the underlying design inconsistencies.
-2. Suggest the correct architectural fix strategy.
-3. Recommend the order in which these errors should be resolved.
-4. Suggest minimal refactors to restore type consistency."
-
+Authentication and authorization must be enforced at the service layer.""

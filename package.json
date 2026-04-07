@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "ci": "npm run type-check && npm run test && npm run build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -22,6 +23,7 @@
   "dependencies": {
     "ai": "^6.0.146",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.1",
     "jose": "^6.2.2",
     "jsonwebtoken": "^9.0.3",
     "lowdb": "^7.0.1",
@@ -30,12 +32,14 @@
     "openai": "^6.33.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "supertest": "^7.2.2",
     "uuid": "^13.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
+    "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
@@ -44,6 +48,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/supertest": "^7.2.0",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",

@@ -15,6 +15,8 @@ const defaultData: Database = {
   applications: [],
   jobEmbeddings: [],
   refreshTokens: [],
+  sessions: []
+
 };
 
 let instance: Low<Database> | null = null;

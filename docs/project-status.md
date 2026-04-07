@@ -16,6 +16,6 @@ Current Phase:
 Remaining Tasks:
 
 - TokenService
-- AuthService
+- authService.login
 - Cookie Utilities
 - UserRepository

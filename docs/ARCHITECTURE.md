@@ -132,7 +132,7 @@ UserService
 
 ApplicationService
 
-AuthService
+authService.login
 
 Rules
 

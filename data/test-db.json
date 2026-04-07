@@ -1,0 +1,28 @@
+{
+  "jobs": [],
+  "companies": [],
+  "categories": [],
+  "users": [
+    {
+      "id": "ded67a76-3789-4976-9d5c-2b048b7114f4",
+      "email": "test-1775634230101@example.com",
+      "passwordHash": "$2b$10$DEDwE/8Ep0nd7bIjTYHUGOHMUFBFkPvzPX4WmxSsg1eUgW9HlnhiG",
+      "name": "Test User",
+      "role": "jobseeker",
+      "createdAt": "2026-04-08T07:43:50.289Z",
+      "updatedAt": "2026-04-08T07:43:50.289Z"
+    }
+  ],
+  "applications": [],
+  "jobEmbeddings": [],
+  "refreshTokens": [],
+  "sessions": [
+    {
+      "id": "7903b826-f434-4cc2-8aac-72bcf0d92e88",
+      "userId": "ded67a76-3789-4976-9d5c-2b048b7114f4",
+      "tokenHash": "302ca90e0b81324d47de456ad5a571265696caf36fbefb3d338502fdee870d01",
+      "createdAt": "2026-04-08T07:43:50.307Z",
+      "expiresAt": "2026-04-15T07:43:50.307Z"
+    }
+  ]
+}

@@ -1,90 +1,196 @@
-// src/lib/auth/auth.service.ts
-import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import { UserRepository } from '@/modules/users/user.repository';
-import { TokenService } from '@/lib/auth/token.service';
-import { AuthError, AuthErrorCode } from '@/lib/types/auth.types';
-import type { AuthResult, LoginInput, RegisterInput } from '@/lib/types/auth.types';
+import bcrypt from "bcryptjs"
+import crypto from "crypto"
 
-const SALT_ROUNDS = 12;
+import { db } from "@/lib/db/db"
 
-export const AuthService = {
-  async register(input: RegisterInput): Promise<AuthResult> {
-    const exists = await UserRepository.existsByEmail(input.email);
-    if (exists) {
-      throw new AuthError(
-        AuthErrorCode.USER_ALREADY_EXISTS,
-        'Email already registered',
-        409
-      );
+import { sessionService } from "./session/session.service"
+import { hashToken } from "./session/session.utils"
+
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "./token.utils"
+
+import type { User, UserRole, SafeUser } from "@/lib/db/schema"
+
+export interface RegisterInput {
+  email: string
+  password: string
+  name?: string
+}
+
+export interface LoginInput {
+  email: string
+  password: string
+}
+
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+}
+
+class AuthService {
+
+  // =========================
+  // REGISTER
+  // =========================
+
+  async register(input: RegisterInput) {
+    const { email, password, name } = input
+
+    const existing = db.data.users.find(
+      (u) => u.email === email
+    )
+
+    if (existing) {
+      throw new Error("Email already exists")
     }
 
-    const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
-    const now = new Date().toISOString();
+    const passwordHash = await bcrypt.hash(password, 10)
+    const now = new Date().toISOString()
 
-    const newUser = {
-      id           : crypto.randomUUID(),
-      email        : input.email.toLowerCase(),
+    const user: User = {
+      id: crypto.randomUUID(),
+      email,
       passwordHash,
-      name         : input.name,
-      role         : input.role ?? 'jobseeker' as const,
-      createdAt    : now,
-      updatedAt    : now,
-    };
-
-    const safeUser = await UserRepository.create(newUser);
-    const tokens   = await TokenService.createTokenPair(safeUser.id, safeUser.role);
-
-    return { user: safeUser, tokens };
-  },
-
-  async login(input: LoginInput): Promise<AuthResult> {
-    const user = await UserRepository.findByEmail(input.email);
-    if (!user) {
-      // ✅ timing-safe: همیشه bcrypt اجرا می‌شود
-      await bcrypt.compare(input.password, '$2b$12$invalidhashfortimingsafety000000000000000');
-      throw new AuthError(
-        AuthErrorCode.INVALID_CREDENTIALS,
-        'Invalid email or password',
-        401
-      );
+      name: name ?? "",
+      role: "jobseeker" as UserRole,
+      createdAt: now,
+      updatedAt: now,
     }
 
-    const isValid = await bcrypt.compare(input.password, user.passwordHash);
-    if (!isValid) {
-      throw new AuthError(
-        AuthErrorCode.INVALID_CREDENTIALS,
-        'Invalid email or password',
-        401
-      );
+    db.data.users.push(user)
+    await db.write()
+
+    const tokens = await this.createTokensAndSession(user.id)
+
+    const safeUser: SafeUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      avatarUrl: user.avatarUrl,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     }
 
-    const safeUser = UserRepository.toSafeUser(user);
-    const tokens   = await TokenService.createTokenPair(safeUser.id, safeUser.role);
+    return {
+      user: safeUser,
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }
+    }
+  }
 
-    return { user: safeUser, tokens };
-  },
+  // =========================
+  // LOGIN
+  // =========================
 
-  async refresh(rawRefreshToken: string): Promise<AuthResult> {
-    const tokens = await TokenService.rotateRefreshToken(rawRefreshToken);
+  async login(input: LoginInput) {
+    const { email, password } = input
 
-    // دریافت اطلاعات کاربر از token جدید
-    const { verifyAccessToken } = await import('@/lib/jwt/jwt.utils');
-    const payload  = await verifyAccessToken(tokens.accessToken);
-    const user     = await UserRepository.findById(payload.userId);
+    const user = db.data.users.find(
+      (u) => u.email === email
+    )
 
     if (!user) {
-      throw new AuthError(AuthErrorCode.USER_NOT_FOUND, 'User not found', 401);
+      throw new Error("Invalid credentials")
     }
 
-    return { user: UserRepository.toSafeUser(user), tokens };
-  },
+    const valid = await bcrypt.compare(
+      password,
+      user.passwordHash
+    )
 
-  async logout(rawRefreshToken: string): Promise<void> {
-    await TokenService.revokeToken(rawRefreshToken);
-  },
+    if (!valid) {
+      throw new Error("Invalid credentials")
+    }
 
-  async logoutAll(userId: string): Promise<void> {
-    await TokenService.revokeAllUserTokens(userId);
-  },
-};
+    const tokens = await this.createTokensAndSession(user.id)
+
+    const safeUser: SafeUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      avatarUrl: user.avatarUrl,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    }
+
+    return {
+      user: safeUser,
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }
+    }
+  }
+
+  // =========================
+  // TOKEN CREATION
+  // =========================
+
+  private async createTokensAndSession(
+    userId: string
+  ): Promise<AuthTokens> {
+
+    const accessToken = generateAccessToken(userId)
+    const refreshToken = generateRefreshToken()
+
+    const tokenHash = hashToken(refreshToken)
+
+    await sessionService.createSession(
+      userId,
+      refreshToken
+    )
+
+    return {
+      accessToken,
+      refreshToken,
+    }
+  }
+
+  // =========================
+  // LOGOUT
+  // =========================
+
+  async logout(refreshToken: string) {
+
+    const tokenHash = hashToken(refreshToken)
+
+    const session =
+      await sessionService.findSessionByToken(tokenHash)
+
+    if (!session) {
+      return { success: true }
+    }
+
+    await sessionService.deleteSession(session.id)
+
+    return { success: true }
+  }
+
+  // =========================
+  // REFRESH TOKEN
+  // =========================
+
+  async refresh(refreshToken: string) {
+
+    const tokenHash = hashToken(refreshToken)
+
+    const session =
+      await sessionService.findSessionByToken(tokenHash)
+
+    if (!session) {
+      throw new Error("Invalid refresh token")
+    }
+
+    await sessionService.deleteSession(session.id)
+
+    return this.createTokensAndSession(session.userId)
+  }
+}
+
+export const authService = new AuthService()

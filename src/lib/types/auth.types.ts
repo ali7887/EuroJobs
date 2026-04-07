@@ -26,6 +26,8 @@ export class AuthError extends Error {
 }
 
 export interface AuthResult {
+  refreshToken(arg0: string, refreshToken: any, arg2: { httpOnly: true; secure: false; path: string; }): unknown;
+  accessToken: any;
   user: SafeUser;
   tokens: TokenPair;
 }
