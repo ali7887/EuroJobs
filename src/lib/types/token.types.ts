@@ -11,13 +11,14 @@ export interface RefreshTokenPayload {
 }
 
 export interface StoredRefreshToken {
+  isRevoked: any;
   id: string;
   userId: string;
-  tokenHash: string;       // هرگز raw token ذخیره نمی‌شود
-  expiresAt: string;       // ISO 8601
+  tokenHash: string;
+  expiresAt: string;
   createdAt: string;
-  revokedAt?: string;      // اگر revoke شد
-  replacedByTokenId?: string; // برای rotation chain
+  revokedAt?: string;
+  replacedByTokenId?: string;
 }
 
 export interface TokenPair {

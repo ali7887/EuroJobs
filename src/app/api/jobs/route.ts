@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jobService } from "@/lib/services/job.service";
+import { JobService } from "@/lib/services/job.service";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
-    const result = await jobService.getJobs({
+
+    const result = await JobService.getJobs({
       search: searchParams.get("search") ?? undefined,
       categoryId: searchParams.get("categoryId") ?? undefined,
       location: searchParams.get("location") ?? undefined,
@@ -12,9 +13,11 @@ export async function GET(req: NextRequest) {
       page: Number(searchParams.get("page") ?? 1),
       limit: Number(searchParams.get("limit") ?? 10),
     });
+
     return NextResponse.json(result);
   } catch (e) {
     console.error("GET /api/jobs error:", e);
+
     return NextResponse.json(
       { error: "Failed to fetch jobs" },
       { status: 500 }
@@ -25,10 +28,24 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const job = await jobService.createJob(body);
+
+    /**
+     * در نسخه production باید از JWT استخراج شود
+     */
+    const employerId = body.employerId ?? "system";
+    const companyName = body.company ?? "Unknown Company";
+
+    const job = await JobService.createJob(
+      body,
+      employerId,
+      companyName
+    );
+
     return NextResponse.json(job, { status: 201 });
+
   } catch (e) {
     console.error("POST /api/jobs error:", e);
+
     return NextResponse.json(
       { error: "Failed to create job" },
       { status: 500 }

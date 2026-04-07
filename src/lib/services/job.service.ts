@@ -1,65 +1,155 @@
-// src/lib/services/job.service.ts
-import { JobRepository } from '../repositories/job.repository';
-import { PaginatedResponse, JobListItem } from '../types/job.types';
-import { jobQuerySchema, jobCreateSchema } from '../validators/job.validator';
+import { getDb, saveDb } from "@/infrastructure/lowdb.client";
+import type { Job, JobType } from "@/lib/db/schema";
+import { randomUUID } from "crypto";
+
+type CreateJobInput = {
+  title: string;
+  description: string;
+  companyId?: string;
+  company?: string;
+  location: string;
+  salary?:
+    | string
+    | {
+        min: number;
+        max: number;
+        currency: string;
+      };
+  skills?: string[];
+  type: JobType | "FULL_TIME" | "PART_TIME" | "REMOTE" | "CONTRACT";
+};
+
+type GetJobsParams = {
+  search?: string;
+  categoryId?: string;
+  location?: string;
+  type?: string;
+  page: number;
+  limit: number;
+};
+
+function normalizeJobType(type: CreateJobInput["type"]): JobType {
+  const map: Record<string, JobType> = {
+    FULL_TIME: "full-time",
+    PART_TIME: "part-time",
+    REMOTE: "remote",
+    CONTRACT: "contract",
+  };
+
+  return (map[type] ?? type) as JobType;
+}
+
+function parseSalary(
+  salary: CreateJobInput["salary"]
+): Job["salary"] {
+  if (!salary) return undefined;
+
+  if (typeof salary === "string") {
+    return undefined;
+  }
+
+  return salary;
+}
 
 export class JobService {
-  private repository = new JobRepository();
 
-  async getJobs(query: unknown): Promise<PaginatedResponse<JobListItem>> {
-    const validated = jobQuerySchema.parse(query);
-    
-    // ✅ findAll نه findById
-    const result = await this.repository.findAll({
-      search: validated.search,
-      location: validated.location,
-      jobType: validated.type,
-      categoryId: validated.category,
-      page: validated.page,
-      limit: validated.limit,
-    });
+  static async getJobs({
+    search,
+    location,
+    type,
+    page,
+    limit,
+  }: GetJobsParams) {
 
-    // ✅ ساختار مستقیم بدون 'pagination'
+    const db = await getDb();
+
+    let jobs = [...db.data!.jobs];
+
+    /**
+     * search
+     */
+    if (search) {
+      const q = search.toLowerCase();
+
+      jobs = jobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.description.toLowerCase().includes(q)
+      );
+    }
+
+    /**
+     * location filter
+     */
+    if (location) {
+      jobs = jobs.filter((j) => j.location === location);
+    }
+
+    /**
+     * type filter
+     */
+    if (type) {
+      jobs = jobs.filter((j) => j.type === type);
+    }
+
+    /**
+     * only active jobs
+     */
+    jobs = jobs.filter((j) => j.isActive && j.published);
+
+    /**
+     * newest first
+     */
+    jobs.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+    );
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    const paginated = jobs.slice(start, end);
+
     return {
-      data: result.data as JobListItem[],
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages,
+      total: jobs.length,
+      page,
+      limit,
+      data: paginated,
     };
   }
 
-  async getJobById(id: string) {
-    const job = await this.repository.findById(id);
-    if (!job) throw new Error('Job not found');
+  static async createJob(
+    data: CreateJobInput,
+    employerId: string,
+    companyName: string
+  ): Promise<Job> {
+
+    const db = await getDb();
+
+    const now = new Date().toISOString();
+
+    const job: Job = {
+      id: randomUUID(),
+      title: data.title,
+      description: data.description,
+      company: companyName,
+      companyId: data.companyId,
+      employerId,
+      type: normalizeJobType(data.type),
+      location: data.location,
+      salary: parseSalary(data.salary),
+      skills: data.skills ?? [],
+      isActive: true,
+      published: true,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    db.data!.jobs.push(job);
+
+    await saveDb();
+
     return job;
   }
-
-  async createJob(data: unknown) {
-    const validated = jobCreateSchema.parse(data);
-    
-    return this.repository.create({
-      ...validated,
-      published: validated.published ?? false,
-      isActive: validated.isActive ?? true,
-      jobType: validated.jobType ?? validated.type,
-      status: '',
-      jobEmbeddings: ''
-    });
-  }
-
-  async updateJob(id: string, data: unknown) {
-    const validated = jobCreateSchema.partial().parse(data);
-    const updated = await this.repository.update(id, validated);
-    if (!updated) throw new Error('Job not found');
-    return updated;
-  }
-
-  async deleteJob(id: string) {
-    const deleted = await this.repository.delete(id);
-    if (!deleted) throw new Error('Job not found');
-    return { success: true };
-  }
 }
-
-export const jobService = new JobService();

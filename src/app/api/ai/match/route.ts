@@ -1,3 +1,4 @@
+// src/app/api/ai/match/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { MatcherService } from '@/app/api/ai/match/matcher.service';
@@ -11,7 +12,8 @@ const matcher = new MatcherService();
 
 export async function POST(req: NextRequest) {
   const userId = req.headers.get('x-user-id');
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
   const parsed = schema.safeParse(body);
@@ -20,7 +22,9 @@ export async function POST(req: NextRequest) {
   }
 
   const db = await getDb();
-  const jobs = db.data.jobs.filter((j) => j.status === 'active');
+
+  // ✅ Job در schema فیلد status ندارد — از isActive و published استفاده می‌کنیم
+  const jobs = db.data.jobs.filter((j) => j.isActive && j.published);
 
   const matches = await matcher.findMatchingJobs(parsed.data.skills, jobs);
   return NextResponse.json({ matches });

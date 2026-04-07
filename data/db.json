@@ -1,7 +1,9 @@
 {
   "jobs": [],
+  "users": [],
+  "applications": [],
   "companies": [],
   "categories": [],
-  "users": [],
-  "applications": []
+  "jobEmbeddings": [],
+  "refreshTokens": []
 }

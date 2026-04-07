@@ -65,7 +65,7 @@ export default function JobList({ keyword, location, category }: JobListProps) {
           key={job.id}
           id={job.id}
           title={job.title}
-          company={job.companyId}
+          company={job.company ?? "Unknown Company"}
           location={job.location ?? 'Not specified'}
           type={mapJobType(job.type)}
           salary={job.salary}

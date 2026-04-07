@@ -1,99 +1,84 @@
-// src/lib/services/application.service.ts
-import { ApplicationRepository } from '../repositories/application.repository';
-import { UserRepository } from '../repositories/user.repository';
-import { JobRepository } from '../repositories/job.repository';
-import { Application } from '../db/schema';
-import {
-  applicationCreateSchema,
-  applicationStatusSchema,
-} from '../validators/application.validator';
+import { getDb, saveDb } from '@/infrastructure/lowdb.client';
+import type { Application, ApplicationStatus } from '@/lib/db/schema';
+import { randomUUID } from 'crypto';
 
 export class ApplicationService {
-  create(arg0: any) {
+  static deleteApplication(id: string) {
     throw new Error('Method not implemented.');
   }
-  getAllApplications() {
-    throw new Error("Method not implemented.");
+
+  static async create(data: {
+    jobId: string;
+    userId: string;
+    resumePath?: string;
+    coverLetter?: string;
+  }): Promise<Application> {
+
+    const db = await getDb();
+
+    const now = new Date().toISOString();
+
+    const application: Application = {
+      id: randomUUID(),
+      jobId: data.jobId,
+      userId: data.userId,
+      status: 'pending',
+      resumePath: data.resumePath,
+      coverLetter: data.coverLetter,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    db.data!.applications.push(application);
+
+    await saveDb();
+
+    return application;
   }
-  private repo = new ApplicationRepository();
-  private userRepo = new UserRepository();
-  private jobRepo = new JobRepository();
 
-  // ✅ متد استاتیک برای route جدید
-  static async getApplicationsByJob(jobId: string): Promise<Application[]> {
-    const repo = new ApplicationRepository();
-    return repo.findByJob(jobId);
-  }
+  static async getByUser(userId: string): Promise<Application[]> {
+    const db = await getDb();
 
-  // ✅ متد برای گرفتن همه applications
-  async getApplications(): Promise<Application[]> {
-    return this.repo.findAll();
-  }
-
-  // ✅ متد create که route.ts انتظار داره
-  async createApplication(data: unknown): Promise<Application> {
-    return this.apply(data);
-  }
-
-  // ── Apply ──────────────────────────────────────────────────────────────
-  async apply(data: unknown): Promise<Application> {
-    const validated = applicationCreateSchema.parse(data);
-
-    const job = await this.jobRepo.findById(validated.jobId);
-    if (!job) throw new Error('Job not found');
-
-    const user = await this.userRepo.findById(validated.userId);
-    if (!user) throw new Error('User not found');
-
-    const duplicate = await this.repo.findDuplicate(
-      validated.jobId,
-      validated.userId,
+    return db.data!.applications.filter(
+      (app) => app.userId === userId
     );
-    if (duplicate) throw new Error('Already applied to this job');
-
-    return this.repo.create({
-      jobId: validated.jobId,
-      userId: validated.userId,
-      status: 'PENDING',
-      coverLetter: validated.coverLetter,
-    });
   }
 
-  // ── Get by ID ──────────────────────────────────────────────────────────
-  async getApplicationById(id: string): Promise<Application> {
-    const app = await this.repo.findById(id);
-    if (!app) throw new Error('Application not found');
-    return app;
+  static async getByJob(jobId: string): Promise<Application[]> {
+    const db = await getDb();
+
+    return db.data!.applications.filter(
+      (app) => app.jobId === jobId
+    );
   }
 
-  // ── Get by User ────────────────────────────────────────────────────────
-  async getByUser(userId: string): Promise<Application[]> {
-    const user = await this.userRepo.findById(userId);
-    if (!user) throw new Error('User not found');
-    return this.repo.findByUser(userId);
+  static async getApplicationsByJob(jobId: string) {
+    return this.getByJob(jobId);
   }
 
-  // ── Get by Job ─────────────────────────────────────────────────────────
-  async getByJob(jobId: string): Promise<Application[]> {
-    const job = await this.jobRepo.findById(jobId);
-    if (!job) throw new Error('Job not found');
-    return this.repo.findByJob(jobId);
+  static async getAllApplications(): Promise<Application[]> {
+    const db = await getDb();
+    return db.data!.applications;
   }
 
-  // ── Update Status ──────────────────────────────────────────────────────
-  async updateStatus(id: string, data: unknown): Promise<Application> {
-    const { status } = applicationStatusSchema.parse(data);
-    const updated = await this.repo.updateStatus(id, status);
-    if (!updated) throw new Error('Application not found');
-    return updated;
-  }
+  static async updateStatus(
+    id: string,
+    status: ApplicationStatus
+  ): Promise<Application | null> {
 
-  // ── Delete ─────────────────────────────────────────────────────────────
-  async deleteApplication(id: string): Promise<{ success: true }> {
-    const deleted = await this.repo.delete(id);
-    if (!deleted) throw new Error('Application not found');
-    return { success: true };
+    const db = await getDb();
+
+    const application = db.data!.applications.find(
+      (a) => a.id === id
+    );
+
+    if (!application) return null;
+
+    application.status = status;
+    application.updatedAt = new Date().toISOString();
+
+    await saveDb();
+
+    return application;
   }
 }
-
-export const applicationService = new ApplicationService();

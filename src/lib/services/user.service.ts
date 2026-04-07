@@ -1,6 +1,8 @@
+// src/lib/services/user.service.ts
 import bcrypt from 'bcryptjs';
 import { UserRepository } from '../repositories/user.repository';
-import { SafeUser } from '../db/schema';
+import type { SafeUser } from '../db/schema';   // ✅ export type برای re-export
+import { User } from '../db/schema';
 import {
   userRegisterSchema,
   userUpdateSchema,
@@ -8,59 +10,71 @@ import {
 
 const SALT_ROUNDS = 12;
 
-// پسورد را از user object حذف می‌کند
-function toSafeUser(user: { password?: string; [key: string]: unknown }): SafeUser {
+function normalizeRole(role?: string): 'jobseeker' | 'employer' | 'admin' {
+
+  if (!role) return 'jobseeker';
+
+  const map: Record<string, 'jobseeker' | 'employer' | 'admin'> = {
+    JOBSEEKER: 'jobseeker',
+    EMPLOYER: 'employer',
+    ADMIN: 'admin',
+  };
+
+  return map[role] ?? (role as any);
+}
+
+// ✅ user از نوع User که passwordHash دارد (نه password)
+function toSafeUser(user: User): SafeUser {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password: _pwd, ...safe } = user;
+  const { passwordHash: _pwd, ...safe } = user;
   return safe as SafeUser;
 }
 
 export class UserService {
   private repository = new UserRepository();
 
-  // ── Register ──────────────────────────────────────────────────────────────
   async register(data: unknown): Promise<SafeUser> {
     const validated = userRegisterSchema.parse(data);
 
-    // بررسی تکراری بودن ایمیل
     const existing = await this.repository.findByEmail(validated.email);
     if (existing) throw new Error('Email already exists');
 
-    // هش کردن پسورد قبل از ذخیره
-    const hashedPassword = await bcrypt.hash(validated.password, SALT_ROUNDS);
+    // ✅ hash می‌کنیم و در passwordHash ذخیره می‌کنیم
+    const passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS);
 
     const user = await this.repository.create({
       name: validated.name,
       email: validated.email,
-      password: hashedPassword,
-      role: validated.role,
+      passwordHash,                     // ✅ نام فیلد صحیح از schema
+      role: normalizeRole(validated.role),
+
     });
 
     return toSafeUser(user);
   }
 
-  // ── Get by ID ─────────────────────────────────────────────────────────────
   async getUserById(id: string): Promise<SafeUser> {
     const user = await this.repository.findById(id);
     if (!user) throw new Error('User not found');
     return toSafeUser(user);
   }
 
-  // ── Get by Email ──────────────────────────────────────────────────────────
   async getUserByEmail(email: string): Promise<SafeUser> {
     const user = await this.repository.findByEmail(email);
     if (!user) throw new Error('User not found');
     return toSafeUser(user);
   }
 
-  // ── Update ────────────────────────────────────────────────────────────────
   async updateUser(id: string, data: unknown): Promise<SafeUser> {
     const validated = userUpdateSchema.parse(data);
 
-    // اگر پسورد جدید ارسال شده، هش کن
-    const updateData = { ...validated };
+    const updateData: Partial<User> = { ...validated } as Partial<User>;
+
+    // ✅ اگر password جدید آمد، hash کن و در passwordHash بریز
     if (validated.password) {
-      updateData.password = await bcrypt.hash(validated.password, SALT_ROUNDS);
+      updateData.passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS);
+      // ✅ password خام را از updateData حذف می‌کنیم (User فیلد password ندارد)
+      delete (updateData as Record<string, unknown>)['password'];
     }
 
     const updated = await this.repository.update(id, updateData);
@@ -68,14 +82,13 @@ export class UserService {
     return toSafeUser(updated);
   }
 
-  // ── Delete ────────────────────────────────────────────────────────────────
   async deleteUser(id: string): Promise<{ success: true }> {
     const deleted = await this.repository.delete(id);
     if (!deleted) throw new Error('User not found');
     return { success: true };
   }
 
-  // ── Verify Credentials (برای Login بعدی) ─────────────────────────────────
+  // ✅ verifyCredentials با passwordHash کار می‌کند
   async verifyCredentials(
     email: string,
     plainPassword: string,
@@ -83,7 +96,8 @@ export class UserService {
     const user = await this.repository.findByEmail(email);
     if (!user) throw new Error('Invalid credentials');
 
-    const isValid = await bcrypt.compare(plainPassword, user.password);
+    // ✅ user.passwordHash نه user.password
+    const isValid = await bcrypt.compare(plainPassword, user.passwordHash);
     if (!isValid) throw new Error('Invalid credentials');
 
     return toSafeUser(user);
@@ -91,3 +105,5 @@ export class UserService {
 }
 
 export const userService = new UserService();
+
+export type { SafeUser };   // ✅ export type برای re-export از ماژول دیگر

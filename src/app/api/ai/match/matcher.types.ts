@@ -7,6 +7,7 @@ export interface MatchResult {
 }
 
 export interface JobEmbeddingRecord {
+  id: string;
   jobId: string;
   embedding: number[];
   updatedAt: string;

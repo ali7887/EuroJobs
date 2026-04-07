@@ -1,21 +1,56 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { applicationService } from '@/lib/services/application.service';
+import { NextRequest, NextResponse } from "next/server";
+import { JobService } from "@/lib/services/job.service";
 
-type Params = { params: Promise<{ id: string }> };
-
-export async function GET(_req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest) {
   try {
-    const { id} = await params;
-    const applications = await applicationService.getByJob(id);
-    return NextResponse.json(applications);
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === 'Job not found') {
-        return NextResponse.json({ error: error.message }, { status: 404 });
-      }
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const { searchParams } = req.nextUrl;
+
+    const result = await JobService.getJobs({
+      search: searchParams.get("search") ?? undefined,
+      categoryId: searchParams.get("categoryId") ?? undefined,
+      location: searchParams.get("location") ?? undefined,
+      type: searchParams.get("type") ?? undefined,
+      page: Number(searchParams.get("page") ?? 1),
+      limit: Number(searchParams.get("limit") ?? 10),
+    });
+
+    return NextResponse.json(result);
+  } catch (e) {
+    console.error("GET /api/jobs error:", e);
+
+    return NextResponse.json(
+      { error: "Failed to fetch jobs" },
+      { status: 500 }
+    );
   }
 }
 
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+
+    /**
+     * TODO:
+     * در آینده از JWT استخراج می‌شود
+     */
+    const employerId = body.employerId ?? "system";
+
+    const companyName = body.company ?? "Unknown Company";
+
+    const job = await JobService.createJob(
+      body,
+      employerId,
+      companyName
+    );
+
+    return NextResponse.json(job, { status: 201 });
+
+  } catch (e) {
+    console.error("POST /api/jobs error:", e);
+
+    return NextResponse.json(
+      { error: "Failed to create job" },
+      { status: 500 }
+    );
+  }
+}

@@ -1,0 +1,387 @@
+"// src/lib/db/schema.ts
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+export type JobType = 'full-time' | 'part-time' | 'remote' | 'contract';
+export type UserRole = 'admin' | 'employer' | 'jobseeker';
+export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected';
+
+// ─── Core Models ─────────────────────────────────────────────────────────────
+
+export interface User {
+  id: string;
+  email: string;
+  passwordHash: string;
+  name: string;
+  role: UserRole;
+  avatarUrl?: string;
+  createdAt: string;   // ISO 8601
+  updatedAt: string;
+}
+
+/** User بدون فیلدهای حساس — برای ارسال به client */
+export type SafeUser = Omit<User, 'passwordHash'>;
+
+export interface Company {
+  id: string;
+  name: string;
+  description?: string;
+  logoUrl?: string;
+  website?: string;
+  location?: string;
+  ownerId: string;     // ref → User.id
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Job {
+  id: string;
+  title: string;
+  description: string;
+  company: string;     // display name (denormalized)
+  companyId?: string;  // ref → Company.id
+  employerId: string;  // ref → User.id
+  type: JobType;
+  location: string;
+  salary?: {
+    min: number;
+    max: number;
+    currency: string;  // e.g. 'USD', 'IRR'
+  };
+  skills: string[];
+  isActive: boolean;
+  published: boolean;
+  aiScore?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Application {
+  id: string;
+  jobId: string;       // ref → Job.id
+  userId: string;      // ref → User.id
+  status: ApplicationStatus;
+  resumePath?: string;
+  coverLetter?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface JobEmbeddingRecord {
+  id: string;          // ← ضروری برای LowDBCollectionOperations<T extends { id: string }>
+  jobId: string;
+  embedding: number[];
+  updatedAt: string;
+}
+
+export interface StoredRefreshToken {
+  isRevoked: any;
+  id: string;
+  userId: string;
+  tokenHash: string;
+  expiresAt: string;
+  createdAt: string;
+  revokedAt?: string;
+  replacedByTokenId?: string;
+}
+
+// ─── Database Root ────────────────────────────────────────────────────────────
+
+export interface Database {
+  users: User[];
+  jobs: Job[];
+  companies: Company[];
+  applications: Application[];
+  categories: Category[];
+  jobEmbeddings: JobEmbeddingRecord[];
+  refreshTokens: StoredRefreshToken[];
+}
+
+export const defaultData: Database = {
+  users: [],
+  jobs: [],
+  companies: [],
+  applications: [],
+  categories: [],
+  jobEmbeddings: [],
+  refreshTokens: [],
+};
+"
+
+"import { z } from 'zod';
+
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+export const registerSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .max(72, 'Password too long'),
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  role: z.enum(['JOBSEEKER', 'EMPLOYER']).optional().default('JOBSEEKER'),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+"
+
+"// src/lib/services/user.service.ts
+import bcrypt from 'bcryptjs';
+import { UserRepository } from '../repositories/user.repository';
+import type { SafeUser } from '../db/schema';   // ✅ export type برای re-export
+import { User } from '../db/schema';
+import {
+  userRegisterSchema,
+  userUpdateSchema,
+} from '../validators/user.validator';
+
+const SALT_ROUNDS = 12;
+
+// ✅ user از نوع User که passwordHash دارد (نه password)
+function toSafeUser(user: User): SafeUser {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { passwordHash: _pwd, ...safe } = user;
+  return safe as SafeUser;
+}
+
+export class UserService {
+  private repository = new UserRepository();
+
+  async register(data: unknown): Promise<SafeUser> {
+    const validated = userRegisterSchema.parse(data);
+
+    const existing = await this.repository.findByEmail(validated.email);
+    if (existing) throw new Error('Email already exists');
+
+    // ✅ hash می‌کنیم و در passwordHash ذخیره می‌کنیم
+    const passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS);
+
+    const user = await this.repository.create({
+      name: validated.name,
+      email: validated.email,
+      passwordHash,                     // ✅ نام فیلد صحیح از schema
+      role: validated.role ?? 'jobseeker',
+    });
+
+    return toSafeUser(user);
+  }
+
+  async getUserById(id: string): Promise<SafeUser> {
+    const user = await this.repository.findById(id);
+    if (!user) throw new Error('User not found');
+    return toSafeUser(user);
+  }
+
+  async getUserByEmail(email: string): Promise<SafeUser> {
+    const user = await this.repository.findByEmail(email);
+    if (!user) throw new Error('User not found');
+    return toSafeUser(user);
+  }
+
+  async updateUser(id: string, data: unknown): Promise<SafeUser> {
+    const validated = userUpdateSchema.parse(data);
+
+    const updateData: Partial<User> = { ...validated } as Partial<User>;
+
+    // ✅ اگر password جدید آمد، hash کن و در passwordHash بریز
+    if (validated.password) {
+      updateData.passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS);
+      // ✅ password خام را از updateData حذف می‌کنیم (User فیلد password ندارد)
+      delete (updateData as Record<string, unknown>)['password'];
+    }
+
+    const updated = await this.repository.update(id, updateData);
+    if (!updated) throw new Error('User not found');
+    return toSafeUser(updated);
+  }
+
+  async deleteUser(id: string): Promise<{ success: true }> {
+    const deleted = await this.repository.delete(id);
+    if (!deleted) throw new Error('User not found');
+    return { success: true };
+  }
+
+  // ✅ verifyCredentials با passwordHash کار می‌کند
+  async verifyCredentials(
+    email: string,
+    plainPassword: string,
+  ): Promise<SafeUser> {
+    const user = await this.repository.findByEmail(email);
+    if (!user) throw new Error('Invalid credentials');
+
+    // ✅ user.passwordHash نه user.password
+    const isValid = await bcrypt.compare(plainPassword, user.passwordHash);
+    if (!isValid) throw new Error('Invalid credentials');
+
+    return toSafeUser(user);
+  }
+}
+
+export const userService = new UserService();
+
+export type { SafeUser };   // ✅ export type برای re-export از ماژول دیگر
+"
+
+"export type UserRole = 'JOBSEEKER' | 'EMPLOYER' | 'ADMIN';
+
+export interface User {
+  id: string;
+  email: string;
+  passwordHash: string;
+  role: UserRole;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// SafeUser — هرگز passwordHash را expose نمی‌کند
+export type SafeUser = Omit<User, 'passwordHash'>;
+
+export interface CreateUserDTO {
+  email: string;
+  password: string;
+  name: string;
+  role?: UserRole;
+}
+
+export interface UpdateUserDTO {
+  name?: string;
+  email?: string;
+  role?: UserRole;
+}
+"
+"// src/lib/types/auth.types.ts
+import type { SafeUser } from '@/lib/db/schema';
+import type { TokenPair } from '@/lib/types/token.types';
+
+export enum AuthErrorCode {
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+  USER_NOT_FOUND      = 'USER_NOT_FOUND',
+  USER_ALREADY_EXISTS = 'USER_ALREADY_EXISTS',
+  TOKEN_EXPIRED       = 'TOKEN_EXPIRED',
+  TOKEN_INVALID       = 'TOKEN_INVALID',
+  TOKEN_REVOKED       = 'TOKEN_REVOKED',
+  TOKEN_REUSE_DETECTED = 'TOKEN_REUSE_DETECTED',
+  UNAUTHORIZED        = 'UNAUTHORIZED',
+  FORBIDDEN           = 'FORBIDDEN',
+}
+
+export class AuthError extends Error {
+  constructor(
+    public readonly code: AuthErrorCode,
+    message: string,
+    public readonly statusCode: number = 401
+  ) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
+export interface AuthResult {
+  user: SafeUser;
+  tokens: TokenPair;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterInput {
+  email: string;
+  password: string;
+  name: string;
+  role?: 'employer' | 'jobseeker';
+}
+"
+
+"import { NextRequest, NextResponse } from "next/server";
+import { JobService } from "@/lib/services/job.service";
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = req.nextUrl;
+    const result = await JobService.getJobs({
+      search: searchParams.get("search") ?? undefined,
+      categoryId: searchParams.get("categoryId") ?? undefined,
+      location: searchParams.get("location") ?? undefined,
+      type: searchParams.get("type") ?? undefined,
+      page: Number(searchParams.get("page") ?? 1),
+      limit: Number(searchParams.get("limit") ?? 10),
+    });
+    return NextResponse.json(result);
+  } catch (e) {
+    console.error("GET /api/jobs error:", e);
+    return NextResponse.json(
+      { error: "Failed to fetch jobs" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const job = await JobService.createJob(body);
+    return NextResponse.json(job, { status: 201 });
+  } catch (e) {
+    console.error("POST /api/jobs error:", e);
+    return NextResponse.json(
+      { error: "Failed to create job" },
+      { status: 500 }
+    );
+  }
+}
+"
+
+errors:"PS D:\project\NEW\job-board-saas> npx tsc --noEmit
+src/app/api/jobs/route.ts:28:34 - error TS2554: Expected 3 arguments, but got 1.
+
+28     const job = await JobService.createJob(body);
+                                    ~~~~~~~~~
+
+  src/lib/services/job.service.ts:52:5
+    52     employerId: string,
+           ~~~~~~~~~~~~~~~~~~
+    An argument for 'employerId' was not provided.
+
+src/components/jobs/JobList.tsx:68:11 - error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+68           company={job.companyId}
+             ~~~~~~~
+
+  src/components/jobs/JobCard.tsx:33:3
+    33   company: string;
+         ~~~~~~~
+    The expected type comes from property 'company' which is declared here on type 'IntrinsicAttributes & JobCardProps'
+
+src/lib/services/user.service.ts:36:7 - error TS2322: Type '"JOBSEEKER" | "EMPLOYER"' is not assignable to type 
+'UserRole'.
+  Type '"JOBSEEKER"' is not assignable to type 'UserRole'. Did you mean '"jobseeker"'?
+
+36       role: validated.role ?? 'jobseeker',
+         ~~~~
+
+  src/lib/db/schema.ts:16:3
+    16   role: UserRole;
+         ~~~~
+    The expected type comes from property 'role' which is declared here on type 'Omit<User, "id" | "createdAt" | "updatedAt">'
+
+
+Found 3 errors in 3 files.
+
+Errors  Files
+     1  src/app/api/jobs/route.ts:28
+     1  src/components/jobs/JobList.tsx:68
+     1  src/lib/services/user.service.ts:36"

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { applicationService } from '@/lib/services/application.service';
+import { ApplicationService } from '@/lib/services/application.service';
 
 type Params = { params: Promise<{ userId: string }> };
 
 export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const { userId } = await params;
-    const applications = await applicationService.getByUser(userId);
+    const applications = await ApplicationService.getByUser(userId);
     return NextResponse.json(applications);
   } catch (error) {
     if (error instanceof Error) {

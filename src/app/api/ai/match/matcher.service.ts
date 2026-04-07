@@ -7,17 +7,16 @@ import { MatchResult } from './matcher.types';
 const repo = new MatcherRepository();
 
 export class MatcherService {
-  // ایندکس کردن یک job (باید هنگام ایجاد/آپدیت job فراخوانی شود)
   async indexJob(jobId: string, jobText: string): Promise<void> {
     const embedding = await getEmbedding(jobText);
     await repo.saveEmbedding({
       jobId,
       embedding,
       updatedAt: new Date().toISOString(),
+      id: ''
     });
   }
 
-  // پیدا کردن بهترین job‌ها برای یک کاربر بر اساس مهارت‌هایش
   async findMatchingJobs(
     userSkills: string[],
     jobs: Array<{ id: string; title: string; description: string }>,

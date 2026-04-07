@@ -1,26 +1,32 @@
-// src/app/api/auth/refresh/route.ts
-import { rotateRefreshToken } from '@/lib/tokens/token.service'
-import { setRefreshCookie } from '@/lib/cookies/cookie.utils'
-import { getRefreshCookie } from '@/lib/cookies/cookie.utils'
+import { NextRequest, NextResponse } from 'next/server'
+import { AuthService } from '@/lib/auth/auth.service'
+import {getRefreshTokenFromCookie,setRefreshTokenCookie} from '@/lib/auth/cookie.utilities'
 
-export async function POST() {
-  const refreshToken = await getRefreshCookie()
-
-  if (!refreshToken) {
-    return Response.json({ error: 'No refresh token' }, { status: 401 })
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const { accessToken, refreshToken: newRefreshToken } =
-      await rotateRefreshToken(refreshToken)
+    const refreshToken = getRefreshTokenFromCookie(req)
 
-    // cookie جدید set میشه (rotation)
-    await setRefreshCookie(newRefreshToken)
+    if (!refreshToken) {
+      return NextResponse.json(
+        { error: 'Missing refresh token' },
+        { status: 401 }
+      )
+    }
 
-    return Response.json({ accessToken })
+    const result = await AuthService.refresh(refreshToken)
 
+    const res = NextResponse.json({
+      user: result.user,
+      accessToken: result.tokens.accessToken
+    })
+
+    setRefreshTokenCookie(res, result.tokens.refreshToken)
+
+    return res
   } catch (err: any) {
-    const status = err.message === 'TOKEN_REUSE_DETECTED' ? 401 : 401
-    return Response.json({ error: 'Session expired. Please login again.' }, { status })
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.statusCode ?? 401 }
+    )
   }
 }

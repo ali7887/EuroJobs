@@ -1,24 +1,33 @@
 // src/modules/users/user.repository.ts
-import { db, saveDB } from '@/lib/db/db';
+import { getDb, saveDb } from '@/infrastructure/lowdb.client';
 import type { User, SafeUser } from '@/lib/db/schema';
 
-export async function findByEmail(email: string): Promise<User | null> {
-  await db.read();
-  return db.data.users.find(u => u.email === email) ?? null;
-}
+export const UserRepository = {
+  async findByEmail(email: string): Promise<User | undefined> {
+    const db = await getDb();
+    return db.data!.users.find((u) => u.email === email.toLowerCase());
+  },
 
-export async function findById(id: string): Promise<User | null> {
-  await db.read();
-  return db.data.users.find(u => u.id === id) ?? null;
-}
+  async findById(id: string): Promise<User | undefined> {
+    const db = await getDb();
+    return db.data!.users.find((u) => u.id === id);
+  },
 
-export async function createUser(user: User): Promise<void> {
-  await db.read();
-  db.data.users.push(user);
-  await saveDB();
-}
+  async create(user: User): Promise<SafeUser> {
+    const db = await getDb();
+    db.data!.users.push(user);
+    await saveDb();
+    const { passwordHash: _, ...safeUser } = user;
+    return safeUser;
+  },
 
-export function toSafeUser(user: User): SafeUser {
-  const { password: _, ...safe } = user;
-  return safe;
-}
+  async existsByEmail(email: string): Promise<boolean> {
+    const db = await getDb();
+    return db.data!.users.some((u) => u.email === email.toLowerCase());
+  },
+
+  toSafeUser(user: User): SafeUser {
+    const { passwordHash: _, ...safeUser } = user;
+    return safeUser;
+  },
+};

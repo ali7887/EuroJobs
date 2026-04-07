@@ -20,14 +20,12 @@ export class UserRepository {
 
   async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
     await initDB();
-
     const user: User = {
       id: randomUUID(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       ...data,
     };
-
     db.data!.users.push(user);
     await db.write();
     return user;
@@ -35,28 +33,26 @@ export class UserRepository {
 
   async update(id: string, data: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | null> {
     await initDB();
-
     const index = db.data!.users.findIndex(u => u.id === id);
     if (index === -1) return null;
-
     db.data!.users[index] = {
       ...db.data!.users[index],
       ...data,
       updatedAt: new Date().toISOString(),
     };
-
     await db.write();
     return db.data!.users[index];
   }
 
   async delete(id: string): Promise<boolean> {
     await initDB();
-
     const index = db.data!.users.findIndex(u => u.id === id);
     if (index === -1) return false;
-
     db.data!.users.splice(index, 1);
     await db.write();
     return true;
   }
 }
+
+// ✅ singleton
+export const userRepository = new UserRepository();

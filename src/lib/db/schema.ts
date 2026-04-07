@@ -1,100 +1,114 @@
 // src/lib/db/schema.ts
 
-// ─── Company ───────────────────────────────────────────────────────────────
-export type Company = {
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+export type JobType = 'full-time' | 'part-time' | 'remote' | 'contract';
+export type UserRole = 'admin' | 'employer' | 'jobseeker';
+export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected';
+
+// ─── Core Models ─────────────────────────────────────────────────────────────
+
+export interface User {
+  id: string;
+  email: string;
+  passwordHash: string;
+  name: string;
+  role: UserRole;
+  avatarUrl?: string;
+  createdAt: string;   // ISO 8601
+  updatedAt: string;
+}
+
+/** User بدون فیلدهای حساس — برای ارسال به client */
+export type SafeUser = Omit<User, 'passwordHash'>;
+
+export interface Company {
   id: string;
   name: string;
-  logo: string;
+  description?: string;
+  logoUrl?: string;
   website?: string;
-  // createdAt نداریم - عمداً حذف شده
-};
-
-// ─── JobEmbeddingRecord ────────────────────────────────────────────────────
-export type JobEmbeddingRecord = {
-  jobId: string;
-  embedding: number[];
+  location?: string;
+  ownerId: string;     // ref → User.id
+  createdAt: string;
   updatedAt: string;
-};
-// ─── Job ───────────────────────────────────────────────────────────────────
-export type JobType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'REMOTE';
+}
 
-export type Job = {
-  status: string;
+export interface Job {
   id: string;
   title: string;
   description: string;
+  company: string;     // display name (denormalized)
+  companyId?: string;  // ref → Company.id
+  employerId: string;  // ref → User.id
+  type: JobType;
   location: string;
-  salary?: string;
-  type: JobType;          // ✅ نوع اصلی
-  jobType?: string;       // ✅ optional - برای فیلتر آزاد
-  isActive: boolean;      // ✅ boolean نه unknown
-  companyId: string;
-  categoryId?: string;
+  salary?: {
+    min: number;
+    max: number;
+    currency: string;  // e.g. 'USD', 'IRR'
+  };
+  skills: string[];
+  isActive: boolean;
   published: boolean;
+  aiScore?: number;
   createdAt: string;
   updatedAt: string;
-  jobEmbeddings: string;
-};
+}
 
-// ─── Category ──────────────────────────────────────────────────────────────
-export type Category = {
+export interface Application {
   id: string;
-  name: string;
-  slug: string;
-};
-
-// ─── User ──────────────────────────────────────────────────────────────────
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  role: 'JOBSEEKER' | 'EMPLOYER' | 'ADMIN';
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type SafeUser = Omit<User, 'password'>;
-
-// ─── Application ───────────────────────────────────────────────────────────
-export type ApplicationStatus =
-  | 'PENDING'
-  | 'REVIEWING'
-  | 'INTERVIEWED'
-  | 'ACCEPTED'
-  | 'REJECTED';
-
-export type Application = {
-  id: string;
-  jobId: string;
-  userId: string;
+  jobId: string;       // ref → Job.id
+  userId: string;      // ref → User.id
   status: ApplicationStatus;
+  resumePath?: string;
   coverLetter?: string;
   createdAt: string;
   updatedAt: string;
-};
+}
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
 
-// src/lib/db/schema.ts - اضافه کردن به انتهای فایل
+export interface JobEmbeddingRecord {
+  id: string;          // ← ضروری برای LowDBCollectionOperations<T extends { id: string }>
+  jobId: string;
+  embedding: number[];
+  updatedAt: string;
+}
 
-// ─── RefreshToken ──────────────────────────────────────────────────────────
-export type RefreshToken = {
+export interface StoredRefreshToken {
+  isRevoked: any;
   id: string;
   userId: string;
   tokenHash: string;
   expiresAt: string;
   createdAt: string;
-  isRevoked: boolean;
   revokedAt?: string;
-};
+  replacedByTokenId?: string;
+}
 
-// ─── Database (آپدیت) ──────────────────────────────────────────────────────
-export type Database = {
+// ─── Database Root ────────────────────────────────────────────────────────────
+
+export interface Database {
+  users: User[];
   jobs: Job[];
   companies: Company[];
-  categories: Category[];
-  users: User[];
   applications: Application[];
+  categories: Category[];
   jobEmbeddings: JobEmbeddingRecord[];
-  refreshTokens: RefreshToken[]; // ✅ اضافه شد
+  refreshTokens: StoredRefreshToken[];
+}
+
+export const defaultData: Database = {
+  users: [],
+  jobs: [],
+  companies: [],
+  applications: [],
+  categories: [],
+  jobEmbeddings: [],
+  refreshTokens: [],
 };

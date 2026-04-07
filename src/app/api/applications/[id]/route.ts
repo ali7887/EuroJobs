@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { applicationService } from '@/lib/services/application.service';
+import { ApplicationService } from '@/lib/services/application.service';
 import { ZodError } from 'zod';
 
 type Params = { params: Promise<{ id: string }> };
@@ -7,7 +7,7 @@ type Params = { params: Promise<{ id: string }> };
 export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
-    const application = await applicationService.getApplicationById(id);
+    const application = await ApplicationService.getApplicationsByJob(id);
     return NextResponse.json(application);
   } catch (error) {
     if (error instanceof Error && error.message === 'Application not found') {
@@ -21,7 +21,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
     const body = await req.json();
-    const application = await applicationService.updateStatus(id, body);
+    const application = await ApplicationService.updateStatus(id, body);
     return NextResponse.json(application);
   } catch (error) {
     if (error instanceof ZodError) {
@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
-    const result = await applicationService.deleteApplication(id);
+    const result = await ApplicationService.deleteApplication(id);
     return NextResponse.json(result);
   } catch (error) {
     if (error instanceof Error && error.message === 'Application not found') {

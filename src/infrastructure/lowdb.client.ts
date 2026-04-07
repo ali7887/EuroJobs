@@ -1,49 +1,48 @@
 // src/infrastructure/lowdb.client.ts
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
-import { join } from 'path';
-import { StoredRefreshToken } from '@/lib/types/token.types';
-import { User } from '@/modules/users/user.types';
-import { Job, JobEmbeddingRecord } from '@/lib/db/schema';
+import path from 'path';
+import type { Database } from '@/lib/db/schema';
 
-// ─── Application type (تا schema.prisma کامل بشه) ─────────────────────────
-export interface Application {
-  id: string;
-  jobId: string;
-  userId: string;
-  status: 'pending' | 'reviewed' | 'rejected' | 'accepted';
-  createdAt: string;
-}
+// ✅ یک نوع واحد — از schema.ts
+export type { Database as DbSchema };
 
-// ─── DbSchema ──────────────────────────────────────────────────────────────
-export interface DbSchema {
-  users: User[];
-  jobs: Job[];
-  applications: Application[];
-  refreshTokens: StoredRefreshToken[];
-  jobEmbeddings: JobEmbeddingRecord[]; // ✅ اضافه شد
-}
-
-// ─── Default data ──────────────────────────────────────────────────────────
-const defaultData: DbSchema = {
-  users: [],
+const defaultData: Database = {
   jobs: [],
+  companies: [],
+  categories: [],
+  users: [],
   applications: [],
+  jobEmbeddings: [],
   refreshTokens: [],
-  jobEmbeddings: [], // ✅ اضافه شد
 };
 
-// ─── Singleton ─────────────────────────────────────────────────────────────
-let db: Low<DbSchema> | null = null;
+let instance: Low<Database> | null = null;
 
-export async function getDb(): Promise<Low<DbSchema>> {
-  if (db) return db;
+export async function getDb(): Promise<Low<Database>> {
+  if (instance) return instance;
 
-  const filePath = join(process.cwd(), 'data', 'db.json');
-  const adapter = new JSONFile<DbSchema>(filePath);
-  db = new Low(adapter, defaultData);
-  await db.read();
-  db.data ??= defaultData;
+  const file = path.join(process.cwd(), 'data', 'db.json');
+  const adapter = new JSONFile<Database>(file);
+  instance = new Low<Database>(adapter, defaultData);
 
-  return db;
+  await instance.read();
+  instance.data ??= defaultData;
+
+  // ✅ اطمینان از وجود همه آرایه‌ها
+  instance.data.jobs ??= [];
+  instance.data.companies ??= [];
+  instance.data.categories ??= [];
+  instance.data.users ??= [];
+  instance.data.applications ??= [];
+  instance.data.jobEmbeddings ??= [];
+  instance.data.refreshTokens ??= [];
+
+  await instance.write();
+  return instance;
+}
+
+export async function saveDb(): Promise<void> {
+  const db = await getDb();
+  await db.write();
 }

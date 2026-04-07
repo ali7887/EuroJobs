@@ -1,36 +1,28 @@
-import { NextResponse } from 'next/server'
-import { issueTokenPair } from '@/lib/tokens/token.service'
-import { setRefreshCookie } from '@/lib/cookies/cookie.utils'
-import { findByEmail, toSafeUser } from '@/modules/users/user.repository'
-import { verifyPassword } from '@/modules/users/user.service'
+import { NextRequest, NextResponse } from 'next/server'
+import { AuthService } from '@/lib/auth/auth.service'
+import { setRefreshTokenCookie } from '@/lib/auth/cookie.utilities'
 
-export async function POST(req: Request) {
-  const { email, password } = await req.json()
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
 
-  const user = await findByEmail(email)
-  
-  if (!user) {
+    const result = await AuthService.login({
+      email: body.email,
+      password: body.password
+    })
+
+    const res = NextResponse.json({
+      user: result.user,
+      accessToken: result.tokens.accessToken
+    })
+
+    setRefreshTokenCookie(res, result.tokens.refreshToken)
+
+    return res
+  } catch (err: any) {
     return NextResponse.json(
-      { error: 'Invalid email or password' },
-      { status: 401 }
+      { error: err.message },
+      { status: err.statusCode ?? 500 }
     )
   }
-
-  const valid = await verifyPassword(password, user.password)
-  
-  if (!valid) {
-    return NextResponse.json(
-      { error: 'Invalid email or password' },
-      { status: 401 }
-    )
-  }
-
-  const { accessToken, refreshToken } = await issueTokenPair(user.id, user.role)
-
-  await setRefreshCookie(refreshToken)
-
-  return NextResponse.json({
-    accessToken,
-    user: toSafeUser(user),
-  })
 }

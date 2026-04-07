@@ -23,7 +23,6 @@ export class ApplicationRepository {
     return db.data!.applications.filter(a => a.jobId === jobId);
   }
 
-  // بررسی درخواست تکراری
   async findDuplicate(jobId: string, userId: string): Promise<Application | null> {
     await initDB();
     return (
@@ -37,14 +36,12 @@ export class ApplicationRepository {
     data: Omit<Application, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<Application> {
     await initDB();
-
     const application: Application = {
       id: randomUUID(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       ...data,
     };
-
     db.data!.applications.push(application);
     await db.write();
     return application;
@@ -55,28 +52,26 @@ export class ApplicationRepository {
     status: ApplicationStatus,
   ): Promise<Application | null> {
     await initDB();
-
     const index = db.data!.applications.findIndex(a => a.id === id);
     if (index === -1) return null;
-
     db.data!.applications[index] = {
       ...db.data!.applications[index],
       status,
       updatedAt: new Date().toISOString(),
     };
-
     await db.write();
     return db.data!.applications[index];
   }
 
   async delete(id: string): Promise<boolean> {
     await initDB();
-
     const index = db.data!.applications.findIndex(a => a.id === id);
     if (index === -1) return false;
-
     db.data!.applications.splice(index, 1);
     await db.write();
     return true;
   }
 }
+
+// ✅ singleton
+export const applicationRepository = new ApplicationRepository();

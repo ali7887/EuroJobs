@@ -1,20 +1,27 @@
-// src/app/api/auth/logout/route.ts
-import { getRefreshCookie, clearRefreshCookie } from '@/lib/cookies/cookie.utils'
-import { verifyRefreshToken } from '@/lib/jwt/jwt.utils'
-import { revokeToken } from '@/lib/tokens/token.repository'
+import { NextRequest, NextResponse } from 'next/server'
+import { AuthService } from '@/lib/auth/auth.service'
+import {
+  getRefreshTokenFromCookie,
+  clearRefreshTokenCookie
+} from '@/lib/auth/cookie.utilities'
 
-export async function POST() {
-  const refreshToken = await getRefreshCookie()
+export async function POST(req: NextRequest) {
+  try {
+    const refreshToken = getRefreshTokenFromCookie(req)
 
-  if (refreshToken) {
-    try {
-      const payload = verifyRefreshToken(refreshToken)
-      await revokeToken(payload.tokenId)  // DB از invalidate کن
-    } catch {
-      // token invalid بود — مهم نیست، cookie رو پاک کن
+    if (refreshToken) {
+      await AuthService.logout(refreshToken)
     }
-  }
 
-  await clearRefreshCookie()
-  return Response.json({ success: true })
+    const res = NextResponse.json({ success: true })
+
+    clearRefreshTokenCookie(res)
+
+    return res
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.statusCode ?? 500 }
+    )
+  }
 }

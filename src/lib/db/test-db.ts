@@ -2,44 +2,30 @@
 import { db, initDB } from './db';
 import { Company, Job } from './schema';
 
-// ✅ فقط فیلدهای موجود در schema
 const company: Company = {
   id: 'company-1',
   name: 'TechCorp',
-  logo: '/logos/techcorp.png',
+  description: 'A leading tech company',
+  logoUrl: '/logos/techcorp.png',       // ✅ logoUrl نه logo
   website: 'https://techcorp.com',
-  // createdAt حذف شد - در schema نیست
+  location: 'Remote',
+  ownerId: 'user-1',                    // ✅ اجباری در schema
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 const job: Job = {
   id: 'job-1',
   title: 'Senior TypeScript Developer',
   description: 'We are looking for an experienced TypeScript developer.',
-  location: 'Remote',
-  salary: '80000-120000', // ✅ یک فیلد string
-  type: 'REMOTE',
-  jobType: 'remote', // ✅ optional
-  isActive: true, // ✅ boolean
+  company: 'TechCorp', // ✅ display name (denormalized)
   companyId: 'company-1',
-  categoryId: 'cat-1',
-  published: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  status: '',
-  jobEmbeddings: ''
-};
-
-async function seedDatabase() {
-  await initDB();
-  db.data!.companies = [company];
-  db.data!.jobs = [job];
-  db.data!.categories = [
-    { id: 'cat-1', name: 'Engineering', slug: 'engineering' },
-  ];
-  db.data!.users = [];
-  db.data!.applications = [];
-  await db.write();
-  console.log('✅ Database seeded successfully');
-}
-
-seedDatabase().catch(console.error);
+  employerId: 'user-1', // ✅ اجباری
+  type: 'remote',
+  location: '',
+  skills: [],
+  isActive: false,
+  published: false,
+  createdAt: '',
+  updatedAt: ''
+}                       // ✅ JobType: 'full-time'|
