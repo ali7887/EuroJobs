@@ -32,6 +32,7 @@ export interface User {
   avatarUrl?: string
   createdAt: string
   updatedAt: string
+  provider: string
 }
 
 export type SafeUser = Omit<User, "passwordHash">

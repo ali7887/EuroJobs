@@ -66,13 +66,14 @@ export const userService = {
 
     const now = new Date().toISOString();
     const newUser: User = {
-      id:           randomUUID(),
-      email:        data.email,
+      id: randomUUID(),
+      email: data.email,
       passwordHash: await bcrypt.hash(data.password, 10),
-      name:         data.name,
-      role:         data.role ?? 'jobseeker',
-      createdAt:    now,
-      updatedAt:    now,
+      name: data.name,
+      role: data.role ?? 'jobseeker',
+      createdAt: now,
+      updatedAt: now,
+      provider: ''
     };
 
     db.data.users.push(newUser);

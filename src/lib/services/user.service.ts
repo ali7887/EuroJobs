@@ -45,9 +45,9 @@ export class UserService {
     const user = await this.repository.create({
       name: validated.name,
       email: validated.email,
-      passwordHash,                     // ✅ نام فیلد صحیح از schema
+      passwordHash,
       role: normalizeRole(validated.role),
-
+      provider: ''
     });
 
     return toSafeUser(user);

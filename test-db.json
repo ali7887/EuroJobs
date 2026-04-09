@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "id": "061c81a8-7a83-45c5-b23f-22a9f46ee2a5",
+      "createdAt": "2026-04-09T13:25:30.246Z",
+      "updatedAt": "2026-04-09T13:25:30.248Z",
+      "email": "admin@jobboard.com",
+      "name": "Admin",
+      "passwordHash": "$2b$10$byaXS7fROraWQZzFKz1aLOvcGdES645HFHSgSHnqTaWclo6a4pWzu",
+      "role": "admin",
+      "provider": "LOCAL"
+    }
+  ],
+  "jobs": [],
+  "companies": [],
+  "applications": [],
+  "categories": [],
+  "jobEmbeddings": [],
+  "refreshTokens": [],
+  "sessions": []
+}

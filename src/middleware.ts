@@ -1,60 +1,39 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import jwt from "jsonwebtoken"
+import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = [
-  "/api/auth/login",
-  "/api/auth/register"
-]
+const protectedRoutes = [
+  "/admin",
+  "/employer",
+  "/candidate"
+];
 
-export function middleware(request: NextRequest) {
+export function middleware(req: NextRequest) {
 
-  const { pathname } = request.nextUrl
+  const { pathname } = req.nextUrl;
 
-  // allow public routes
-  if (PUBLIC_ROUTES.includes(pathname)) {
-    return NextResponse.next()
+  const isProtectedRoute = protectedRoutes.some(route =>
+    pathname.startsWith(route)
+  );
+
+  if (!isProtectedRoute) {
+    return NextResponse.next();
   }
 
-  // get token from header
-  const authHeader = request.headers.get("authorization")
+  const token = req.cookies.get("accessToken");
 
-  if (!authHeader) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    )
+  if (!token) {
+
+    const loginUrl = new URL("/login", req.url);
+
+    return NextResponse.redirect(loginUrl);
   }
 
-  const token = authHeader.replace("Bearer ", "")
-
-  try {
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_ACCESS_SECRET!
-    )
-
-    // attach user to headers
-    const requestHeaders = new Headers(request.headers)
-
-    requestHeaders.set(
-      "x-user-id",
-      (decoded as any).userId
-    )
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders
-      }
-    })
-
-  } catch (error) {
-
-    return NextResponse.json(
-      { error: "Invalid or expired token" },
-      { status: 401 }
-    )
-
-  }
+  return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    "/admin/:path*",
+    "/employer/:path*",
+    "/candidate/:path*"
+  ]
+};

@@ -9,6 +9,7 @@ const file = path.join(process.cwd(), process.env.DB_FILE ?? 'data/db.json')
 
 const adapter = new JSONFile<Database>(file)
 
+
 const defaultData: Database = {
   jobs: [],
   companies: [],
