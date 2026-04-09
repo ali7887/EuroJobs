@@ -1,0 +1,40 @@
+import NextAuth, { type AuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import GithubProvider from "next-auth/providers/github"
+
+export const authOptions: AuthOptions = {
+
+  providers: [
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+    }),
+
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!
+    })
+
+  ],
+
+  session: {
+    strategy: "jwt" as const
+  },
+
+  callbacks: {
+
+    async signIn({ user, account }: { user: any; account: any }) {
+
+      if (!account) return false
+
+      return true
+    }
+
+  }
+
+}
+
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST }

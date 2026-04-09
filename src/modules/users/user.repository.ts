@@ -1,5 +1,6 @@
 // src/modules/users/user.repository.ts
 import { getDb, saveDb } from '@/infrastructure/lowdb.client';
+import { db, initDB } from '@/lib/db/db';
 import type { User, SafeUser } from '@/lib/db/schema';
 
 export const UserRepository = {
@@ -13,13 +14,31 @@ export const UserRepository = {
     return db.data!.users.find((u) => u.id === id);
   },
 
-  async create(user: User): Promise<SafeUser> {
-    const db = await getDb();
-    db.data!.users.push(user);
-    await saveDb();
-    const { passwordHash: _, ...safeUser } = user;
-    return safeUser;
-  },
+  async create(
+    data: Omit<User, "id" | "createdAt" | "updatedAt">
+  ): Promise<User> {
+
+    await initDB()
+
+    const user: User = {
+
+      id: crypto.randomUUID(),
+
+      createdAt: new Date().toISOString(),
+
+      updatedAt: new Date().toISOString(),
+
+      ...data
+
+    }
+
+    db.data!.users.push(user)
+
+    await db.write()
+
+    return user
+  }
+  ,
 
   async existsByEmail(email: string): Promise<boolean> {
     const db = await getDb();
