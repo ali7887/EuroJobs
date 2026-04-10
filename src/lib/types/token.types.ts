@@ -1,4 +1,5 @@
 export interface AccessTokenPayload {
+  sub: string;
   userId: string;
   role: string;
   type: 'access';

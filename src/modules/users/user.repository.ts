@@ -1,52 +1,28 @@
-// src/modules/users/user.repository.ts
-import { getDb, saveDb } from '@/infrastructure/lowdb.client';
-import { db, initDB } from '@/lib/db/db';
-import type { User, SafeUser } from '@/lib/db/schema';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
-export const UserRepository = {
-  async findByEmail(email: string): Promise<User | undefined> {
-    const db = await getDb();
-    return db.data!.users.find((u) => u.email === email.toLowerCase());
-  },
-
-  async findById(id: string): Promise<User | undefined> {
-    const db = await getDb();
-    return db.data!.users.find((u) => u.id === id);
-  },
-
-  async create(
-    data: Omit<User, "id" | "createdAt" | "updatedAt">
-  ): Promise<User> {
-
-    await initDB()
-
-    const user: User = {
-
-      id: crypto.randomUUID(),
-
-      createdAt: new Date().toISOString(),
-
-      updatedAt: new Date().toISOString(),
-
-      ...data
-
-    }
-
-    db.data!.users.push(user)
-
-    await db.write()
-
-    return user
+export class UserRepository {
+  getById(userId: string) {
+    throw new Error('Method not implemented.');
   }
-  ,
+  async findByEmail(email: string) {
+    const result = await db.select().from(users).where(eq(users.email, email.toLowerCase()));
+    return result[0];
+  }
+
+  async findById(id: number) {
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
+
+  async create(data: typeof users.$inferInsert) {
+    const result = await db.insert(users).values(data).returning();
+    return result[0];
+  }
 
   async existsByEmail(email: string): Promise<boolean> {
-    const db = await getDb();
-    return db.data!.users.some((u) => u.email === email.toLowerCase());
-  },
-
-  toSafeUser(user: User): SafeUser {
-    const { passwordHash: _, ...safeUser } = user;
-    return safeUser;
-  },
-};
+    const result = await db.select({ id: users.id }).from(users).where(eq(users.email, email.toLowerCase()));
+    return result.length > 0;
+  }
+}

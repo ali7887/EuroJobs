@@ -1,23 +1,48 @@
-import { getDb } from '@/infrastructure/lowdb.client';
-import { JobEmbeddingRecord } from './matcher.types';
+// src/app/api/ai/match/matcher.repository.ts
+import { db } from '@/lib/db';            // drizzle client: src/lib/db/index.ts
+import { jobEmbeddings } from '@/lib/db/schema';
+import type { JobEmbeddingRecord } from './matcher.types';
+import { eq } from 'drizzle-orm';
 
 export class MatcherRepository {
-  async saveEmbedding(record: JobEmbeddingRecord): Promise<void> {
-    const db = await getDb();
-    // اضافه کردن jobEmbeddings به schema اگر وجود نداشت
-    if (!db.data.jobEmbeddings) db.data.jobEmbeddings = [];
-    
-    const idx = db.data.jobEmbeddings.findIndex((e) => e.jobId === record.jobId);
-    if (idx >= 0) {
-      db.data.jobEmbeddings[idx] = record;
+  async saveEmbedding(record: Omit<JobEmbeddingRecord, 'id'>): Promise<void> {
+    // چک کن که برای این jobId قبلاً رکورد هست یا نه
+    const existing = await db
+      .select()
+      .from(jobEmbeddings)
+      .where(eq(jobEmbeddings.jobId, record.jobId))
+      .limit(1);
+
+    if (existing.length > 0) {
+      // update
+      await db
+        .update(jobEmbeddings)
+        .set({
+          embedding: record.embedding,
+          updatedAt: record.updatedAt,
+        })
+        .where(eq(jobEmbeddings.jobId, record.jobId));
     } else {
-      db.data.jobEmbeddings.push(record);
+      // insert
+      await db.insert(jobEmbeddings).values({
+        jobId: record.jobId,
+        embedding: record.embedding,
+        updatedAt: record.updatedAt,
+      });
     }
-    await db.write();
   }
 
   async getAllEmbeddings(): Promise<JobEmbeddingRecord[]> {
-    const db = await getDb();
-    return db.data.jobEmbeddings ?? [];
+    const rows = await db.select().from(jobEmbeddings);
+
+    // اگر schema.ts را طوری تعریف کرده باشی که type ها درست باشند،
+    // همین rows خودشان JobEmbeddingRecord خواهند بود.
+    // ولی برای اطمینان، map می‌کنیم:
+    return rows.map((r) => ({
+      id: r.id,
+      jobId: r.jobId,
+      embedding: r.embedding,
+      updatedAt: r.updatedAt,
+    }));
   }
 }

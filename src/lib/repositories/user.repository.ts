@@ -1,58 +1,64 @@
-import { db, initDB } from '../db/db';
-import { User } from '../db/schema';
-import { randomUUID } from 'crypto';
+import { db } from '@/lib/db/db';
+import { users } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import type { User, NewUser } from '@/lib/db/schema';
 
 export class UserRepository {
-  async findAll(): Promise<User[]> {
-    await initDB();
-    return db.data!.users;
+  findAll() {
+    throw new Error("Method not implemented.");
   }
 
-  async findById(id: string): Promise<User | null> {
-    await initDB();
-    return db.data!.users.find(u => u.id === id) ?? null;
+  async findById(id: number): Promise<User | null> {
+
+    const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+
+    return result[0] ?? null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    await initDB();
-    return db.data!.users.find(u => u.email === email) ?? null;
+
+    const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    return result[0] ?? null;
   }
 
-  async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
-    await initDB();
-    const user: User = {
-      id: randomUUID(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      ...data,
-    };
-    db.data!.users.push(user);
-    await db.write();
-    return user;
+  async create(data: NewUser): Promise<User> {
+
+    const result = await db
+      .insert(users)
+      .values(data)
+      .returning();
+
+    return result[0];
   }
 
-  async update(id: string, data: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | null> {
-    await initDB();
-    const index = db.data!.users.findIndex(u => u.id === id);
-    if (index === -1) return null;
-    db.data!.users[index] = {
-      ...db.data!.users[index],
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
-    await db.write();
-    return db.data!.users[index];
+  async update(id: number, data: Partial<NewUser>): Promise<User | null> {
+
+    const result = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, id))
+      .returning();
+
+    return result[0] ?? null;
   }
 
-  async delete(id: string): Promise<boolean> {
-    await initDB();
-    const index = db.data!.users.findIndex(u => u.id === id);
-    if (index === -1) return false;
-    db.data!.users.splice(index, 1);
-    await db.write();
-    return true;
+  async delete(id: number): Promise<boolean> {
+
+    const result = await db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning();
+
+    return result.length > 0;
   }
+
 }
-
-// ✅ singleton
-export const userRepository = new UserRepository();

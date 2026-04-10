@@ -20,8 +20,8 @@ async function seed() {
     passwordHash: passwordHash,
     role: "admin",
     provider: "LOCAL",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    
+    updatedAt: new Date()
   };
 
   files.forEach(file => {

@@ -1,54 +1,67 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { ApplicationService } from '@/lib/services/application.service';
-import { ZodError } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { ApplicationService } from "@/lib/services/application.service";
 
-type Params = { params: Promise<{ id: string }> };
-
-export async function GET(_req: NextRequest, { params }: Params) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
-    const application = await ApplicationService.getApplicationsByJob(id);
+    const idNum = Number(id);
+
+    const application =
+      await ApplicationService.getApplicationsByJob(idNum);
+
+    if (!application)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+
     return NextResponse.json(application);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Application not found') {
-      return NextResponse.json({ error: error.message }, { status: 404 });
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to fetch application" },
+      { status: 500 }
+    );
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: Params) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
+    const idNum = Number(id);
+
     const body = await req.json();
-    const application = await ApplicationService.updateStatus(id, body);
-    return NextResponse.json(application);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: 'Validation failed', details: error.message },
-        { status: 400 },
-      );
-    }
-    if (error instanceof Error) {
-      if (error.message === 'Application not found') {
-        return NextResponse.json({ error: error.message }, { status: 404 });
-      }
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+
+    const result =
+      await ApplicationService.updateStatus(idNum, body);
+
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to update" },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
-    const result = await ApplicationService.deleteApplication(id);
+    const idNum = Number(id);
+
+    const result =
+      await ApplicationService.deleteApplication(idNum);
+
     return NextResponse.json(result);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Application not found') {
-      return NextResponse.json({ error: error.message }, { status: 404 });
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to delete" },
+      { status: 500 }
+    );
   }
 }

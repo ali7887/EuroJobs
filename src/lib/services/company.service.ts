@@ -1,33 +1,34 @@
 // src/lib/services/company.service.ts
-import { companyRepository } from '../repositories/company.repository';
+import { CompanyRepository } from '../repositories/company.repository';
 import { Company } from '../db/schema';
 
 export class CompanyService {
+
   async getCompanies(): Promise<Company[]> {
-    return companyRepository.findAll();
+    return CompanyRepository.findAll();
   }
 
-  async getCompanyById(id: string): Promise<Company | undefined> {
-    return companyRepository.findById(id);
+  async getCompanyById(id: number): Promise<Company | undefined> {
+    return CompanyRepository.findById(id);
   }
 
-  // ✅ Company فاقد createdAt است - فقط 'id' را Omit کن
   async createCompany(
     input: Omit<Company, 'id'>
   ): Promise<Company> {
-    return companyRepository.create(input);
+    return CompanyRepository.create(input);
   }
 
   async updateCompany(
-    id: string,
+    id: number,
     input: Partial<Omit<Company, 'id'>>
   ): Promise<Company | null> {
-    return companyRepository.update(id, input);
+    return CompanyRepository.update(id, input);
   }
 
-  async deleteCompany(id: string): Promise<boolean> {
-    return companyRepository.delete(id);
+  async deleteCompany(id: number): Promise<boolean> {
+    return CompanyRepository.delete(id);
   }
+
 }
 
 export const companyService = new CompanyService();

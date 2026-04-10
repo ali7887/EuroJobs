@@ -1,196 +1,103 @@
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
+import { userService } from "@/modules/users/user.service"
+import { TokenRepository } from "./token.service"
 
-import { db } from "@/lib/db/db"
-
-import { sessionService } from "./session/session.service"
-import { hashToken } from "./session/session.utils"
-
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "./token.utils"
-
-import type { User, UserRole, SafeUser } from "@/lib/db/schema"
-
-export interface RegisterInput {
-  email: string
-  password: string
-  name?: string
+function generateToken() {
+  return crypto.randomBytes(32).toString("hex")
 }
 
-export interface LoginInput {
-  email: string
-  password: string
+function hashToken(token: string) {
+  return crypto.createHash("sha256").update(token).digest("hex")
 }
 
-export interface AuthTokens {
-  accessToken: string
-  refreshToken: string
-}
+export const authService = {
 
-class AuthService {
+  async register(data: {
+    email: string
+    password: string
+    name: string
+  }) {
 
-  // =========================
-  // REGISTER
-  // =========================
+    const user = await userService.createUser({
+      email: data.email,
+      password: data.password,
+      name: data.name
+    })
 
-  async register(input: RegisterInput) {
-    const { email, password, name } = input
+    const tokens = await this.createTokens(user.id)
 
-    const existing = db.data.users.find(
-      (u) => u.email === email
-    )
+    return { user, tokens }
+  },
 
-    if (existing) {
-      throw new Error("Email already exists")
-    }
 
-    const passwordHash = await bcrypt.hash(password, 10)
-    const now = new Date().toISOString()
+  async login(data: {
+    email: string
+    password: string
+  }) {
 
-    const user: User = {
-      id: crypto.randomUUID(),
-      email,
-      passwordHash,
-      name: name ?? "",
-      role: "jobseeker" as UserRole,
-      createdAt: now,
-      updatedAt: now,
-    }
+    const user = await userService.findByEmail(data.email)
 
-    db.data.users.push(user)
-    await db.write()
+    if (!user)
+      throw new Error("User not found")
 
-    const tokens = await this.createTokensAndSession(user.id)
-
-    const safeUser: SafeUser = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      avatarUrl: user.avatarUrl,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }
-
-    return {
-      user: safeUser,
-      tokens: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
-      }
-    }
-  }
-
-  // =========================
-  // LOGIN
-  // =========================
-
-  async login(input: LoginInput) {
-    const { email, password } = input
-
-    const user = db.data.users.find(
-      (u) => u.email === email
-    )
-
-    if (!user) {
-      throw new Error("Invalid credentials")
-    }
-
-    const valid = await bcrypt.compare(
-      password,
+    const valid = await userService.comparePassword(
+      data.password,
       user.passwordHash
     )
 
-    if (!valid) {
-      throw new Error("Invalid credentials")
-    }
+    if (!valid)
+      throw new Error("Invalid password")
 
-    const tokens = await this.createTokensAndSession(user.id)
-
-    const safeUser: SafeUser = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      avatarUrl: user.avatarUrl,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }
+    const tokens = await this.createTokens(user.id)
 
     return {
-      user: safeUser,
-      tokens: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
-      }
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role
+      },
+      tokens
     }
-  }
+  },
 
-  // =========================
-  // TOKEN CREATION
-  // =========================
-
-  private async createTokensAndSession(
-    userId: string
-  ): Promise<AuthTokens> {
-
-    const accessToken = generateAccessToken(userId)
-    const refreshToken = generateRefreshToken()
-
-    const tokenHash = hashToken(refreshToken)
-
-    await sessionService.createSession(
-      userId,
-      refreshToken
-    )
-
-    return {
-      accessToken,
-      refreshToken,
-    }
-  }
-
-  // =========================
-  // LOGOUT
-  // =========================
-
-  async logout(refreshToken: string) {
-
-    const tokenHash = hashToken(refreshToken)
-
-    const session =
-      await sessionService.findSessionByToken(tokenHash)
-
-    if (!session) {
-      return { success: true }
-    }
-
-    await sessionService.deleteSession(session.id)
-
-    return { success: true }
-  }
-
-  // =========================
-  // REFRESH TOKEN
-  // =========================
 
   async refresh(refreshToken: string) {
 
+  const tokenHash = hashToken(refreshToken)
+
+  const stored = await TokenRepository.findByHash(tokenHash)
+
+  if (!stored || stored.isRevoked || !stored.userId)
+    throw new Error("Invalid refresh token")
+
+  const tokens = await this.createTokens(stored.userId)
+
+  await TokenRepository.revoke(stored.id)
+
+  return tokens
+}
+,
+
+
+  async createTokens(userId: number) {
+
+    const accessToken = generateToken()
+    const refreshToken = generateToken()
+
     const tokenHash = hashToken(refreshToken)
 
-    const session =
-      await sessionService.findSessionByToken(tokenHash)
+    await TokenRepository.store({
+      userId,
+      tokenHash,
+      isRevoked: false,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+    })
 
-    if (!session) {
-      throw new Error("Invalid refresh token")
+    return {
+      accessToken,
+      refreshToken
     }
-
-    await sessionService.deleteSession(session.id)
-
-    return this.createTokensAndSession(session.userId)
   }
 }
-
-export const authService = new AuthService()

@@ -1,29 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { verifyAccessToken } from '@/lib/jwt/jwt.utils'
-import { UserRepository } from '@/modules/users/user.repository'
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAccessToken } from '@/lib/jwt/jwt.utils';
+import { userService } from '@/lib/services/user.service';
 
 export async function GET(req: NextRequest) {
+
+  const authHeader = req.headers.get('authorization');
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  const token = authHeader.slice(7);
+
   try {
-    const auth = req.headers.get('authorization')
 
-    if (!auth) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const payload: any = await verifyAccessToken(token);
+
+    const userId = payload?.sub ?? payload?.userId;
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
     }
 
-    const token = auth.replace('Bearer ', '')
-
-    const payload = await verifyAccessToken(token)
-
-    const user = await UserRepository.findById(payload.userId)
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+const user = await userService.findById(Number(userId));
 
     return NextResponse.json({
-      user: UserRepository.toSafeUser(user)
-    })
-  } catch {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      data: user
+    });
+
+  } catch (err) {
+
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+
   }
+
 }

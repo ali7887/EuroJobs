@@ -1,65 +1,54 @@
-import { getEmbedding, cosineSimilarity } from '@/app/api/ai/embeddings';
-import { getOpenAIClient } from '@/app/api/ai/openai.client';
-import { buildJobMatchPrompt } from '@/app/api/ai/prompts';
 import { MatcherRepository } from './matcher.repository';
-import { MatchResult } from './matcher.types';
+import { db } from '@/lib/db';
+import { jobs } from '@/lib/db/schema';
 
-const repo = new MatcherRepository();
+type MatchableJob = {
+  id: number;
+  title: string | null;
+  description: string | null;
+};
 
 export class MatcherService {
-  async indexJob(jobId: string, jobText: string): Promise<void> {
-    const embedding = await getEmbedding(jobText);
-    await repo.saveEmbedding({
-      jobId,
-      embedding,
-      updatedAt: new Date().toISOString(),
-      id: ''
-    });
-  }
+  private repository = new MatcherRepository();
 
+  /**
+   * ساده‌ترین matcher فعلاً
+   * بعداً می‌توان embedding یا AI اضافه کرد
+   */
   async findMatchingJobs(
-    userSkills: string[],
-    jobs: Array<{ id: string; title: string; description: string }>,
-    topK = 5
-  ): Promise<MatchResult[]> {
-    const userText = `Skills: ${userSkills.join(', ')}`;
-    const userEmbedding = await getEmbedding(userText);
-    const allEmbeddings = await repo.getAllEmbeddings();
+    skills: string[],
+    jobList: MatchableJob[],
+    limit = 5
+  ): Promise<MatchableJob[]> {
 
-    // محاسبه similarity برای هر job
-    const scored = allEmbeddings
-      .map((record) => ({
-        jobId: record.jobId,
-        similarity: cosineSimilarity(userEmbedding, record.embedding),
-      }))
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, topK);
+    if (!skills.length) return [];
 
-    // گرفتن توضیح دقیق‌تر از GPT برای top matches
-    const results: MatchResult[] = [];
-    for (const { jobId, similarity } of scored) {
-      const job = jobs.find((j) => j.id === jobId);
-      if (!job) continue;
+    const normalizedSkills = skills.map((s) => s.toLowerCase());
 
-      const client = getOpenAIClient();
-      const completion = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'user', content: buildJobMatchPrompt(userSkills, job.description) },
-        ],
-        response_format: { type: 'json_object' },
-      });
+    const scored = jobList.map((job) => {
+      const text =
+        `${job.title ?? ''} ${job.description ?? ''}`.toLowerCase();
 
-      const parsed = JSON.parse(completion.choices[0].message.content ?? '{}');
-      results.push({
-        jobId,
-        jobTitle: job.title,
-        score: Math.round(similarity * 100),
-        reasons: parsed.reasons ?? [],
-        missingSkills: parsed.missingSkills ?? [],
-      });
-    }
+      let score = 0;
 
-    return results;
+      for (const skill of normalizedSkills) {
+        if (text.includes(skill)) score++;
+      }
+
+      return {
+        job,
+        score,
+      };
+    });
+
+    const sorted = scored
+      .filter((r) => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((r) => r.job);
+
+    return sorted;
   }
 }
+
+export const matcherService = new MatcherService();

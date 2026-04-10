@@ -1,59 +1,28 @@
-// src/lib/repositories/matcher.repository.ts
-import { randomUUID } from 'crypto';
-import { dbClient } from '../db/lowdb.adapter';
-import type { JobEmbeddingRecord } from '../db/schema';
+import { db } from '@/lib/db';
+import { jobEmbeddings } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import type { JobEmbeddingRecord } from '@/lib/db/schema';
 
-export class MatcherRepository {
+export const matcherRepository = {
+  async upsertEmbedding(jobId: number, embedding: number[]): Promise<JobEmbeddingRecord> {
+    const existing = await db.select().from(jobEmbeddings).where(eq(jobEmbeddings.jobId, jobId)).limit(1);
 
-  async upsertEmbedding(
-    jobId: string,
-    embedding: number[],
-  ): Promise<JobEmbeddingRecord> {
-    await dbClient.read();
-
-    const existing = dbClient.jobEmbeddings.findOne((r) => r.jobId === jobId);
-
-    if (existing) {
-      // ✅ id وجود دارد — update
-      const updated = dbClient.jobEmbeddings.update(existing.id, {
-        embedding,
-        updatedAt: new Date().toISOString(),
-      });
-      await dbClient.write();
-      return updated!;
+    if (existing.length > 0) {
+      const updated = await db.update(jobEmbeddings)
+        .set({ embedding, updatedAt: new Date() })
+        .where(eq(jobEmbeddings.jobId, jobId))
+        .returning();
+      return updated[0];
     }
 
-    // ✅ رکورد جدید با id
-    const record: JobEmbeddingRecord = {
-      id: randomUUID(),          // ✅ id اجباری برای LowDBCollectionOperations<T extends {id:string}>
-      jobId,
-      embedding,
-      updatedAt: new Date().toISOString(),
-    };
+    const inserted = await db.insert(jobEmbeddings)
+      .values({ jobId, embedding, updatedAt: new Date() })
+      .returning();
+    return inserted[0];
+  },
 
-    dbClient.jobEmbeddings.insert(record);
-    await dbClient.write();
-    return record;
+  async getEmbeddingByJobId(jobId: number): Promise<JobEmbeddingRecord | null> {
+    const res = await db.select().from(jobEmbeddings).where(eq(jobEmbeddings.jobId, jobId)).limit(1);
+    return res[0] ?? null;
   }
-
-  async getEmbeddingByJobId(jobId: string): Promise<JobEmbeddingRecord | null> {
-    await dbClient.read();
-    return dbClient.jobEmbeddings.findOne((r) => r.jobId === jobId) ?? null;
-  }
-
-  async getAllEmbeddings(): Promise<JobEmbeddingRecord[]> {
-    await dbClient.read();
-    return dbClient.jobEmbeddings.findAll();
-  }
-
-  async deleteByJobId(jobId: string): Promise<boolean> {
-    await dbClient.read();
-    const record = dbClient.jobEmbeddings.findOne((r) => r.jobId === jobId);
-    if (!record) return false;
-    const result = dbClient.jobEmbeddings.delete(record.id);
-    await dbClient.write();
-    return result;
-  }
-}
-
-export const matcherRepository = new MatcherRepository();
+};

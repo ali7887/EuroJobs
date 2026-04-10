@@ -1,45 +1,29 @@
-import { db, initDB } from '@/lib/db/db';
-import { Company } from '@/lib/db/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { db } from "../db/db";
+import { companies } from "../db/schema";
+import { eq } from "drizzle-orm";
 
 export class CompanyRepository {
-  async findAll(): Promise<Company[]> {
-    await initDB();
-    return db.data!.companies;
+  static async findAll() {
+    return await db.select().from(companies);
   }
 
-  async findById(id: string): Promise<Company | undefined> {
-    await initDB();
-    return db.data!.companies.find((c) => c.id === id);
+  static async findById(id: number) {
+    const result = await db.select().from(companies).where(eq(companies.id, id));
+    return result[0] ?? null;
   }
 
-  async create(input: Omit<Company, 'id'>): Promise<Company> {
-    await initDB();
-    const company: Company = { id: uuidv4(), ...input };
-    db.data!.companies.push(company);
-    await db.write();
-    return company;
+  static async create(data: typeof companies.$inferInsert) {
+    const result = await db.insert(companies).values(data).returning();
+    return result[0];
   }
 
-  async update(
-    id: string,
-    input: Partial<Omit<Company, 'id'>>
-  ): Promise<Company | null> {
-    await initDB();
-    const idx = db.data!.companies.findIndex((c) => c.id === id);
-    if (idx === -1) return null;
-    db.data!.companies[idx] = { ...db.data!.companies[idx], ...input };
-    await db.write();
-    return db.data!.companies[idx];
+  static async update(id: number, data: Partial<typeof companies.$inferInsert>) {
+    const result = await db.update(companies).set(data).where(eq(companies.id, id)).returning();
+    return result[0] ?? null;
   }
 
-  async delete(id: string): Promise<boolean> {
-    await initDB();
-    const before = db.data!.companies.length;
-    db.data!.companies = db.data!.companies.filter((c) => c.id !== id);
-    await db.write();
-    return db.data!.companies.length < before;
+  static async delete(id: number) {
+    const result = await db.delete(companies).where(eq(companies.id, id)).returning();
+    return result.length > 0;
   }
 }
-
-export const companyRepository = new CompanyRepository();

@@ -1,34 +1,53 @@
+// src/app/api/ai/search/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { getEmbedding, cosineSimilarity } from '@/app/api/ai/embeddings';
-import { getDb } from '@/infrastructure/lowdb.client';
+import { db } from '@/lib/db';
+import { jobs, jobEmbeddings } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 
-export async function GET(req: NextRequest) {
-  const query = req.nextUrl.searchParams.get('q');
-  if (!query || query.length < 2) {
-    return NextResponse.json({ error: 'Query too short' }, { status: 400 });
+const schema = z.object({
+  query: z.string().min(1),
+  topK: z.number().int().min(1).max(50).optional().default(10),
+});
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const parsed = schema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const [queryEmbedding, db] = await Promise.all([
-    getEmbedding(query),
-    getDb(),
-  ]);
+  const { query, topK } = parsed.data;
+  const queryEmbedding = await getEmbedding(query);
 
-  const allEmbeddings = db.data.jobEmbeddings ?? [];
+  const embeddings = await db.select().from(jobEmbeddings);
 
-  // رتبه‌بندی job‌ها بر اساس semantic similarity
-  const ranked = allEmbeddings
-    .map((record) => ({
-      jobId: record.jobId,
-      score: cosineSimilarity(queryEmbedding, record.embedding),
+  const scored = embeddings
+    .map((e) => ({
+      jobId: e.jobId,
+      similarity: cosineSimilarity(queryEmbedding, e.embedding),
     }))
-    .filter((r) => r.score > 0.3)   // threshold برای حذف نتایج نامرتبط
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, topK);
 
-  const jobs = ranked.map(({ jobId, score }) => {
-    const job = db.data.jobs.find((j) => j.id === jobId);
-    return job ? { ...job, relevanceScore: Math.round(score * 100) } : null;
-  }).filter(Boolean);
+  const jobIds = scored.map((s) => s.jobId);
+  if (jobIds.length === 0) {
+    return NextResponse.json({ data: [] });
+  }
 
-  return NextResponse.json({ jobs, query });
+const jobRows = await db
+  .select()
+  .from(jobs)
+  .where(inArray(jobs.id, jobIds)); // بسته به نوع jobs.id شاید cast لازم باشد
+
+  const results = scored.map((s) => ({
+    jobId: s.jobId,
+    score: Math.round(s.similarity * 100),
+    job: jobRows.find((j) => j.id === s.jobId) ?? null,
+  }));
+
+  return NextResponse.json({ data: results });
 }

@@ -1,60 +1,22 @@
-import { db } from "@/lib/db/db"
-import { hashToken } from "./session.utils"
-import type { Session } from "@/lib/db/schema"
+import { db } from "@/lib/db/db";
+import { sessions } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
-class SessionService {
+export const sessionService = {
+  async create(session: typeof sessions.$inferInsert) {
+    return await db.insert(sessions).values(session).returning();
+  },
 
-  async createSession(
-    userId: string,
-    refreshToken: string
-  ): Promise<Session> {
+  async findByTokenHash(hash: string) {
+    const result = await db.select().from(sessions).where(eq(sessions.tokenHash, hash));
+    return result[0] ?? null;
+  },
 
-    const now = new Date()
-    const expires = new Date()
+  async delete(sessionId: number) {
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
+  },
 
-    // refresh token expiration (7 days)
-    expires.setDate(now.getDate() + 7)
-
-    const session: Session = {
-      id: crypto.randomUUID(),
-      userId,
-      tokenHash: hashToken(refreshToken),
-      createdAt: now.toISOString(),
-      expiresAt: expires.toISOString(),
-    }
-
-    db.data.sessions.push(session)
-    await db.write()
-
-    return session
+  async deleteByUserId(userId: number) {
+    await db.delete(sessions).where(eq(sessions.userId, userId));
   }
-
-  async findSessionByToken(
-    hash: string
-  ): Promise<Session | undefined> {
-
-    return db.data.sessions.find(
-      (s) => s.tokenHash === hash
-    )
-  }
-
-  async deleteSession(sessionId: string): Promise<void> {
-
-    db.data.sessions = db.data.sessions.filter(
-      (s) => s.id !== sessionId
-    )
-
-    await db.write()
-  }
-
-  async deleteUserSessions(userId: string): Promise<void> {
-
-    db.data.sessions = db.data.sessions.filter(
-      (s) => s.userId !== userId
-    )
-
-    await db.write()
-  }
-}
-
-export const sessionService = new SessionService()
+};

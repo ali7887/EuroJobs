@@ -1,77 +1,68 @@
-import { db, initDB } from '../db/db';
-import { Application, ApplicationStatus } from '../db/schema';
-import { randomUUID } from 'crypto';
+import { db } from "../db/db";
+import { applications } from "../db/schema";
+import { eq } from "drizzle-orm";
 
 export class ApplicationRepository {
-  async findAll(): Promise<Application[]> {
-    await initDB();
-    return db.data!.applications;
+
+  static async findAll() {
+    return await db.select().from(applications);
   }
 
-  async findById(id: string): Promise<Application | null> {
-    await initDB();
-    return db.data!.applications.find(a => a.id === id) ?? null;
+  static async findById(id: number) {
+    const result = await db
+      .select()
+      .from(applications)
+      .where(eq(applications.id, id));
+
+    return result[0] ?? null;
   }
 
-  async findByUser(userId: string): Promise<Application[]> {
-    await initDB();
-    return db.data!.applications.filter(a => a.userId === userId);
+  static async findByUserId(userId: number) {
+    return await db
+      .select()
+      .from(applications)
+      .where(eq(applications.userId, userId));
   }
 
-  async findByJob(jobId: string): Promise<Application[]> {
-    await initDB();
-    return db.data!.applications.filter(a => a.jobId === jobId);
+  static async findByJobId(jobId: number) {
+    return await db
+      .select()
+      .from(applications)
+      .where(eq(applications.jobId, jobId));
   }
 
-  async findDuplicate(jobId: string, userId: string): Promise<Application | null> {
-    await initDB();
-    return (
-      db.data!.applications.find(
-        a => a.jobId === jobId && a.userId === userId,
-      ) ?? null
-    );
+  static async create(data: typeof applications.$inferInsert) {
+    const result = await db
+      .insert(applications)
+      .values(data)
+      .returning();
+
+    return result[0];
   }
 
-  async create(
-    data: Omit<Application, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<Application> {
-    await initDB();
-    const application: Application = {
-      id: randomUUID(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      ...data,
-    };
-    db.data!.applications.push(application);
-    await db.write();
-    return application;
+  static async updateStatus(
+    id: number,
+    input: { status: string }
+  ) {
+    const result = await db
+      .update(applications)
+      .set({
+        status: input.status,
+        updatedAt: new Date()
+      })
+      .where(eq(applications.id, id))
+      .returning();
+
+    return result[0] ?? null;
   }
 
-  async updateStatus(
-    id: string,
-    status: ApplicationStatus,
-  ): Promise<Application | null> {
-    await initDB();
-    const index = db.data!.applications.findIndex(a => a.id === id);
-    if (index === -1) return null;
-    db.data!.applications[index] = {
-      ...db.data!.applications[index],
-      status,
-      updatedAt: new Date().toISOString(),
-    };
-    await db.write();
-    return db.data!.applications[index];
+  static async delete(id: number) {
+    const result = await db
+      .delete(applications)
+      .where(eq(applications.id, id))
+      .returning();
+
+    return result.length > 0;
   }
 
-  async delete(id: string): Promise<boolean> {
-    await initDB();
-    const index = db.data!.applications.findIndex(a => a.id === id);
-    if (index === -1) return false;
-    db.data!.applications.splice(index, 1);
-    await db.write();
-    return true;
-  }
 }
-
-// ✅ singleton
-export const applicationRepository = new ApplicationRepository();

@@ -1,28 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { ApplicationService } from '@/lib/services/application.service';
+import { NextResponse } from "next/server";
+import { ApplicationService } from "@/lib/services/application.service";
 
-export async function POST(req: NextRequest) {
-  // اطلاعات user از middleware header می‌آید
-  const userId = req.headers.get('x-user-id');
-  const userRole = req.headers.get('x-user-role');
-
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  if (userRole !== 'JOBSEEKER') {
-    return NextResponse.json(
-      { error: 'Only job seekers can apply' },
-      { status: 403 }
-    );
-  }
-
+export async function GET() {
   try {
-    const body = await req.json();
-    const application = await ApplicationService.create({ ...body, userId });
-    return NextResponse.json(application, { status: 201 });
+    const all = await ApplicationService.getAllApplications();
+
+    return NextResponse.json(all);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch applications" },
+      { status: 500 }
+    );
   }
 }
