@@ -1,3 +1,4 @@
+//D:\project\NEW\job-board-saas\src\middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const protectedRoutes = [

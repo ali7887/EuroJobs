@@ -4,6 +4,15 @@ import { eq } from 'drizzle-orm';
 import type { User, NewUser } from '@/lib/db/schema';
 
 export class UserRepository {
+  static findById(userId: number) {
+    throw new Error("Method not implemented.");
+  }
+  static findByEmail(email: string) {
+    throw new Error("Method not implemented.");
+  }
+  static create(arg0: { name: string; email: string; password: string; role: string; }) {
+    throw new Error("Method not implemented.");
+  }
   findAll() {
     throw new Error("Method not implemented.");
   }

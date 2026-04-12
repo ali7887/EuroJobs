@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json(
       {
         user: result.user,
-        accessToken: result.tokens.accessToken
+        tokens: {
+          accessToken: result.tokens.accessToken,
+          refreshToken: result.tokens.refreshToken
+        }
       },
       { status: 201 }
     )

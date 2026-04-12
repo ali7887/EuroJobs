@@ -3,7 +3,6 @@ import { authService } from "@/lib/auth/auth.service"
 import { setRefreshTokenCookie } from "@/lib/auth/cookie.utilities"
 
 export async function POST(req: NextRequest) {
-  
 
   try {
 
@@ -13,11 +12,13 @@ export async function POST(req: NextRequest) {
       email: body.email,
       password: body.password
     })
-    
 
     const res = NextResponse.json({
       user: result.user,
-      accessToken: result.tokens.accessToken
+      tokens: {
+        accessToken: result.tokens.accessToken,
+        refreshToken: result.tokens.refreshToken
+      }
     })
 
     setRefreshTokenCookie(
@@ -35,6 +36,5 @@ export async function POST(req: NextRequest) {
     )
 
   }
-  
 
 }

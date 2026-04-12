@@ -1,45 +1,95 @@
-import { db } from '@/lib/db';
-import { jobs } from '@/lib/db/schema';
-import { eq, inArray, desc } from 'drizzle-orm';
-import type { Job, NewJob } from '@/lib/db/schema';
+import { and, ilike, gte, lte, eq } from "drizzle-orm"
+import { jobs } from "@/lib/db/schema/jobs"
+import { db } from "@/lib/db/db"
 
 export const jobRepository = {
-  async findById(id: number): Promise<Job | null> {
-    const rows = await db.select().from(jobs).where(eq(jobs.id, id)).limit(1);
-    return rows[0] ?? null;
+
+  async create(data: any) {
+    const result = await db
+      .insert(jobs)
+      .values(data)
+      .returning()
+
+    return result[0]
   },
 
-  async findMany(ids: number[]): Promise<Job[]> {
-    if (ids.length === 0) return [];
-    return db.select().from(jobs).where(inArray(jobs.id, ids));
+  async findAll(limit = 20, offset = 0) {
+    return db
+      .select()
+      .from(jobs)
+      .limit(limit)
+      .offset(offset)
   },
 
-  async findAll(): Promise<Job[]> {
-    return db.select().from(jobs).orderBy(desc(jobs.createdAt));
-  },
+  async findByEmployer(userId:number){
 
-  async create(data: NewJob): Promise<Job> {
-    const now = new Date();
-    const inserted = await db.insert(jobs).values({
-      ...data,
-      createdAt: now,
-      updatedAt: now,
-    }).returning();
-    return inserted[0];
-  },
+return db
+.select()
+.from(jobs)
+.where(eq(jobs.createdBy,userId))
 
-  async update(id: number, data: Partial<Job>): Promise<Job | null> {
-    const now = new Date();
-    const updated = await db
-      .update(jobs)
-      .set({ ...data, updatedAt: now })
+},
+
+
+  async findById(id: number) {
+
+    const result = await db
+      .select()
+      .from(jobs)
       .where(eq(jobs.id, id))
-      .returning();
-    return updated[0] ?? null;
+
+    return result[0]
   },
 
-  async delete(id: number): Promise<boolean> {
-    const deleted = await db.delete(jobs).where(eq(jobs.id, id)).returning();
-    return deleted.length > 0;
+  async delete(id: number) {
+
+    const result = await db
+      .delete(jobs)
+      .where(eq(jobs.id, id))
+      .returning()
+
+    return result[0]
+  },
+
+  async search(filters: any, limit = 20, offset = 0) {
+
+    const conditions = []
+
+    if (filters.search) {
+      conditions.push(
+        ilike(jobs.title, `%${filters.search}%`)
+      )
+    }
+
+    if (filters.location) {
+      conditions.push(
+        ilike(jobs.location, `%${filters.location}%`)
+      )
+    }
+
+    if (filters.salaryMin) {
+      conditions.push(
+        gte(jobs.salary, filters.salaryMin)
+      )
+    }
+
+    if (filters.salaryMax) {
+      conditions.push(
+        lte(jobs.salary, filters.salaryMax)
+      )
+    }
+
+    const query = db
+      .select()
+      .from(jobs)
+      .limit(limit)
+      .offset(offset)
+
+    if (conditions.length > 0) {
+      query.where(and(...conditions))
+    }
+
+    return query
   }
-};
+
+}

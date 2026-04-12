@@ -1,25 +1,32 @@
 import { NextResponse } from "next/server";
-import { jobService } from "@/lib/services/job.service";
+import { createJob } from "@/lib/db/queries/jobs";
+import { z } from "zod";
 
-export async function GET() {
-  const jobs = await jobService.listJobs();
-  return NextResponse.json(jobs);
-}
+const CreateJobSchema = z.object({
+  title: z.string().min(2),
+  description: z.string().optional(),
+  location: z.string().optional(),
+  salary: z.number().optional(),
+  type: z.string().optional(),
+  companyId: z.number().optional(),
+  employerId: z.number()
+});
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  const job = await jobService.createJob(
-    {
-      title: body.title,
-      description: body.description,
-      type: body.type ?? null,
-      location: body.location ?? null,
-      companyId: Number(body.companyId),
-    },
-    body.employerId,
-    body.companyName
-  );
+    const data = CreateJobSchema.parse(body);
 
-  return NextResponse.json(job);
+    const job = await createJob(data);
+
+    return NextResponse.json(job, { status: 201 });
+
+  } catch (err) {
+    console.error("Cr Job Error:", err);
+    return NextResponse.json(
+      { error: err.message },
+      { status: 400 }
+    );
+  }
 }

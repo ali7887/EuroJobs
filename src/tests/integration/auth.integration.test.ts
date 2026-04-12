@@ -1,3 +1,4 @@
+//D:\project\NEW\job-board-saas\src\tests\integration\auth.integration.test.ts
 import { describe, it, expect, beforeEach } from "vitest"
 import { authService } from "@/lib/auth/auth.service"
 import { resetTestDB } from "@/lib/db/test-db"
@@ -14,7 +15,7 @@ describe("Auth Integration", () => {
 
     const result = await authService.register({
       email,
-      password: "123456",
+      password: "Password123",
       name: "Test User"
     })
 
@@ -32,13 +33,13 @@ describe("Auth Integration", () => {
 
     await authService.register({
       email,
-      password: "123456",
+      password: "Password123",
       name: "Login User"
     })
 
     const result = await authService.login({
       email,
-      password: "123456",
+      password: "Password123",
     })
 
     expect(result.user.email).toBe(email)

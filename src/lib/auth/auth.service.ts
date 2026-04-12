@@ -1,14 +1,18 @@
-import bcrypt from "bcryptjs"
 import crypto from "crypto"
-import { userService } from "@/modules/users/user.service"
-import { TokenRepository } from "./token.service"
+import { userService } from "@/lib/services/user.service"
+import { TokenRepository } from "@/lib/auth/token.repository"
+import { generateAccessToken } from "./token.utils"
+
 
 function generateToken() {
   return crypto.randomBytes(32).toString("hex")
 }
 
 function hashToken(token: string) {
-  return crypto.createHash("sha256").update(token).digest("hex")
+  return crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex")
 }
 
 export const authService = {
@@ -19,7 +23,7 @@ export const authService = {
     name: string
   }) {
 
-    const user = await userService.createUser({
+    const user = await userService.register({
       email: data.email,
       password: data.password,
       name: data.name
@@ -27,77 +31,89 @@ export const authService = {
 
     const tokens = await this.createTokens(user.id)
 
-    return { user, tokens }
+    return {
+      user,
+      tokens
+    }
   },
-
 
   async login(data: {
     email: string
     password: string
   }) {
 
-    const user = await userService.findByEmail(data.email)
-
-    if (!user)
-      throw new Error("User not found")
-
-    const valid = await userService.comparePassword(
-      data.password,
-      user.passwordHash
+    const user = await userService.verifyCredentials(
+      data.email,
+      data.password
     )
-
-    if (!valid)
-      throw new Error("Invalid password")
 
     const tokens = await this.createTokens(user.id)
 
     return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role
-      },
+      user,
       tokens
     }
   },
 
-
   async refresh(refreshToken: string) {
-
-  const tokenHash = hashToken(refreshToken)
-
-  const stored = await TokenRepository.findByHash(tokenHash)
-
-  if (!stored || stored.isRevoked || !stored.userId)
-    throw new Error("Invalid refresh token")
-
-  const tokens = await this.createTokens(stored.userId)
-
-  await TokenRepository.revoke(stored.id)
-
-  return tokens
-}
-,
-
-
-  async createTokens(userId: number) {
-
-    const accessToken = generateToken()
-    const refreshToken = generateToken()
 
     const tokenHash = hashToken(refreshToken)
 
-    await TokenRepository.store({
-      userId,
-      tokenHash,
-      isRevoked: false,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
-    })
+    const stored = await TokenRepository.findByHash(tokenHash)
 
-    return {
-      accessToken,
-      refreshToken
+    if (!stored || stored.isRevoked || !stored.userId) {
+      throw new Error("Invalid refresh token")
     }
+
+    const tokens = await this.createTokens(stored.userId)
+
+    // revoke old refresh token
+    await TokenRepository.revoke(stored.id)
+
+    return tokens
+  },
+
+  async logout(refreshToken: string) {
+
+    if (!refreshToken) return
+
+    const tokenHash = hashToken(refreshToken)
+
+    const stored = await TokenRepository.findByHash(tokenHash)
+
+    if (!stored) return
+
+    await TokenRepository.revoke(stored.id)
+  },
+
+  async logoutAll(userId: number) {
+
+    await TokenRepository.revokeAllByUserId(userId)
+  },
+
+  async createTokens(userId: number) {
+
+  const accessToken = await generateAccessToken({
+    userId
+  })
+
+  const refreshToken = generateToken()
+
+  const tokenHash = hashToken(refreshToken)
+
+  await TokenRepository.store({
+    userId,
+    tokenHash,
+    isRevoked: false,
+    expiresAt: new Date(
+      Date.now() + 1000 * 60 * 60 * 24 * 30
+    )
+  })
+
+  return {
+    accessToken,
+    refreshToken
   }
+}
+
 }

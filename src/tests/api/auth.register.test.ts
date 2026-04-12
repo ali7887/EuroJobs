@@ -15,7 +15,7 @@ describe("POST /api/auth/register", () => {
 
     const request = createPostRequest("/api/auth/register", {
       email,
-      password: "123456",
+      password: "Password123",
       name: "API User"
     })
 

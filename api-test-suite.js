@@ -38,7 +38,7 @@ async function testLogin() {
     },
     body: JSON.stringify({
       email: "admin@jobboard.com", // ✔️ دقیقا همان ایمیلی که در Seeder استفاده کردی
-      password: "123456",
+      password: "Password123",
     }),
   });
 

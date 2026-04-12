@@ -1,3 +1,4 @@
+//D:\project\NEW\job-board-saas\src\lib\db\queries\users.ts
 import { db } from "../index";
 import { users } from "../schema";
 

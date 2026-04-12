@@ -13,7 +13,7 @@ describe("POST /api/auth/login", () => {
   it("should login user", async () => {
 
     const email = `user-${Date.now()}@test.com`
-    const password = "123456"
+    const password = "Password123"
 
     await authService.register({
       email,

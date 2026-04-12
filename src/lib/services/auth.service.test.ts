@@ -1,3 +1,4 @@
+//D:\project\NEW\job-board-saas\src\lib\services\auth.service.test.ts
 import { describe, it, expect } from "vitest"
 import { authService } from "@/lib/auth/auth.service"
 
@@ -9,7 +10,7 @@ describe("authService.register", () => {
 
     const result = await authService.register({
       email,
-      password: "123456",
+      password: "Password123",
       name: "Test User"
     })
 

@@ -1,20 +1,39 @@
-import { Suspense } from 'react';
-import { Loader } from '@/components/ui';
-import { JobList } from '@/components/jobs/JobList';
+import { db } from "@/lib/db"
+import { jobs } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
+import ApplyButton from "./ApplyButton"
 
-function JobsContent() {
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
-      <JobList jobs={[]} />
-    </main>
-  );
-}
+export default async function JobsPage(){
 
-export default function JobsPage() {
-  return (
-    <Suspense fallback={<Loader fullScreen />}>
-      <JobsContent />
-    </Suspense>
-  );
+const list = await db
+.select()
+.from(jobs)
+.where(eq(jobs.published,true))
+
+return (
+
+<div>
+
+<h1>Jobs</h1>
+
+{list.map((job:any)=>(
+
+<div key={job.id}>
+
+<h3>{job.title}</h3>
+
+<p>{job.location}</p>
+
+<p>{job.salary}</p>
+
+<ApplyButton jobId={job.id}/>
+
+</div>
+
+))}
+
+</div>
+
+)
+
 }

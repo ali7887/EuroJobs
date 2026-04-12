@@ -1,19 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ApplicationService } from "@/lib/services/application.service";
-
-type Params = {
-  params: Promise<{ userId: string }>;
-};
+import { NextRequest, NextResponse } from "next/server"
+import { applicationService } from "@/lib/services/application.service"
 
 export async function GET(
-  _req: NextRequest,
-  { params }: Params
-) {
-  const { userId } = await params;
-  const userIdNum = Number(userId);
+req: NextRequest,
+{ params }: { params: Promise<{ userId: string }> }
+){
 
-  const applications =
-    await ApplicationService.getByUser(userIdNum);
+const { userId } = await params
 
-  return NextResponse.json(applications);
+const applications =
+await applicationService.getUserApplications(Number(userId))
+
+return NextResponse.json(applications)
+
 }

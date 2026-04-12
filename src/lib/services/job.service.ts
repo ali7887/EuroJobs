@@ -1,31 +1,53 @@
-import { jobRepository } from '../repositories/job.repository';
-import type { Job, NewJob } from '@/lib/db/schema';
-import { mapJobType } from '@/lib/utils/job.utils';
+import { jobRepository } from "@/lib/repositories/job.repository"
+import { JobSearchQuery } from "@/lib/types/job-search"
+import { eq } from "drizzle-orm"
+import { db } from "@/lib/db"
+import { jobs } from "@/lib/db/schema"
 
 export const jobService = {
+
+
+  async getEmployerJobs(userId:number){
+
+return db
+.select()
+.from(jobs)
+.where(eq(jobs.employerId,userId))
+
+},
+
+  async createJob(data: any) {
+    return jobRepository.create(data)
+  },
+
+
+
+  async getJobs(page = 1) {
+
+    const limit = 20
+    const offset = (page - 1) * limit
+
+    return jobRepository.findAll(limit, offset)
+  },
+
   async getJob(id: number) {
-    return jobRepository.findById(id);
-  },
-
-  async listJobs() {
-    return jobRepository.findAll();
-  },
-
-  async createJob(data: NewJob, employerId: any, companyName: any) {
-    // normalized values
-    const normalized = {
-      ...data,
-      type: data.type ?? 'Full-time',
-      location: data.location ?? 'Unknown',
-    };
-    return jobRepository.create(normalized);
-  },
-
-  async updateJob(id: number, data: Partial<Job>) {
-    return jobRepository.update(id, data);
+    return jobRepository.findById(id)
   },
 
   async deleteJob(id: number) {
-    return jobRepository.delete(id);
+    return jobRepository.delete(id)
+  },
+
+  async searchJobs(query: JobSearchQuery) {
+
+    const page = query.page ?? 1
+
+    const limit = 20
+
+    const offset = (page - 1) * limit
+
+    return jobRepository.search(query, limit, offset)
+
   }
-};
+
+}

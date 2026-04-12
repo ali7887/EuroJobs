@@ -1,15 +1,21 @@
-import { NextResponse } from "next/server";
-import { ApplicationService } from "@/lib/services/application.service";
+import { NextRequest,NextResponse } from "next/server"
+import { requireAuth } from "@/lib/middleware/auth.middleware"
+import { applicationService } from "@/lib/services/application.service"
 
-export async function GET() {
-  try {
-    const all = await ApplicationService.getAllApplications();
+export async function GET(req:NextRequest){
 
-    return NextResponse.json(all);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch applications" },
-      { status: 500 }
-    );
-  }
+const user = await requireAuth(req)
+
+if(!user){
+return NextResponse.json(
+{error:"Unauthorized"},
+{status:401}
+)
+}
+
+const apps =
+await applicationService.getUserApplications(user.id as number)
+
+return NextResponse.json(apps)
+
 }

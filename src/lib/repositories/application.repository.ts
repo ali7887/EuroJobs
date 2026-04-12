@@ -1,68 +1,67 @@
-import { db } from "../db/db";
-import { applications } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { db } from "@/lib/db/db"
+import { jobApplications } from "@/lib/db/schema/job_embeddings"
+import { eq, and } from "drizzle-orm"
 
-export class ApplicationRepository {
+export const applicationRepository = {
 
-  static async findAll() {
-    return await db.select().from(applications);
-  }
+async create(data:any){
 
-  static async findById(id: number) {
-    const result = await db
-      .select()
-      .from(applications)
-      .where(eq(applications.id, id));
+return db
+.insert(jobApplications)
+.values(data)
+.returning()
 
-    return result[0] ?? null;
-  }
+},
 
-  static async findByUserId(userId: number) {
-    return await db
-      .select()
-      .from(applications)
-      .where(eq(applications.userId, userId));
-  }
+async findByUser(userId:number){
 
-  static async findByJobId(jobId: number) {
-    return await db
-      .select()
-      .from(applications)
-      .where(eq(applications.jobId, jobId));
-  }
+return db
+.select()
+.from(jobApplications)
+.where(eq(jobApplications.userId,userId))
 
-  static async create(data: typeof applications.$inferInsert) {
-    const result = await db
-      .insert(applications)
-      .values(data)
-      .returning();
+},
 
-    return result[0];
-  }
+async findByJob(jobId:number){
 
-  static async updateStatus(
-    id: number,
-    input: { status: string }
-  ) {
-    const result = await db
-      .update(applications)
-      .set({
-        status: input.status,
-        updatedAt: new Date()
-      })
-      .where(eq(applications.id, id))
-      .returning();
+return db
+.select()
+.from(jobApplications)
+.where(eq(jobApplications.jobId,jobId))
 
-    return result[0] ?? null;
-  }
+},
 
-  static async delete(id: number) {
-    const result = await db
-      .delete(applications)
-      .where(eq(applications.id, id))
-      .returning();
+async findExisting(jobId:number,userId:number){
 
-    return result.length > 0;
-  }
+return db
+.select()
+.from(jobApplications)
+.where(
+and(
+eq(jobApplications.jobId,jobId),
+eq(jobApplications.userId,userId)
+)
+)
+
+},
+
+async updateStatus(id:number,status:string){
+
+return db
+.update(jobApplications)
+.set({ status })
+.where(eq(jobApplications.id,id))
+.returning()
+
+},
+
+async delete(id:number){
+
+return db
+.delete(jobApplications)
+.where(eq(jobApplications.id,id))
+.returning()
+
+}
 
 }

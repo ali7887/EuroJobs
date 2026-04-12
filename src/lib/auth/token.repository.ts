@@ -23,4 +23,11 @@ export const TokenRepository = {
       .set({ isRevoked: true })
       .where(eq(refreshTokens.id, id));
   },
+
+  async revokeAllByUserId(userId: number) {
+    await db
+      .update(refreshTokens)
+      .set({ isRevoked: true })
+      .where(eq(refreshTokens.userId, userId));
+  }
 };

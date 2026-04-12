@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from "next/server";
-import { ApplicationService } from "@/lib/services/application.service";
+import { applicationService } from "@/lib/services/application.service"
 
 export async function GET(req: Request) {
   try {
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
 
     if (id) {
       const application =
-        await ApplicationService.getApplicationsByJob(Number(id));
+        await applicationService.getJobApplications(Number(id));
 
       if (!application)
         return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -16,8 +16,7 @@ export async function GET(req: Request) {
       return NextResponse.json(application);
     }
 
-    const all = await ApplicationService.getAllApplications();
-    return NextResponse.json(all);
+
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }

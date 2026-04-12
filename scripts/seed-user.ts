@@ -11,7 +11,7 @@ async function seed() {
     path.join(process.cwd(), "data", "test-db.json")
   ];
 
-  const passwordHash = await bcrypt.hash("123456", 10);
+  const passwordHash = await bcrypt.hash("Password123", 10);
 
   const adminUser = {
     id: "admin-1",

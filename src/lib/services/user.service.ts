@@ -39,6 +39,15 @@ function toSafeUser(user: User): SafeUser {
 }
 
 export class UserService {
+  createUser(arg0: { email: string; password: string; name: string; }) {
+    throw new Error("Method not implemented.");
+  }
+  findByEmail(email: string) {
+    throw new Error("Method not implemented.");
+  }
+  comparePassword(password: string, passwordHash: any) {
+    throw new Error("Method not implemented.");
+  }
   findById(arg0: number) {
     throw new Error('Method not implemented.');
   }

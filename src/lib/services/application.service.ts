@@ -1,43 +1,42 @@
-import { ApplicationRepository } from "../repositories/application.repository";
+import { applicationRepository } from "@/lib/repositories/application.repository"
 
-export const ApplicationService = {
-  async getAllApplications() {
-    return ApplicationRepository.findAll();
-  },
+export const applicationService = {
 
-  async getApplicationsByJob(jobId: number) {
-    return ApplicationRepository.findByJobId(jobId);
-  },
+async applyToJob(userId:number, jobId:number, data:any){
 
-  async getByUser(userId: number) {
-    return ApplicationRepository.findByUserId(userId);
-  },
+const existing =
+await applicationRepository.findExisting(jobId,userId)
 
-  async create(data: {
-    userId: number;
-    jobId: number;
-    resumePath?: string;
-    coverLetter?: string;
-  }) {
-    return ApplicationRepository.create({
-      userId: data.userId,
-      jobId: data.jobId,
-      resumePath: data.resumePath ?? null,
-      coverLetter: data.coverLetter ?? null,
-      status: "pending",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  },
+if(existing.length > 0){
+throw new Error("Already applied")
+}
 
-  async updateStatus(
-    id: number,
-    input: { status: string }
-  ) {
-    return ApplicationRepository.updateStatus(id, input);
-  },
+return applicationRepository.create({
+jobId,
+userId,
+...data
+})
 
-  async deleteApplication(id: number) {
-    return ApplicationRepository.delete(id);
-  },
-};
+},
+
+async getUserApplications(userId:number){
+return applicationRepository.findByUser(userId)
+},
+
+async getJobApplications(jobId:number){
+return applicationRepository.findByJob(jobId)
+},
+
+async updateStatus(id:number,data:{status:string}){
+
+return applicationRepository.updateStatus(id,data.status)
+
+},
+
+async deleteApplication(id:number){
+
+return applicationRepository.delete(id)
+
+}
+
+}

@@ -1,19 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ApplicationService } from "@/lib/services/application.service";
-
-type Params = {
-  params: Promise<{ jobId: string }>;
-};
+//D:\project\NEW\job-board-saas\src\app\api\applications\job\[jobId]\route.ts
+import { NextRequest, NextResponse } from "next/server"
+import { applicationService } from "@/lib/services/application.service"
 
 export async function GET(
-  _req: NextRequest,
-  { params }: Params
+req: NextRequest,
+{ params }: { params: Promise<{ jobId: string }> }
 ) {
-  const { jobId } = await params;
-  const jobIdNum = Number(jobId);
 
-  const applications =
-    await ApplicationService.getApplicationsByJob(jobIdNum);
+const { jobId } = await params
 
-  return NextResponse.json(applications);
+const applications =
+await applicationService.getJobApplications(Number(jobId))
+
+return NextResponse.json(applications)
+
 }

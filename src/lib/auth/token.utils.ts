@@ -1,26 +1,25 @@
-import jwt from "jsonwebtoken"
-import crypto from "crypto"
+import { SignJWT, jwtVerify, JWTPayload } from "jose"
 
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "dev_secret"
+const secret = new TextEncoder().encode(
+  process.env.JWT_SECRET || "dev-secret"
+)
 
-interface AccessTokenPayload {
-  userId: string
+export interface AccessTokenPayload extends JWTPayload {
+  userId: number
 }
 
-export function generateAccessToken(userId: string): string {
-  const payload: AccessTokenPayload = {
-    userId,
-  }
+export async function generateAccessToken(payload: AccessTokenPayload) {
 
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
-  })
+  return await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("15m")
+    .sign(secret)
 }
 
-export function verifyAccessToken(token: string): AccessTokenPayload {
-  return jwt.verify(token, ACCESS_TOKEN_SECRET) as AccessTokenPayload
-}
+export async function verifyAccessToken(token: string): Promise<AccessTokenPayload> {
 
-export function generateRefreshToken(): string {
-  return crypto.randomBytes(64).toString("hex")
+  const { payload } = await jwtVerify(token, secret)
+
+  return payload as unknown as AccessTokenPayload
 }

@@ -19,14 +19,16 @@ export const authOptions: AuthOptions = {
   ],
 
   session: {
-    strategy: "jwt" as const
+    strategy: "jwt"
   },
 
   callbacks: {
 
-    async signIn({ user, account }: { user: any; account: any }) {
+    async signIn({ account }) {
 
-      if (!account) return false
+      if (!account) {
+        return false
+      }
 
       return true
     }
