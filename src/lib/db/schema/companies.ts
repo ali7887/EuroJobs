@@ -15,3 +15,6 @@ export const companies = pgTable("companies", {
   description: text("description"),
   ownerId: integer("owner_id").references(() => users.id),
 });
+
+export type Company = typeof companies.$inferSelect;
+export type NewCompany = typeof companies.$inferInsert;

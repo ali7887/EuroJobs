@@ -4,7 +4,7 @@ export interface JobEmbeddingRecord {
   id: number;             // PK در دیتابیس (serial)
   jobId: number;          // ارجاع به jobs.id
   embedding: number[];    // بردار embedding
-  updatedAt: Date;        // آخرین زمان بروزرسانی
+  updatedAt: Date | null        // آخرین زمان بروزرسانی
 }
 
 export interface MatchResult {

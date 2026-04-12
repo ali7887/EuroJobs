@@ -1,95 +1,134 @@
-import { and, ilike, gte, lte, eq } from "drizzle-orm"
-import { jobs } from "@/lib/db/schema/jobs"
-import { db } from "@/lib/db/db"
+import { and, ilike, gte, lte, eq } from "drizzle-orm";
+import { jobs, Job, NewJob } from "@/lib/db/schema/jobs";
+import { companies } from "@/lib/db/schema/companies";
+import { db } from "@/lib/db/db";
 
 export const jobRepository = {
-
-  async create(data: any) {
-    const result = await db
-      .insert(jobs)
-      .values(data)
-      .returning()
-
-    return result[0]
+  async create(data: NewJob): Promise<Job> {
+    const result = await db.insert(jobs).values(data).returning();
+    return result[0];
   },
 
-  async findAll(limit = 20, offset = 0) {
+  async findAll(limit = 20, offset = 0): Promise<
+    Array<Job & { companyName: string | null }>
+  > {
     return db
-      .select()
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        description: jobs.description,
+        location: jobs.location,
+        salary: jobs.salary,
+        isRemote: jobs.isRemote,
+        type: jobs.type,
+        isActive: jobs.isActive,
+        published: jobs.published,
+        createdAt: jobs.createdAt,
+        updatedAt: jobs.updatedAt,
+        companyId: jobs.companyId,
+        employerId: jobs.employerId,
+        companyName: companies.name,
+      })
       .from(jobs)
+      .leftJoin(companies, eq(jobs.companyId, companies.id))
       .limit(limit)
-      .offset(offset)
+      .offset(offset);
   },
 
-  async findByEmployer(userId:number){
-
-return db
-.select()
-.from(jobs)
-.where(eq(jobs.createdBy,userId))
-
-},
-
-
-  async findById(id: number) {
-
+  async findById(id: number): Promise<
+    (Job & { companyName: string | null }) | undefined
+  > {
     const result = await db
-      .select()
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        description: jobs.description,
+        location: jobs.location,
+        salary: jobs.salary,
+        isRemote: jobs.isRemote,
+        type: jobs.type,
+        isActive: jobs.isActive,
+        published: jobs.published,
+        createdAt: jobs.createdAt,
+        updatedAt: jobs.updatedAt,
+        companyId: jobs.companyId,
+        employerId: jobs.employerId,
+        companyName: companies.name,
+      })
       .from(jobs)
-      .where(eq(jobs.id, id))
+      .leftJoin(companies, eq(jobs.companyId, companies.id))
+      .where(eq(jobs.id, id));
 
-    return result[0]
+    return result[0];
   },
 
-  async delete(id: number) {
+  async findByEmployer(userId: number) {
+    const rows = await db
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        description: jobs.description,
+        location: jobs.location,
+        salary: jobs.salary,
+        isRemote: jobs.isRemote,
+        createdAt: jobs.createdAt,
+        updatedAt: jobs.updatedAt,
+        companyId: jobs.companyId,
+        employerId: jobs.employerId,
+        companyName: companies.name,
+      })
+      .from(jobs)
+      .leftJoin(companies, eq(jobs.companyId, companies.id))
+      .where(eq(jobs.employerId, userId));
 
-    const result = await db
-      .delete(jobs)
-      .where(eq(jobs.id, id))
-      .returning()
+    return rows;
+  },
 
-    return result[0]
+  async delete(id: number): Promise<Job | undefined> {
+    const result = await db.delete(jobs).where(eq(jobs.id, id)).returning();
+    return result[0];
   },
 
   async search(filters: any, limit = 20, offset = 0) {
-
-    const conditions = []
+    const conditions = [];
 
     if (filters.search) {
-      conditions.push(
-        ilike(jobs.title, `%${filters.search}%`)
-      )
+      conditions.push(ilike(jobs.title, `%${filters.search}%`));
     }
 
     if (filters.location) {
-      conditions.push(
-        ilike(jobs.location, `%${filters.location}%`)
-      )
+      conditions.push(ilike(jobs.location, `%${filters.location}%`));
     }
 
     if (filters.salaryMin) {
-      conditions.push(
-        gte(jobs.salary, filters.salaryMin)
-      )
+      conditions.push(gte(jobs.salary, filters.salaryMin));
     }
 
     if (filters.salaryMax) {
-      conditions.push(
-        lte(jobs.salary, filters.salaryMax)
-      )
+      conditions.push(lte(jobs.salary, filters.salaryMax));
     }
 
-    const query = db
-      .select()
+    const baseQuery = db
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        description: jobs.description,
+        location: jobs.location,
+        salary: jobs.salary,
+        isRemote: jobs.isRemote,
+        createdAt: jobs.createdAt,
+        updatedAt: jobs.updatedAt,
+        companyId: jobs.companyId,
+        employerId: jobs.employerId,
+        companyName: companies.name,
+      })
       .from(jobs)
+      .leftJoin(companies, eq(jobs.companyId, companies.id))
       .limit(limit)
-      .offset(offset)
+      .offset(offset);
 
-    if (conditions.length > 0) {
-      query.where(and(...conditions))
-    }
-
-    return query
-  }
-
-}
+    return conditions.length
+      ? baseQuery.where(and(...conditions))
+      : baseQuery;
+  },
+};

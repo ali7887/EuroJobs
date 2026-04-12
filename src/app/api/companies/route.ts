@@ -7,7 +7,7 @@ const CompanySchema = z.object({
   ownerId: z.number(),
   logoUrl: z.string().optional(),
   website: z.string().optional(),
-  description: z.string().optional()
+  description: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -18,11 +18,8 @@ export async function POST(req: Request) {
     const company = await createCompany(data);
 
     return NextResponse.json(company, { status: 201 });
-
   } catch (err) {
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
-    );
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

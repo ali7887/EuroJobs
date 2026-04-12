@@ -16,3 +16,9 @@ export const users = pgTable("users", {
   avatarUrl: text("avatar_url"),
   updatedAt: timestamp("updated_at"),
 });
+
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+
+// Optional – many parts of your system expect this!
+export type SafeUser = Omit<User, "passwordHash">;

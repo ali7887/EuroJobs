@@ -1,16 +1,17 @@
-import { NextRequest, NextResponse } from "next/server"
-import { applicationService } from "@/lib/services/application.service"
+﻿import { NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
 
 export async function GET(
-req: NextRequest,
-{ params }: { params: Promise<{ id: string }> }
-){
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const list =
+      await applicationService.getJobApplications(Number(id));
 
-const { id } = await params
-
-const applications =
-await applicationService.getJobApplications(Number(id))
-
-return NextResponse.json(applications)
-
+    return NextResponse.json(list);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }

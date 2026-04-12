@@ -1,3 +1,4 @@
+//D:\project\NEW\job-board-saas\src\lib\services\user.service.ts
 import bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/user.repository";
 

@@ -1,24 +1,22 @@
-import { NextResponse } from "next/server";
-import { getJobById } from "@/lib/db/queries/jobs";
+﻿import { NextResponse } from "next/server";
+import { jobRepository } from "@/lib/repositories/job.repository";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const job = await getJobById(Number(params.id));
+    const { id } = await params;
+    const job = await jobRepository.findById(Number(id));
 
-    if (!job) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
-    }
+    if (!job)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     return NextResponse.json(job);
-
-  } catch (err) {
-    console.error("Get Job Error:", err);
+  } catch (err: any) {
     return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
+      { error: err.message || "Failed" },
+      { status: 500 }
     );
   }
 }

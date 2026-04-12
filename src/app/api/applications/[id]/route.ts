@@ -1,30 +1,22 @@
-import { NextResponse } from "next/server";
-import { updateApplicationStatus } from "@/lib/db/queries/applications";
-import { z } from "zod";
+﻿import { NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
 
-const StatusSchema = z.object({
-  status: z.enum(["pending", "accepted", "rejected"])
-});
-
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const body = await req.json();
-    const { status } = StatusSchema.parse(body);
+    const { id } = await params;
 
-    const updated = await updateApplicationStatus(
-      Number(params.id),
-      status
-    );
+    const application =
+      await applicationService.getApplicationById(Number(id));
 
-    return NextResponse.json(updated);
+    if (!application)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+    return NextResponse.json(application);
   } catch (err) {
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
-    );
+    const message = err instanceof Error ? err.message : "Failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

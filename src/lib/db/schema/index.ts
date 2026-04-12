@@ -1,3 +1,5 @@
+// src/lib/db/schema/index.ts
+
 export * from "./users";
 export * from "./companies";
 export * from "./jobs";

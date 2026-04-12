@@ -1,34 +1,26 @@
-import { NextResponse } from "next/server";
-import { applyToJob } from "@/lib/db/queries/applications";
-import { z } from "zod";
-
-const ApplySchema = z.object({
-  userId: z.number(),
-  resumePath: z.string().optional(),
-  coverLetter: z.string().optional()
-});
+﻿import { NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
-    const data = ApplySchema.parse(body);
 
-    const application = await applyToJob({
-      jobId: Number(params.id),
-      userId: data.userId,
-      resumePath: data.resumePath,
-      coverLetter: data.coverLetter
-    });
+    // NOTE: userId باید از auth/session خوانده شود
+    const userId = body.userId || 1;
 
-    return NextResponse.json(application, { status: 201 });
-
-  } catch (err) {
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
+    const application = await applicationService.applyToJob(
+      userId,
+      Number(id),
+      body
     );
+
+    return NextResponse.json(application);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

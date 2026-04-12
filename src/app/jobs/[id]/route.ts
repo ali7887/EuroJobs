@@ -1,28 +1,16 @@
-import { NextRequest, NextResponse } from "next/server"
-import { jobService } from "@/lib/services/job.service"
-
-export async function GET(
-  req: NextRequest,
+﻿export async function GET(
+  _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-  const { id } = await params
-
-  const job = await jobService.getJob(Number(id))
-
-  return NextResponse.json(job)
+  const { id } = await params;
+  return Response.json({ jobId: id });
 }
 
-export async function DELETE(
-  req: NextRequest,
+export async function POST(
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-  const { id } = await params
-
-  await jobService.deleteJob(Number(id))
-
-  return NextResponse.json({
-    success: true
-  })
+  const { id } = await params;
+  const data = await req.json();
+  return Response.json({ id, data });
 }
