@@ -1,4 +1,4 @@
-import { getOpenAIClient } from './openai.client';
+import { getOpenAIClient } from './gapgpt.client';
 
 // تبدیل متن به vector (1536 dimension با text-embedding-3-small)
 export async function getEmbedding(text: string): Promise<number[]> {

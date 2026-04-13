@@ -1,37 +1,44 @@
-// lib/ai/gapgpt.ts
-import { env } from "@/lib/env";
+export async function gapgptChat(prompt: string) {
+  const apiKey = process.env.GAPGPT_API_KEY;
+  const baseUrl = process.env.GAPGPT_API_URL;
+  const model = process.env.GAPGPT_MODEL || "gpt-5.2";
 
-const GAPGPT_BASE_URL = "https://api.gapgpt.app/v1";
+  if (!apiKey) throw new Error("Missing GAPGPT_API_KEY in environment variables.");
+  if (!baseUrl) throw new Error("Missing GAPGPT_API_URL in environment variables.");
 
-export async function gapgptRequest({
-  prompt,
-  model = "gpt-5.2",
-}: {
-  prompt: string;
-  model?: string;
-}) {
   try {
-    const response = await fetch(`${GAPGPT_BASE_URL}/chat/completions`, {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+    const response = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
+      signal: controller.signal,
       headers: {
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model,
-        messages: [{ role: "user", content: prompt }],
+        messages: [
+          { role: "system", content: "You are a helpful AI assistant." },
+          { role: "user", content: prompt }
+        ]
       }),
     });
 
+    clearTimeout(timeout);
+
     if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`GapGPT API Error: ${err}`);
+      const errorBody = await response.text();
+      throw new Error(`GapGPT API error: ${response.status} - ${errorBody}`);
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content ?? "";
-  } catch (err) {
-    console.error("GapGPT Request Error:", err);
-    throw err;
+    return data.choices?.[0]?.message?.content ?? "No content.";
+  } catch (error: any) {
+    if (error.name === "AbortError") {
+      throw new Error("GapGPT request timed out (network or server issue).");
+    }
+    throw new Error(`GapGPT fetch failed: ${error.message}`);
   }
 }
