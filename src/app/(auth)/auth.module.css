@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+}
+
+/* LEFT HERO */
+.hero {
+  flex: 1;
+  background: linear-gradient(135deg, #5b5fe9 0%, #8f56d8 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.heroContent {
+  max-width: 380px;
+}
+
+.iconWrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 24px;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bulletList li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+
+/* RIGHT FORM */
+.formContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-bg-secondary, #ffffff);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 4px 16px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .hero {
+    padding: 36px;
+  }
+
+  .formContainer {
+    padding: 36px;
+  }
+}

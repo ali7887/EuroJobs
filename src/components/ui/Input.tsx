@@ -1,19 +1,20 @@
+import React from "react";
+import styles from "./form.module.css";
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label: string;
+  icon?: React.ReactNode;
 }
 
-export default function Input({ label, className = "", ...props }: InputProps) {
+export default function Input({ label, icon, ...props }: InputProps) {
   return (
-    <div className="mb-4">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {label}
-        </label>
-      )}
-      <input
-        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
-        {...props}
-      />
+    <div className={styles.inputGroup}>
+      <label className={styles.label}>{label}</label>
+
+      <div className={styles.inputWrapper}>
+        {icon && <span className={styles.icon}>{icon}</span>}
+        <input className={styles.input} {...props} />
+      </div>
     </div>
   );
 }

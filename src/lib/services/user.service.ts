@@ -1,9 +1,7 @@
-//D:\project\NEW\job-board-saas\src\lib\services\user.service.ts
 import bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/user.repository";
 
 import type { User, SafeUser } from "../db/schema";
-
 import {
   userRegisterSchema,
   userUpdateSchema,
@@ -40,27 +38,15 @@ function toSafeUser(user: User): SafeUser {
 }
 
 export class UserService {
-  createUser(arg0: { email: string; password: string; name: string; }) {
-    throw new Error("Method not implemented.");
-  }
-  findByEmail(email: string) {
-    throw new Error("Method not implemented.");
-  }
-  comparePassword(password: string, passwordHash: any) {
-    throw new Error("Method not implemented.");
-  }
-  findById(arg0: number) {
-    throw new Error('Method not implemented.');
-  }
   private repository: UserRepository;
 
   constructor() {
     this.repository = new UserRepository();
   }
 
-  /**
-   * Register
-   */
+  /** ===============================
+   *  CREATE (REGISTER)
+   * =============================== */
   async register(data: unknown): Promise<SafeUser> {
     const validated = userRegisterSchema.parse(data);
 
@@ -87,9 +73,16 @@ export class UserService {
     return toSafeUser(user);
   }
 
-  /**
-   * Get user by ID
-   */
+  /** ===============================
+   *  GET USER BY ID (FULL USER)
+   * =============================== */
+  async findById(id: number): Promise<User | null> {
+    return await this.repository.findById(id);
+  }
+
+  /** ===============================
+   *  GET SAFE USER BY ID
+   * =============================== */
   async getUserById(id: number): Promise<SafeUser> {
     const user = await this.repository.findById(id);
 
@@ -100,9 +93,16 @@ export class UserService {
     return toSafeUser(user);
   }
 
-  /**
-   * Get user by email
-   */
+  /** ===============================
+   *  GET USER BY EMAIL (FULL USER)
+   * =============================== */
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.repository.findByEmail(email);
+  }
+
+  /** ===============================
+   *  GET SAFE USER BY EMAIL
+   * =============================== */
   async getUserByEmail(email: string): Promise<SafeUser> {
     const user = await this.repository.findByEmail(email);
 
@@ -113,18 +113,31 @@ export class UserService {
     return toSafeUser(user);
   }
 
-  /**
-   * List users
-   */
+  /** ===============================
+   *  LIST USERS (SAFE)
+   * =============================== */
   async listUsers(): Promise<SafeUser[]> {
-    const users = (await this.repository.findAll()) as unknown as User[];
+    const users = (this.repository.findAll()) as unknown as User[];
+    return users.map((u) => toSafeUser(u));
+  }
+  async updatePassword(userId: number, newPassword: string) {
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
-    return users.map((u: User) => toSafeUser(u));
+  const updated = await this.repository.update(userId, {
+    passwordHash,
+  });
+
+  if (!updated) {
+    throw new Error("User not found");
   }
 
-  /**
-   * Update user
-   */
+  return updated;
+}
+
+
+  /** ===============================
+   *  UPDATE USER
+   * =============================== */
   async updateUser(id: number, data: unknown): Promise<SafeUser> {
     const validated = userUpdateSchema.parse(data);
 
@@ -154,9 +167,9 @@ export class UserService {
     return toSafeUser(updated);
   }
 
-  /**
-   * Delete user
-   */
+  /** ===============================
+   *  DELETE USER
+   * =============================== */
   async deleteUser(id: number): Promise<{ success: true }> {
     const deleted = await this.repository.delete(id);
 
@@ -167,13 +180,13 @@ export class UserService {
     return { success: true };
   }
 
-  /**
-   * Verify credentials
-   */
+  /** ===============================
+   *  VERIFY LOGIN
+   * =============================== */
   async verifyCredentials(
     email: string,
     plainPassword: string
-  ): Promise<SafeUser> {
+  ): Promise<User> {
     const user = await this.repository.findByEmail(email);
 
     if (!user || !user.passwordHash) {
@@ -186,8 +199,9 @@ export class UserService {
       throw new Error("Invalid credentials");
     }
 
-    return toSafeUser(user);
+    return user;
   }
+  
 }
 
 export const userService = new UserService();

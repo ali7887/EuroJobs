@@ -1,16 +1,16 @@
-import { applicationRepository } from "@/lib/repositories/application.repository";
+import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
 
 export const applicationService = {
 
   async applyToJob(userId: number, jobId: number, data: any) {
     const existing =
-      await applicationRepository.findExisting(jobId, userId);
+      await jobApplicationsRepository.findExisting(jobId, userId);
 
     if (existing.length > 0) {
       throw new Error("Already applied");
     }
 
-    return applicationRepository.create({
+    return jobApplicationsRepository.create({
       jobId,
       userId,
       ...data,
@@ -18,22 +18,22 @@ export const applicationService = {
   },
 
   async getApplicationById(id: number) {
-    return applicationRepository.findById(id);
+    return jobApplicationsRepository.findById(id);
   },
 
   async getUserApplications(userId: number) {
-    return applicationRepository.findByUser(userId);
+    return jobApplicationsRepository.findByUser(userId);
   },
 
   async getJobApplications(jobId: number) {
-    return applicationRepository.findByJob(jobId);
+    return jobApplicationsRepository.findByJob(jobId);
   },
 
   async updateStatus(id: number, data: { status: string }) {
-    return applicationRepository.updateStatus(id, data.status);
+    return jobApplicationsRepository.updateStatus(id, data.status);
   },
 
   async deleteApplication(id: number) {
-    return applicationRepository.delete(id);
+    return jobApplicationsRepository.delete(id);
   },
 };

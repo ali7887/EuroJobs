@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { Button } from "../ui/Button/Button";
+import Button from "../ui/Button/Button";
 
 interface JobFormProps {
   onSuccess?: () => void;

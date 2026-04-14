@@ -1,16 +1,13 @@
-import {
-  pgTable,
-  serial,
-  integer,
-  jsonb,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, text, timestamp } from "drizzle-orm/pg-core";
+import { jobs } from "./jobs";
 
-export const jobEmbeddings = pgTable("job_embeddings", {
+export const job_embeddings = pgTable("job_embeddings", {
   id: serial("id").primaryKey(),
-  jobId: integer("job_id").notNull(),
-  embedding: jsonb("embedding").$type<number[]>().notNull(),
+  jobId: integer("job_id")
+    .notNull()
+    .references(() => jobs.id, { onDelete: "cascade" }),
+
+  embedding: text("embedding").notNull(),
+
   updatedAt: timestamp("updated_at").defaultNow(),
 });
-
-export type JobEmbeddingRecord = typeof jobEmbeddings.$inferSelect;

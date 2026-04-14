@@ -1,44 +1,17 @@
-import { NextRequest, NextResponse } from "next/server"
-import { authService } from "@/lib/auth/auth.service"
-import { setRefreshTokenCookie } from "@/lib/auth/cookie.utilities"
+import { NextResponse } from "next/server";
+import { authService } from "@/lib/auth/auth.service";
 
-export async function POST(req: NextRequest) {
-
+export async function POST(req: Request) {
   try {
+    const { email, password, name } = await req.json();
 
-    const body = await req.json()
+    const result = await authService.register({ email, password, name });
+    return NextResponse.json(result, { status: 201 });
 
-    const result = await authService.register({
-      email: body.email,
-      password: body.password,
-      name: body.name
-    })
-
-    const res = NextResponse.json(
-      {
-        user: result.user,
-        tokens: {
-          accessToken: result.tokens.accessToken,
-          refreshToken: result.tokens.refreshToken
-        }
-      },
-      { status: 201 }
-    )
-
-    setRefreshTokenCookie(
-      res,
-      result.tokens.refreshToken
-    )
-
-    return res
-
-  } catch (error) {
-
+  } catch (err: any) {
     return NextResponse.json(
-      { error: (error as Error).message },
+      { message: err.message || "Registration failed" },
       { status: 400 }
-    )
-
+    );
   }
-
 }

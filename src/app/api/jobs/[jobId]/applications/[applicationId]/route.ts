@@ -1,18 +1,19 @@
-﻿import { NextResponse } from "next/server";
-import { applicationService } from "@/lib/services/application.service";
+﻿import { NextRequest, NextResponse } from "next/server";
+import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
 
 export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ jobId: string; applicationId: string }> }
 ) {
-  try {
-    const { id } = await params;
+  const { applicationId } = await params;
 
-    const result = await applicationService.getApplicationById(Number(id));
+  const application = await jobApplicationsRepository.findById(
+    Number(applicationId)
+  );
 
-    return NextResponse.json(result);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+  if (!application) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+
+  return NextResponse.json(application);
 }

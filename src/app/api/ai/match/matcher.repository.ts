@@ -1,47 +1,42 @@
-// src/app/api/ai/match/matcher.repository.ts
-import { db } from '@/lib/db';            // drizzle client: src/lib/db/index.ts
-import { jobEmbeddings } from '@/lib/db/schema';
-import type { JobEmbeddingRecord } from './matcher.types';
-import { eq } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { job_embeddings } from "@/lib/db/schema";
+import type { JobEmbeddingRecord } from "./matcher.types";
+import { eq } from "drizzle-orm";
 
 export class MatcherRepository {
-  async saveEmbedding(record: Omit<JobEmbeddingRecord, 'id'>): Promise<void> {
-    // چک کن که برای این jobId قبلاً رکورد هست یا نه
+  async saveEmbedding(record: Omit<JobEmbeddingRecord, "id">): Promise<void> {
     const existing = await db
       .select()
-      .from(jobEmbeddings)
-      .where(eq(jobEmbeddings.jobId, record.jobId))
+      .from(job_embeddings)
+      .where(eq(job_embeddings.jobId, record.jobId))
       .limit(1);
 
+    const embeddingString = JSON.stringify(record.embedding);
+
     if (existing.length > 0) {
-      // update
       await db
-        .update(jobEmbeddings)
+        .update(job_embeddings)
         .set({
-          embedding: record.embedding,
-          updatedAt: record.updatedAt,
+          embedding: embeddingString,
+          updatedAt: record.updatedAt ?? new Date(),
         })
-        .where(eq(jobEmbeddings.jobId, record.jobId));
+        .where(eq(job_embeddings.jobId, record.jobId));
     } else {
-      // insert
-      await db.insert(jobEmbeddings).values({
+      await db.insert(job_embeddings).values({
         jobId: record.jobId,
-        embedding: record.embedding,
-        updatedAt: record.updatedAt,
+        embedding: embeddingString,
+        updatedAt: record.updatedAt ?? new Date(),
       });
     }
   }
 
   async getAllEmbeddings(): Promise<JobEmbeddingRecord[]> {
-    const rows = await db.select().from(jobEmbeddings);
+    const rows = await db.select().from(job_embeddings);
 
-    // اگر schema.ts را طوری تعریف کرده باشی که type ها درست باشند،
-    // همین rows خودشان JobEmbeddingRecord خواهند بود.
-    // ولی برای اطمینان، map می‌کنیم:
     return rows.map((r) => ({
       id: r.id,
       jobId: r.jobId,
-      embedding: r.embedding,
+      embedding: JSON.parse(r.embedding),
       updatedAt: r.updatedAt,
     }));
   }

@@ -1,19 +1,26 @@
-import { getOpenAIClient } from './gapgpt.client';
+import { getGapGPTClient } from "@/lib/ai/gapgpt.client";
 
-// تبدیل متن به vector (1536 dimension با text-embedding-3-small)
 export async function getEmbedding(text: string): Promise<number[]> {
-  const client = getOpenAIClient();
+  const client = getGapGPTClient();
+
   const response = await client.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text.replace(/\n/g, ' '),
+    model: "text-embedding-3-small",
+    input: text.replace(/\n/g, " "),
   });
+
   return response.data[0].embedding;
 }
 
-// محاسبه cosine similarity بین دو vector
 export function cosineSimilarity(a: number[], b: number[]): number {
-  const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
-  const magA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-  const magB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-  return dot / (magA * magB);
+  let dot = 0;
+  let magA = 0;
+  let magB = 0;
+
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    magA += a[i] ** 2;
+    magB += b[i] ** 2;
+  }
+
+  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
 }

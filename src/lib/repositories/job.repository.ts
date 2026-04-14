@@ -1,134 +1,39 @@
-import { and, ilike, gte, lte, eq } from "drizzle-orm";
-import { jobs, Job, NewJob } from "@/lib/db/schema/jobs";
-import { companies } from "@/lib/db/schema/companies";
-import { db } from "@/lib/db/db";
+import { db } from "@/lib/db";
+import { jobs } from "@/lib/db/schema";
+import { eq, like } from "drizzle-orm";
 
 export const jobRepository = {
-  async create(data: NewJob): Promise<Job> {
-    const result = await db.insert(jobs).values(data).returning();
-    return result[0];
+  create: async (data: any) => {
+    return db.insert(jobs).values(data).returning();
   },
 
-  async findAll(limit = 20, offset = 0): Promise<
-    Array<Job & { companyName: string | null }>
-  > {
+  findAll: async (limit: number, offset: number) => {
     return db
-      .select({
-        id: jobs.id,
-        title: jobs.title,
-        description: jobs.description,
-        location: jobs.location,
-        salary: jobs.salary,
-        isRemote: jobs.isRemote,
-        type: jobs.type,
-        isActive: jobs.isActive,
-        published: jobs.published,
-        createdAt: jobs.createdAt,
-        updatedAt: jobs.updatedAt,
-        companyId: jobs.companyId,
-        employerId: jobs.employerId,
-        companyName: companies.name,
-      })
+      .select()
       .from(jobs)
-      .leftJoin(companies, eq(jobs.companyId, companies.id))
       .limit(limit)
       .offset(offset);
   },
 
-  async findById(id: number): Promise<
-    (Job & { companyName: string | null }) | undefined
-  > {
-    const result = await db
-      .select({
-        id: jobs.id,
-        title: jobs.title,
-        description: jobs.description,
-        location: jobs.location,
-        salary: jobs.salary,
-        isRemote: jobs.isRemote,
-        type: jobs.type,
-        isActive: jobs.isActive,
-        published: jobs.published,
-        createdAt: jobs.createdAt,
-        updatedAt: jobs.updatedAt,
-        companyId: jobs.companyId,
-        employerId: jobs.employerId,
-        companyName: companies.name,
-      })
+  findById: async (id: number) => {
+    return db
+      .select()
       .from(jobs)
-      .leftJoin(companies, eq(jobs.companyId, companies.id))
-      .where(eq(jobs.id, id));
-
-    return result[0];
+      .where(eq(jobs.id, id))
+      .limit(1)
+      .then(res => res[0] ?? null);
   },
 
-  async findByEmployer(userId: number) {
-    const rows = await db
-      .select({
-        id: jobs.id,
-        title: jobs.title,
-        description: jobs.description,
-        location: jobs.location,
-        salary: jobs.salary,
-        isRemote: jobs.isRemote,
-        createdAt: jobs.createdAt,
-        updatedAt: jobs.updatedAt,
-        companyId: jobs.companyId,
-        employerId: jobs.employerId,
-        companyName: companies.name,
-      })
-      .from(jobs)
-      .leftJoin(companies, eq(jobs.companyId, companies.id))
-      .where(eq(jobs.employerId, userId));
-
-    return rows;
+  delete: async (id: number) => {
+    return db.delete(jobs).where(eq(jobs.id, id));
   },
 
-  async delete(id: number): Promise<Job | undefined> {
-    const result = await db.delete(jobs).where(eq(jobs.id, id)).returning();
-    return result[0];
-  },
-
-  async search(filters: any, limit = 20, offset = 0) {
-    const conditions = [];
-
-    if (filters.search) {
-      conditions.push(ilike(jobs.title, `%${filters.search}%`));
-    }
-
-    if (filters.location) {
-      conditions.push(ilike(jobs.location, `%${filters.location}%`));
-    }
-
-    if (filters.salaryMin) {
-      conditions.push(gte(jobs.salary, filters.salaryMin));
-    }
-
-    if (filters.salaryMax) {
-      conditions.push(lte(jobs.salary, filters.salaryMax));
-    }
-
-    const baseQuery = db
-      .select({
-        id: jobs.id,
-        title: jobs.title,
-        description: jobs.description,
-        location: jobs.location,
-        salary: jobs.salary,
-        isRemote: jobs.isRemote,
-        createdAt: jobs.createdAt,
-        updatedAt: jobs.updatedAt,
-        companyId: jobs.companyId,
-        employerId: jobs.employerId,
-        companyName: companies.name,
-      })
+  search: async (query: any, limit: number, offset: number) => {
+    return db
+      .select()
       .from(jobs)
-      .leftJoin(companies, eq(jobs.companyId, companies.id))
+      .where(like(jobs.title, `%${query.query}%`))
       .limit(limit)
       .offset(offset);
-
-    return conditions.length
-      ? baseQuery.where(and(...conditions))
-      : baseQuery;
   },
 };
