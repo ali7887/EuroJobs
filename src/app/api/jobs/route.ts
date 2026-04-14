@@ -1,20 +1,10 @@
-import { NextResponse } from "next/server";
-import { jobRepository } from "@/lib/repositories/job.repository";
-import { createJobSchema } from "../../../lib/validators/job.validator";
+﻿import { NextRequest, NextResponse } from "next/server";
+import { jobService } from "@/lib/services/job.service";
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const data = createJobSchema.parse(body);
+export async function GET(req: NextRequest) {
+  const userId = req.headers.get("x-user-id") ?? "";
 
-    const job = await jobRepository.create(data);
-    return NextResponse.json(job, { status: 201 });
+  const jobs = await jobService.getEmployerJobs(userId); // ✅ ورودی string
 
-  } catch (err: any) {
-    console.error("Cr Job Error:", err);
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
-    );
-  }
+  return NextResponse.json(jobs);
 }

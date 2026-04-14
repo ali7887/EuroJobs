@@ -1,37 +1,50 @@
-import { jobRepository } from "@/lib/repositories/job.repository";
-import { JobSearchQuery } from "@/lib/types/job-search";
 import { db } from "@/lib/db";
-import { jobs } from "@/lib/db/schema";
+import { jobs } from "@/lib/db/schema/jobs";
+import { job_embeddings } from "@/lib/db/schema/job_embeddings";
 import { eq } from "drizzle-orm";
+import type { JobCreateInput } from "@/lib/types/job.types";
+import { generateJobEmbedding } from "@/lib/ai/generateJobEmbedding";
 
 export const jobService = {
-  async getEmployerJobs(userId: number) {
-    return db.select().from(jobs).where(eq(jobs.employerId, userId));
+  async createJob(userId: string, data: JobCreateInput) {
+    if (!userId) throw new Error("USER_ID_REQUIRED");
+
+    const [job] = await db
+      .insert(jobs)
+      .values({
+        employerId: Number(userId),
+        title: data.title,
+        description: data.description,
+        location: data.location,
+        salary: data.salary ?? null,
+        createdAt: new Date(),
+      })
+      .returning();
+
+    const embedding = await generateJobEmbedding(
+      `${data.title} ${data.description}`
+    );
+
+    await db.insert(job_embeddings).values({
+      jobId: job.id,
+      embedding: JSON.stringify(embedding),
+    });
+
+    return job;
   },
 
-  async createJob(data: any) {
-    return jobRepository.create(data);
+  async getEmployerJobs(userId: string) {
+    return await db.query.jobs.findMany({
+      where: eq(jobs.employerId, Number(userId)),
+    });
   },
 
-  async getJobs(page = 1) {
-    const limit = 20;
-    const offset = (page - 1) * limit;
-
-    return jobRepository.findAll(limit, offset);
+  async getJobs() {
+    return await db.query.jobs.findMany();
   },
 
   async getJob(id: number) {
-    return jobRepository.findById(id);
-  },
-
-  async deleteJob(id: number) {
-    return jobRepository.delete(id);
-  },
-
-  async searchJobs(query: JobSearchQuery) {
-    const limit = 20;
-    const offset = ((query.page ?? 1) - 1) * limit;
-
-    return jobRepository.search(query, limit, offset);
+    const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
+    return job ?? null;
   },
 };

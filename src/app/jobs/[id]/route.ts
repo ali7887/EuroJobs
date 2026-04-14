@@ -1,16 +1,17 @@
-﻿export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
-  return Response.json({ jobId: id });
-}
+﻿import { NextRequest, NextResponse } from "next/server";
+import { jobService } from "@/lib/services/job.service";
 
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
+export async function GET(
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const data = await req.json();
-  return Response.json({ id, data });
+  const { id } = await context.params;
+
+  const job = await jobService.getJob(Number(id));
+
+  if (!job) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(job);
 }

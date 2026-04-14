@@ -1,7 +1,8 @@
-import type { InferModel } from "drizzle-orm";
-import { jobs } from "../db/schema";;
+import type { InferSelectModel } from "drizzle-orm";
+import { jobs } from "../db/schema";
 
-export type Job = InferModel<typeof jobs>;
+// InferModel deprecated → استفاده از InferSelectModel
+export type Job = InferSelectModel<typeof jobs>;
 
 export type JobQuery = {
   page?: number;
@@ -31,3 +32,11 @@ export type JobListItem = Job & {
 export type JobWithCompany = Job & {
   company: { id: string; name: string; logo: string };
 };
+
+export interface JobCreateInput {
+  title: string;
+  description: string;
+  location: string;
+  salary?: number;
+  skills?: string[];
+}
