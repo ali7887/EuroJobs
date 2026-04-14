@@ -34,6 +34,9 @@ export type JobWithCompany = Job & {
 };
 
 export interface JobCreateInput {
+  companyId: null;
+  type: null;
+  isRemote: boolean;
   title: string;
   description: string;
   location: string;
