@@ -1,60 +1,119 @@
 .section {
   position: relative;
-  padding: 80px 0;
+  padding: 120px 0;
+  overflow: hidden;
 }
 
-.visualCanvas {
+.canvas {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 300px;
-  z-index: 1;
-  opacity: 0.4;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .header {
   text-align: center;
   margin-bottom: 40px;
-  position: relative;
-  z-index: 3;
-}
-
-.jobsGrid {
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-  position: relative;
-  z-index: 3;
 }
 
 .filters {
   display: flex;
-  justify-content: center;
   gap: 12px;
-  margin-bottom: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 }
 
 .filters button {
-  padding: 8px 18px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  background: #fafafa;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
   cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.filters button:hover {
-  background: white;
-  box-shadow: 0 0 18px rgba(0,0,0,0.06);
+  transition: 0.3s;
 }
 
 .activeFilter {
-  background-color: #111;
-  color: white !important;
+  background: #2563eb;
+  color: white;
 }
 
-.sortSelect {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+/* اگر از react-window / virtual list استفاده می‌کنی */
+.virtualContainer {
+  height: 600px;
+  overflow: auto;
+  padding-right: 8px; /* کمی برای scrollbar */
+}
+
+/* ✅ Grid + glass (ترکیبِ چیزی که درست کردی) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  padding: 24px;
+
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* skeleton ها */
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.skeleton {
+  height: 180px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    #1e293b 25%,
+    #334155 37%,
+    #1e293b 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton 1.4s ease infinite;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* (اختیاری) برای بهتر شدن ظاهر متن‌ها روی glass */
+.card * {
+  position: relative;
 }

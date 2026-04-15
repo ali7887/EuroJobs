@@ -1,72 +1,28 @@
-'use client';
+"use client";
 
 import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react';
 import { MainLayout } from '@/components/layout';
 import { SearchBar } from '@/components/sections/Hero';
-import { JobCard } from '@/components/ui/JobCard/JobCard';
 import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
 import styles from './page.module.css';
+import FeaturedJobs from "@/components/sections/FeaturedJobs/FeaturedJobs";
 
 const categories = [
-  { icon: Code,      name: 'Engineering', count: 1234, trending: true  },
-  { icon: Palette,   name: 'Design',      count: 567,  trending: false },
-  { icon: TrendingUp,name: 'Marketing',   count: 890,  trending: true  },
-  { icon: Users,     name: 'Sales',       count: 432,  trending: false },
-  { icon: Wrench,    name: 'Product',     count: 321,  trending: false },
-  { icon: FileText,  name: 'Content',     count: 234,  trending: false },
-];
-
-const featuredJobs = [
-  {
-    id: '1',
-    title: 'Senior Frontend Developer',
-    company: 'TechCorp',
-    location: 'Remote',
-    salary: { min: 120000, max: 180000, currency: '$' },
-    type: 'Full-time' as const,
-    tags: ['React', 'TypeScript', 'Next.js'],
-    isNew: true,
-    isFeatured: true,
-    postedAt: '2 days ago',
-    applicantCount: 45,
-  },
-  {
-    id: '2',
-    title: 'Product Designer',
-    company: 'DesignHub',
-    location: 'Berlin',
-    salary: { min: 90000, max: 130000, currency: '$' },
-    type: 'Full-time' as const,
-    tags: ['Figma', 'UI/UX', 'Design Systems'],
-    isNew: false,
-    isFeatured: false,
-    postedAt: '5 days ago',
-    applicantCount: 32,
-  },
-  {
-    id: '3',
-    title: 'DevOps Engineer',
-    company: 'CloudScale',
-    location: 'Amsterdam',
-    salary: { min: 110000, max: 160000, currency: '$' },
-    type: 'Contract' as const,
-    tags: ['AWS', 'Kubernetes', 'Docker'],
-    isNew: true,
-    isFeatured: false,
-    postedAt: '1 week ago',
-    applicantCount: 28,
-  },
+  { icon: Code, name: 'Engineering', count: 1234, trending: true },
+  { icon: Palette, name: 'Design', count: 567, trending: false },
+  { icon: TrendingUp, name: 'Marketing', count: 890, trending: true },
+  { icon: Users, name: 'Sales', count: 432, trending: false },
+  { icon: Wrench, name: 'Product', count: 321, trending: false },
+  { icon: FileText, name: 'Content', count: 234, trending: false },
 ];
 
 const companies = [
-  { name: 'Google',    jobs: 45 },
+  { name: 'Google', jobs: 45 },
   { name: 'Microsoft', jobs: 32 },
-  { name: 'Spotify',   jobs: 28 },
-  { name: 'Netflix',   jobs: 19 },
-  { name: 'Amazon',    jobs: 56 },
-  { name: 'Meta',      jobs: 41 },
-  { name: 'Apple',     jobs: 23 },
-  { name: 'Tesla',     jobs: 17 },
+  { name: 'Spotify', jobs: 28 },
+  { name: 'Netflix', jobs: 19 },
+  { name: 'Amazon', jobs: 56 },
+  { name: 'Meta', jobs: 41 },
 ];
 
 export default function HomePage() {
@@ -80,15 +36,16 @@ export default function HomePage() {
 
   return (
     <MainLayout>
+
+      {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
-            Find Your Dream Job in{' '}
-            <span className={styles.gradient}>Europe</span>
+            Find Your Dream Job in <span className={styles.gradient}>Europe</span>
           </h1>
 
           <p className={styles.heroSubtitle}>
-            Discover thousands of opportunities from top companiesacross Europe
+            Discover curated opportunities from top-tier tech companies.
           </p>
 
           <SearchBar onSearch={handleSearch} />
@@ -103,23 +60,17 @@ export default function HomePage() {
               <span className={styles.statValue}>850+</span>
               <span className={styles.statLabel}>Companies</span>
             </div>
-            <div className={styles.statDivider} />
-            <div className={styles.stat}>
-              <span className={styles.statValue}>50K+</span>
-              <span className={styles.statLabel}>Job Seekers</span>
-            </div>
           </div>
         </div>
       </section>
 
+      {/* Categories Section */}
       <section className={styles.section}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Popular Categories</h2>
-            <p className={styles.sectionSubtitle}>
-              Explore jobs by category
-            </p>
           </div>
+
           <div className={styles.categoriesGrid}>
             {categories.map((cat) => (
               <CategoryCard key={cat.name} {...cat} />
@@ -128,37 +79,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Featured Jobs (Ultra Premium) */}
       <section className={styles.section}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Featured Jobs</h2>
+            <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
             <p className={styles.sectionSubtitle}>
-              Hand-picked opportunities for you
+              Hand-picked roles at high-growth companies
             </p>
           </div>
-          <div className={styles.jobsGrid}>
-            {featuredJobs.map((job) => (
-              <JobCard key={job.id} {...job} />
-            ))}
-          </div>
+
+          <FeaturedJobs />
         </div>
       </section>
 
+      {/* Companies Section */}
       <section className={styles.section}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Top Companies Hiring</h2>
-            <p className={styles.sectionSubtitle}>
-              Join industry-leading organizations
-            </p>
+            <h2 className={styles.sectionTitle}>Top Hiring Companies</h2>
           </div>
+
           <div className={styles.companiesGrid}>
             {companies.map((company) => (
               <div key={company.name} className={styles.companyCard}>
                 <span className={styles.companyName}>{company.name}</span>
-                <span className={styles.companyJobs}>
-                  {company.jobs} open positions
-                </span>
+                <span className={styles.companyJobs}>{company.jobs} positions</span>
               </div>
             ))}
           </div>

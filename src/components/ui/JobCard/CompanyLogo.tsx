@@ -1,4 +1,8 @@
-export default function CompanyLogo({ letter }) {
+interface CompanyLogoProps {
+  letter: string;
+}
+
+export default function CompanyLogo({ letter }: CompanyLogoProps) {
   return (
     <div
       style={{

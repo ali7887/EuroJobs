@@ -38,3 +38,36 @@
 .padding-lg {
   padding: var(--space-8);
 }
+
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: -120%;
+  left: -40%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  transform: rotate(12deg);
+  transition: opacity .3s;
+  opacity: 0;
+}
+
+.card:hover::after {
+  animation: glint 1.2s ease;
+  opacity: 1;
+}
+
+@keyframes glint {
+  0% { transform: translateX(-100%) rotate(12deg); }
+  100% { transform: translateX(100%) rotate(12deg); }
+}

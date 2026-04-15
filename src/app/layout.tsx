@@ -1,19 +1,23 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
+import SpotlightProvider from "./SpotlightProvider";
 
 export const metadata: Metadata = {
-  title: 'Job Board SaaS - Find Your Dream Job in Europe',
-  description: 'Modern job board platform with AI-powered features',
+  title: "Job Board SaaS - Find Your Dream Job in Europe",
+  description: "Modern job board platform with AI-powered features",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SpotlightProvider />
+        {children}
+      </body>
     </html>
   );
 }
