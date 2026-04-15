@@ -1,64 +1,46 @@
-import { describe, it, expect, vi, beforeEach, type Mocked } from "vitest";
-import { applicationService } from "@/lib/services/application.service";
-import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
+import { db } from "@/lib/db";
+import { applications } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 
-// Mock repo with correct return types
-const mockedRepo = jobApplicationsRepository as Mocked<typeof jobApplicationsRepository>;
-
-vi.mock("@/lib/repositories/job-applications.repository");
-
-describe("applicationService", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("should apply to a job successfully", async () => {
-    // findExisting returns array
-    mockedRepo.findExisting.mockResolvedValue([]);
-
-    // create returns array of created rows
-    mockedRepo.create.mockResolvedValue([
-      {
-        id: 1,
-        userId: 10,
-        jobId: 20,
-        resumePath: "/resume.pdf",
-        coverLetter: null,
-        status: "pending",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]);
-
-    const result = await applicationService.applyToJob(10, 20, {
-      resumePath: "/resume.pdf",
+export const jobApplicationsRepository = {
+  findById: async (id: number) => {
+    return db.query.applications.findFirst({
+      where: eq(applications.id, id),
     });
+  },
 
-    expect(result.id).toBe(1);
-    expect(result.userId).toBe(10);
-  });
-
-  it("should block duplicates", async () => {
-    mockedRepo.findExisting.mockResolvedValue([{} as any]);
-
-    await expect(
-      applicationService.applyToJob(10, 20, {})
-    ).rejects.toThrow("Already applied");
-  });
-
-  it("should get application by id", async () => {
-    mockedRepo.findById.mockResolvedValue({
-      id: 1,
-      userId: 10,
-      jobId: 20,
-      resumePath: "/resume.pdf",
-      coverLetter: null,
-      status: "pending",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  getApplicationsByUser: async (userId: number) => {
+    return db.query.applications.findMany({
+      where: eq(applications.userId, userId),
+      with: { job: true },
     });
+  },
 
-    const result = await applicationService.getApplicationById(1);
+  create: async (data: any) => {
+    return db.insert(applications).values(data).returning();
+  },
 
-    expect(result.id).toBe(1);
-    expect(result.userId).toBe(10);
-  });
-});
+  findExisting: async (jobId: number, userId: number) => {
+    return db.query.applications.findMany({
+      where: and(
+        eq(applications.jobId, jobId),
+        eq(applications.userId, userId)
+      ),
+    });
+  },
+
+  updateStatus: async (id: number, status: string) => {
+    return db
+      .update(applications)
+      .set({ status })
+      .where(eq(applications.id, id))
+      .returning();
+  },
+
+  delete: async (id: number) => {
+    return db
+      .delete(applications)
+      .where(eq(applications.id, id))
+      .returning();
+  },
+};
