@@ -1,21 +1,33 @@
-import { NextRequest,NextResponse } from "next/server"
-import { requireAuth } from "@/lib/middleware/auth.middleware"
-import { applicationService } from "@/lib/services/application.service"
+import { NextRequest, NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
+import { auth } from "@/lib/auth/auth";
 
-export async function GET(req:NextRequest){
+export async function POST(req: NextRequest) {
+  try {
+    const user = await auth();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-const user = await requireAuth(req)
+    const body = await req.json();
+    const { jobId, resumePath, coverLetter } = body;
 
-if(!user){
-return NextResponse.json(
-{error:"Unauthorized"},
-{status:401}
-)
-}
+    if (!jobId) {
+      return NextResponse.json({ error: "JobId is required" }, { status: 400 });
+    }
 
-const apps =
-await applicationService.getUserApplications(user.id as number)
+    // هماهنگ با تعریف سرویس: userId (arg1), jobId (arg2), data (arg3)
+    const result = await applicationService.applyToJob(
+      user.userId, 
+      Number(jobId), 
+      { resumePath, coverLetter }
+    );
 
-return NextResponse.json(apps)
-
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 400 }
+    );
+  }
 }

@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -15,6 +14,21 @@ jobs:
           node-version: 20
 
       - run: npm install
-      - run: npm run type-check
-      - run: npm run test
-      - run: npm run build
+
+      - name: Type Check
+        run: npm run type-check
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: API Tests
+        run: npm run test:api
+
+      - name: E2E Tests
+        run: npm run test:e2e
+
+      - name: Build
+        run: npm run build

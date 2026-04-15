@@ -1,15 +1,17 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
-import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
+import { applicationService } from "@/lib/services/application.service";
 
 export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ jobId: string }> }
+  req: NextRequest,
+  context: { params: Promise<{ jobId: string }> }
 ) {
-  const { jobId } = await params;
+  const { jobId } = await context.params;
 
-  const applications = await jobApplicationsRepository.findById(
-    Number(jobId)
-  );
+  const idNum = Number(jobId);
+  if (isNaN(idNum)) {
+    return NextResponse.json({ error: "Invalid jobId" }, { status: 400 });
+  }
 
+  const applications = await applicationService.getJobApplications(idNum);
   return NextResponse.json(applications);
 }
