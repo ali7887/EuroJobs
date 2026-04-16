@@ -4,4 +4,7 @@ export interface JobCreateInput {
   location: string;
   salary?: number;
   skills: string[];
+  jobType: string;
+  type: string;
+
 }

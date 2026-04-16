@@ -1,42 +1,115 @@
 "use client";
 
-import JobCard from "@/components/ui/JobCard/JobCard";
-import JobCard3D from "@/components/ui/JobCard/JobCard3D";
-
+import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import styles from "./FeaturedJobs.module.css";
+
+import JobCard from "@/components/ui/JobCard/JobCard";
+import CanvasParticles from "@/components/particles/CanvasParticles";
 import { featuredJobs } from "./data";
-import { jobFilters } from "./filtersConfig";
-import { JobListing } from "./types";
+
+const jobTypeFilters = [
+  { label: "All Types", value: "all" },
+  { label: "Full-time", value: "Full-time" },
+  { label: "Contract", value: "Contract" },
+  { label: "Remote", value: "Remote" },
+];
+
+const skillFilters = [
+  { label: "All Skills", value: "all" },
+  { label: "React", value: "react" },
+  { label: "Next.js", value: "next.js" },
+  { label: "Node.js", value: "node.js" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "CSS", value: "css" },
+];
 
 export default function FeaturedJobs() {
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [skillFilter, setSkillFilter] = useState("all");
+
+  const filtered = useMemo(() => {
+    return featuredJobs.filter((job) => {
+      const typeOK = typeFilter === "all" || job.jobType === typeFilter;
+      const skillOK =
+        skillFilter === "all" ||
+        job.skills.map((x) => x.toLowerCase()).includes(skillFilter);
+
+      return typeOK && skillOK;
+    });
+  }, [typeFilter, skillFilter]);
+
+  const sortedJobs = useMemo(
+    () => [...filtered].sort((a, b) => b.matchScore - a.matchScore),
+    [filtered]
+  );
+
   return (
     <section className={styles.section}>
-      
-      <div className={styles.canvas} id="featuredCanvas"></div>
+      <CanvasParticles />
 
-      <div className={styles.header}>
-        <h2>Featured Opportunities</h2>
-        <p>Open positions from top technology companies</p>
-      </div>
+      {/* Header — FINAL (single instance only) */}
+      <motion.div
+        className={styles.header}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+       
+      </motion.div>
 
+      {/* FILTERS */}
       <div className={styles.filters}>
-        {jobFilters.map((filter) => (
-          <button key={filter.id}>
-            {filter.label}
-          </button>
-        ))}
+        <div className={styles.filterGroup}>
+          <span className={styles.filterLabel}>Type</span>
+          {jobTypeFilters.map((f) => (
+            <button
+              key={f.value}
+              className={`${styles.filterBtn} ${
+                typeFilter === f.value ? styles.active : ""
+              }`}
+              onClick={() => setTypeFilter(f.value)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.filterGroup}>
+          <span className={styles.filterLabel}>Skills</span>
+          {skillFilters.map((f) => (
+            <button
+              key={f.value}
+              className={`${styles.filterBtn} ${
+                skillFilter === f.value ? styles.active : ""
+              }`}
+              onClick={() => setSkillFilter(f.value)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className={styles.grid}>
-        {featuredJobs.map((job: JobListing) => (
-          <JobCard3D key={job.id}>
-            <div className={styles.card}>
-              <JobCard {...job} />
-            </div>
-          </JobCard3D>
+      {/* GRID */}
+      <motion.div
+        className={styles.grid}
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+        }}
+        initial="hidden"
+        animate="show"
+      >
+        {sortedJobs.map((job) => (
+          <JobCard key={job.id} job={job} />
         ))}
-      </div>
+      </motion.div>
 
+      {/* CTA */}
+      <div className={styles.viewAll}>
+        <button className={styles.viewAllBtn}>View All Featured Jobs →</button>
+      </div>
     </section>
   );
 }

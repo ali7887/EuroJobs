@@ -1,8 +1,9 @@
+// src/data/featuredJobs/filtersConfig.ts
+
 export const jobFilters = [
-  { id: "all", label: "All" },
-  { id: "frontend", label: "Frontend" },
-  { id: "backend", label: "Backend" },
-  { id: "fullstack", label: "Fullstack" },
-  { id: "design", label: "Design" },
-  { id: "remote", label: "Remote" },
+  { label: "All", value: "all" },
+  { label: "React", value: "react" },
+  { label: "Next.js", value: "next.js" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "CSS", value: "css" },
 ];

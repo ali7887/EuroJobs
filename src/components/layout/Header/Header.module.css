@@ -1,41 +1,80 @@
+/* ---------------------------------------------
+   BASE HEADER (Sticky + Glass + Shrink Ready)
+---------------------------------------------- */
 .header {
   position: sticky;
   top: 0;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border-light);
-  transition: all var(--transition-base);
+  z-index: 100;
+
+  padding: 24px 0;  /* ← بزرگ‌تر */
+
+  background: rgba(255, 255, 255, 0.95);  /* ← کمتر شفاف */
+  backdrop-filter: blur(0px);              /* ← بدون blur */
+
+  border-bottom: 1px solid transparent;    /* ← شفاف */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  /* ← easing بهتر */
 }
 
+/* Shrink on scroll */
+
+
+ 
+
+/* ---------------------------------------------
+   CONTAINER
+---------------------------------------------- */
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: var(--space-4) var(--space-6);
+  padding: 0 var(--space-6);
+
   display: flex;
   align-items: center;
-  justify-content: space-between;gap: var(--space-8);
+  justify-content: space-between;
+  gap: var(--space-8);
 }
 
+/* ---------------------------------------------
+   LOGO
+---------------------------------------------- */
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);font-size: var(--text-xl);
+  gap: var(--space-2);
+
+  font-size: var(--text-xl);
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
+
   text-decoration: none;
-  transition: color var(--transition-fast);
+}
+
+.logoMark {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: var(--radius-md);
+
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .logo:hover {
   color: var(--color-primary);
 }
 
+/* ---------------------------------------------
+   NAVIGATION
+---------------------------------------------- */
 .nav {
   display: flex;
   align-items: center;
   gap: 2rem;
-  /* REMOVED: margin: 3rem auto; */
 }
 
 .nav a {
@@ -43,8 +82,11 @@
   font-weight: var(--font-medium);
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+
+  padding: 4px 0;
   position: relative;
+
+  transition: color var(--transition-fast);
 }
 
 .nav a:hover {
@@ -56,9 +98,12 @@
   position: absolute;
   bottom: -4px;
   left: 0;
-  width: 0;
+
   height: 2px;
+  width: 0;
+
   background: var(--color-primary);
+
   transition: width var(--transition-base);
 }
 
@@ -66,6 +111,19 @@
   width: 100%;
 }
 
+/* Active Link State */
+.activeLink {
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
+}
+
+.activeLink::after {
+  width: 100%;
+}
+
+/* ---------------------------------------------
+   ACTION BUTTONS (Sign In + Post Job)
+---------------------------------------------- */
 .actions {
   display: flex;
   align-items: center;
@@ -77,23 +135,34 @@
   font-weight: var(--font-medium);
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+
+  padding: 8px 20px;
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+
+  transition: all var(--transition-fast);
 }
 
 .signIn:hover {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.05);
 }
 
 .postJob {
   padding: var(--space-2) var(--space-5);
+
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
+
   color: white;
   background: var(--color-primary);
+
   border-radius: var(--radius-md);
   text-decoration: none;
-  transition: all var(--transition-fast);
+
   box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
 }
 
 .postJob:hover {
@@ -102,14 +171,21 @@
   box-shadow: var(--shadow-md);
 }
 
+/* ---------------------------------------------
+   MOBILE MENU TOGGLE
+---------------------------------------------- */
 .mobileToggle {
   display: none;
   background: none;
   border: none;
+
   color: var(--color-text-primary);
   cursor: pointer;
 }
 
+/* ---------------------------------------------
+   MOBILE MENU PANEL
+---------------------------------------------- */
 .mobileMenu {
   display: none;
 }
@@ -127,22 +203,46 @@
   .mobileMenu {
     display: flex;
     flex-direction: column;
+
     gap: var(--space-4);
     padding: var(--space-6);
+
     border-top: 1px solid var(--color-border-light);
+
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
   }
 
   .mobileMenu a {
     font-size: var(--text-base);
     font-weight: var(--font-medium);
+    text-decoration: none;
     color: var(--color-text-secondary);
-    text-decoration: none;}
+  }
 
   .mobilePostJob {
     padding: var(--space-3) var(--space-4);
+
     background: var(--color-primary);
     color: white;
-    border-radius: var(--radius-md);
+
     text-align: center;
+    border-radius: var(--radius-md);
   }
+}
+
+/* ---------------------------------------------
+   SCROLL PROGRESS BAR
+---------------------------------------------- */
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  height: 2px;
+  width: 0%;
+
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+
+  transition: width 0.1s linear;
 }
