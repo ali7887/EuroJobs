@@ -14,6 +14,20 @@
  * Main Container
  * Glassmorphism effect with backdrop blur and semi-transparent background
  */
+ .label{
+font-size:13px;
+font-weight:600;
+}
+
+.input::placeholder{
+color:rgba(0,0,0,0.5);
+}
+
+.button{
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+box-shadow:0 8px 20px rgba(99,102,241,.4);
+}
+
 .searchBar__container {
   display: flex;
   align-items: flex-end;

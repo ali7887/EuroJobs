@@ -33,101 +33,6 @@
   color: var(--color-text-secondary);
 }
 
-/* ========== HERO ========== */
-.hero {
-  position: relative;
-  padding: 120px 0 80px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.heroContent {
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  text-align: center;
-  z-index: 1;
-}
-
-.heroTitle {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  line-height: 1.2;
-}
-
-.gradient {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.heroSubtitle {
-  font-size: 1.25rem;
-  margin-bottom: 40px;
-  opacity: 0.95;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.heroStats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-  margin-top: 48px;
-  padding: 24px 32px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.stat {
-  text-align: center;
-}
-
-.statValue {
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 4px;
-}
-
-.statLabel {
-  display: block;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-}
-
-.statDivider {
-  width: 1px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
 /* ========== CATEGORIES GRID ========== */
 .categoriesGrid {
   display: grid;
@@ -181,14 +86,14 @@
   color: var(--color-text-secondary);
 }
 
-/* ========== FOOTER ========== */
+/* FOOTER */
 .footerDivider {
   height: 1px;
   background: var(--color-border);
   margin: 80px 0 0;
 }
 
-/* ========== RESPONSIVE ========== */
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .jobsGrid {
     grid-template-columns: 1fr;
@@ -196,56 +101,14 @@
 }
 
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: 2.5rem;
-  }
-
-  .heroSubtitle {
-    font-size: 1.125rem;
-  }
-
-  .heroStats {
-    gap: 20px;
-    padding: 20px 24px;
-  }
-
-  .statValue {
-    font-size: 1.5rem;
-  }
-
-  .statLabel {
-    font-size: 0.75rem;
-  }
-
   .categoriesGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
-
-  .companiesGrid {
-    gap: 16px;
-  }
-
-  .companyCard {
-    min-width: 150px;padding: 20px 24px;
-  }
 }
 
 @media (max-width: 480px) {
-  .heroTitle {
-    font-size: 2rem;
-  }
-
   .categoriesGrid {
     grid-template-columns: 1fr;
-  }
-
-  .heroStats {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .statDivider {
-    display: none;
   }
 }
