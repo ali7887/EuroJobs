@@ -1,40 +1,38 @@
 "use client";
 
+import Link from "next/link";
 import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react';
 import { MainLayout } from '@/components/layout';
 import Hero from '@/components/sections/Hero/Hero';
 import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
-import styles from './page.module.css';
 import FeaturedJobs from "@/components/sections/FeaturedJobs/FeaturedJobs";
+import styles from './page.module.css';
 
 // Categories
-const categories = [
-  { icon: Code, name: 'Engineering', count: 1234, trending: true },
-  { icon: Palette, name: 'Design', count: 567, trending: false },
-  { icon: TrendingUp, name: 'Marketing', count: 890, trending: true },
-  { icon: Users, name: 'Sales', count: 432, trending: false },
-  { icon: Wrench, name: 'Product', count: 321, trending: false },
-  { icon: FileText, name: 'Content', count: 234, trending: false },
+let categories = [
+  { icon: Code, name: 'Engineering', count: 1234 },
+  { icon: Palette, name: 'Design', count: 567 },
+  { icon: TrendingUp, name: 'Marketing', count: 890 },
+  { icon: Users, name: 'Sales', count: 432 },
+  { icon: Wrench, name: 'Product', count: 321 },
+  { icon: FileText, name: 'Content', count: 234 },
 ];
 
-// Companies
-const companies = [
-  { name: 'Google', jobs: 45 },
-  { name: 'Microsoft', jobs: 32 },
-  { name: 'Spotify', jobs: 28 },
-  { name: 'Netflix', jobs: 19 },
-  { name: 'Amazon', jobs: 56 },
-  { name: 'Meta', jobs: 41 },
-];
+// Trending logic (85%+ of max)
+const maxCount = Math.max(...categories.map((c) => c.count));
+const TRENDING_THRESHOLD = 0.85;
+
+categories = categories.map((cat) => ({
+  ...cat,
+  trending: cat.count >= maxCount * TRENDING_THRESHOLD,
+}));
 
 export default function HomePage() {
   return (
     <MainLayout>
 
-      {/* ---------------- HERO SECTION ---------------- */}
       <Hero />
 
-      {/* ---------------- CATEGORIES SECTION ---------------- */}
       <section className={styles.section}>
         <div className={styles.container}>
 
@@ -43,6 +41,11 @@ export default function HomePage() {
             <p className={styles.sectionSubtitle}>
               Explore opportunities across the most in-demand fields in today’s tech landscape
             </p>
+          </div>
+
+          {/* View All */}
+          <div className={styles.viewAll}>
+            <Link href="/categories">View all categories →</Link>
           </div>
 
           <div className={styles.categoriesGrid}>
@@ -54,44 +57,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- FEATURED JOBS ---------------- */}
       <section className={styles.section}>
         <div className={styles.container}>
-
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
             <p className={styles.sectionSubtitle}>
               Hand-picked roles at high-growth companies
             </p>
           </div>
-
           <FeaturedJobs />
-
         </div>
       </section>
-
-      {/* ---------------- COMPANIES SECTION ---------------- */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Top Hiring Companies</h2>
-          </div>
-
-          <div className={styles.companiesGrid}>
-            {companies.map((company) => (
-              <div key={company.name} className={styles.companyCard}>
-                <span className={styles.companyName}>{company.name}</span>
-                <span className={styles.companyJobs}>{company.jobs} positions</span>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      <div className={styles.footerDivider} />
 
     </MainLayout>
   );
 }
+

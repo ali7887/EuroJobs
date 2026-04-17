@@ -1,33 +1,46 @@
-import { LucideIcon } from "lucide-react";
-import Link from "next/link";
-import styles from "./CategoryCard.module.css";
+import Link from 'next/link';
+import styles from './CategoryCard.module.css';
 
 interface CategoryCardProps {
-  icon: LucideIcon;
+  icon: any;
   name: string;
   count: number;
+  trending?: boolean;
 }
 
-const MAX_JOBS = 1300;
+export function CategoryCard({ icon: Icon, name, count, trending }: CategoryCardProps) {
+  const categoryColors: Record<string, string> = {
+    Engineering: '#6366f1',
+    Design: '#ec4899',
+    Marketing: '#f59e0b',
+    Sales: '#10b981',
+    Product: '#8b5cf6',
+    Content: '#3b82f6',
+  };
 
-export function CategoryCard({ icon: Icon, name, count }: CategoryCardProps) {
-  const percent = Math.min((count / MAX_JOBS) * 100, 100);
+  const maxCount = 1234; // for percentage calc
+  const percentage = Math.round((count / maxCount) * 100);
 
   return (
-    <Link href={`/jobs?category=${name.toLowerCase()}`} className={styles.card}>
+    <Link href={`/jobs/${name.toLowerCase()}`} className={styles.card}>
       
-      <div className={styles.iconWrapper}>
-        <Icon size={30} strokeWidth={1.7} />
+      {trending && <div className={styles.badge}>🔥 Trending</div>}
+
+      <div className={styles.iconWrapper} style={{ backgroundColor: categoryColors[name] + '15' }}>
+        <Icon className={styles.icon} style={{ color: categoryColors[name] }} />
       </div>
 
-      <h3 className={styles.name}>{name}</h3>
+      <h3 className={styles.title}>{name}</h3>
 
-      <p className={styles.count}>{count.toLocaleString()} jobs</p>
+      <div className={styles.progressLabel}>
+        <span>{count.toLocaleString()} jobs</span>
+        <span className={styles.percent}>{percentage}%</span>
+      </div>
 
       <div className={styles.progressBar}>
         <div
           className={styles.progressFill}
-          style={{ width: `${percent}%` }}
+          style={{ width: `${percentage}%`, backgroundColor: categoryColors[name] }}
         />
       </div>
 

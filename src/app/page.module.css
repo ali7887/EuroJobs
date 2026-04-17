@@ -40,10 +40,29 @@
 /* ========================= CATEGORIES GRID ========================= */
 .categoriesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 28px;
-  margin-top: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
 }
+
+.viewAll {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  text-align: right;
+}
+
+.viewAll a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: color .25s;
+}
+
+.viewAll a:hover {
+  color: var(--color-primary-hover);
+}
+
+
 
 /* ========================= JOBS GRID ========================= */
 .jobsGrid {
