@@ -1,260 +1,127 @@
-/**
-/**
- * Advanced URL-Driven Search Bar Styles
- * Premium glassmorphism design with micro-interactions
- 
-
+/* ============================
+   SearchBar (Wrapper)
+============================ */
 .searchBar {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/**
- * Main Container
- * Glassmorphism effect with backdrop blur and semi-transparent background
- */
- .label{
-font-size:13px;
-font-weight:600;
+/* ============================
+   Placeholder
+============================ */
+.searchBar__input::placeholder,
+.searchBar__select::placeholder {
+  color: rgba(0, 0, 0, 0.45);
 }
 
-.input::placeholder{
-color:rgba(0,0,0,0.5);
-}
-
-.button{
-background:linear-gradient(135deg,#6366f1,#8b5cf6);
-box-shadow:0 8px 20px rgba(99,102,241,.4);
-}
-
+/* ============================
+   Container
+============================ */
 .searchBar__container {
   display: flex;
   align-items: flex-end;
   gap: 0;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 8px;
-  box-shadow: 
-    0 4px 6px rgba(0, 0, 0, 0.05),
-    0 10px 20px rgba(0, 0, 0, 0.08),
-    0 20px 40px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
-/**
- * Premium glow effect on focus-within
- * Activates when any input inside is focused
- */
 .searchBar__container:focus-within {
-  box-shadow: 
-    0 4px 6px rgba(0, 0, 0, 0.05),
-    0 10px 20px rgba(0, 0, 0, 0.08),
-    0 20px 40px rgba(0, 0, 0, 0.06),
-    0 0 0 4px rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: hsl(220, 80%, 55%);
+  box-shadow: 0 0 0 4px rgba(80,120,255,0.25);
 }
 
-/**
- * Individual Input Field Container
- */
+/* ============================
+   Field
+============================ */
 .searchBar__field {
   flex: 1;
-  min-width: 0;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px 16px;
-  transition: background-color 0.2s ease;
 }
 
-.searchBar__field:focus-within {
-  background-color: rgba(59, 130, 246, 0.03);
-  border-radius: 8px;
-}
-
-/**
- * Label Styling
- * Small, uppercase, subtle color
- */
 .searchBar__label {
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   color: hsl(220, 10%, 50%);
-  margin-bottom: 2px;
 }
 
-/**
- * Text Input Styling
- * Clean, minimal, focus on content
- */
+/* ============================
+   Inputs
+============================ */
 .searchBar__input {
-  width: 100%;
   border: none;
   background: transparent;
   font-size: 15px;
-  font-weight: 500;
-  color: hsl(220, 20%, 20%);
-  outline: none;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  outline: none;
+  color: #111;
 }
 
-.searchBar__input::placeholder {
-  color: hsl(220, 10%, 60%);
-  font-weight: 400;
+.searchBar__input:focus {
+  outline: none;
 }
 
-/**
- * Select Dropdown Styling
- * Custom styled to match input fields
- */
+/* ============================
+   Select
+============================ */
 .searchBar__select {
-  width: 100%;
   border: none;
   background: transparent;
   font-size: 15px;
-  font-weight: 500;
-  color: hsl(220, 20%, 20%);
+  padding-right: 22px;
   outline: none;
-  padding: 0;
+  color: #111;
+  appearance: none;
   cursor: pointer;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 1L5 5L9 1' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 0 center;
-  padding-right: 20px;
+  background-position: right 4px center;
 }
 
-.searchBar__select:hover {
-  color: hsl(220, 60%, 40%);
-}
-
-/**
- * Vertical Separator Between Fields
- * Hidden on mobile
- */
+/* ============================
+   Separator
+============================ */
 .searchBar__separator {
   width: 1px;
-  height: 40px;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.08),
-    rgba(0, 0, 0, 0)
-  );
-  flex-shrink: 0;
+  height: 38px;
+  align-self: center;
+  background: rgba(0, 0, 0, 0.09);
 }
 
-/**
- * Search Button
- * Magnetic hover effect with enhanced shadow
- */
+/* ============================
+   Button
+============================ */
 .searchBar__button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 32px;
-  background: linear-gradient(135deg, hsl(220, 80%, 50%), hsl(220, 80%, 45%));
-  color: white;
-  border: none;
+  padding: 16px 24px;
   border-radius: 12px;
+  background: linear-gradient(135deg, hsl(220, 80%, 55%), hsl(220, 80%, 45%));
+  border: none;
+  cursor: pointer;
+  color: white;
   font-size: 15px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 2px 4px rgba(59, 130, 246, 0.2),
-    0 4px 8px rgba(59, 130, 246, 0.15);
-  white-space: nowrap;
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .searchBar__button:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 4px 8px rgba(59, 130, 246, 0.25),
-    0 8px 16px rgba(59, 130, 246, 0.2),
-    0 12px 24px rgba(59, 130, 246, 0.15);
-  background: linear-gradient(135deg, hsl(220, 80%, 55%), hsl(220, 80%, 50%));
-}
-
-.searchBar__button:active {
-  transform: translateY(0);box-shadow: 
-    0 2px 4px rgba(59, 130, 246, 0.2),
-    0 4px 8px rgba(59, 130, 246, 0.15);
-}
-
-.searchBar__buttonText {
-  display: inline;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .searchBar__buttonIcon {
-  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 }
-
-/**
- * Mobile Responsive Design
- * Stack vertically on screens < 768px
- */
-@media (max-width: 768px) {
-  .searchBar__container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    padding: 16px;
-  }
-
-  .searchBar__field {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  }
-
-  .searchBar__field:last-of-type {
-    border-bottom: none;
-  }
-
-  .searchBar__field:focus-within {
-    background-color: transparent;
-    border-radius: 0;
-  }
-
-  /* Hide separators on mobile */
-  .searchBar__separator {
-    display: none;
-  }
-
-  .searchBar__button {
-    width: 100%;
-    justify-content: center;
-    margin-top: 8px;padding: 16px 24px;
-  }
-
-  .searchBar__buttonText {
-    display: inline;
-  }
-}
-
-/**
- * Tablet Responsive (768px - 1024px)
- * Slightly reduce padding
- */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .searchBar__container {
-    padding: 6px;
-  }
-
-  .searchBar__field {
-    padding: 10px 12px;
-  }
-
-  .searchBar__button {
-    padding: 14px 24px;
-  }
-}
-
