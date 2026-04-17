@@ -31,14 +31,18 @@ export default function HomePage() {
   return (
     <MainLayout>
 
-      {/* ---------------- HERO جدید ---------------- */}
+      {/* ---------------- HERO SECTION ---------------- */}
       <Hero />
 
-      {/* ---------------- Categories Section ---------------- */}
+      {/* ---------------- CATEGORIES SECTION ---------------- */}
       <section className={styles.section}>
         <div className={styles.container}>
+
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Popular Categories</h2>
+            <p className={styles.sectionSubtitle}>
+              Explore opportunities across the most in-demand fields in today’s tech landscape
+            </p>
           </div>
 
           <div className={styles.categoriesGrid}>
@@ -46,12 +50,14 @@ export default function HomePage() {
               <CategoryCard key={cat.name} {...cat} />
             ))}
           </div>
+
         </div>
       </section>
 
-      {/* ---------------- Featured Jobs ---------------- */}
+      {/* ---------------- FEATURED JOBS ---------------- */}
       <section className={styles.section}>
         <div className={styles.container}>
+
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
             <p className={styles.sectionSubtitle}>
@@ -60,12 +66,14 @@ export default function HomePage() {
           </div>
 
           <FeaturedJobs />
+
         </div>
       </section>
 
-      {/* ---------------- Companies Section ---------------- */}
+      {/* ---------------- COMPANIES SECTION ---------------- */}
       <section className={styles.section}>
         <div className={styles.container}>
+
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Top Hiring Companies</h2>
           </div>
@@ -78,6 +86,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
