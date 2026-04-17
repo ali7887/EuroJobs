@@ -1,0 +1,103 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- گرادیان آبی BMW -->
+    <radialGradient id="blueGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#4a90d9"/>
+      <stop offset="50%" stop-color="#1565c0"/>
+      <stop offset="100%" stop-color="#0a3d7a"/>
+    </radialGradient>
+
+    <!-- گرادیان سفید براق -->
+    <radialGradient id="whiteGrad" cx="30%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#cccccc"/>
+    </radialGradient>
+
+    <!-- گرادیان حلقه -->
+    <linearGradient id="bmwRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="25%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="75%" stop-color="#a0a0a0"/>
+      <stop offset="100%" stop-color="#d0d0d0"/>
+    </linearGradient>
+
+    <!-- گرادیان حلقه میانی -->
+    <linearGradient id="midRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#cccccc"/>
+      <stop offset="100%" stop-color="#888888"/>
+    </linearGradient>
+
+    <!-- فیلتر براقی -->
+    <filter id="shine">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- ماسک دایره داخلی -->
+    <clipPath id="innerClip">
+      <circle cx="50" cy="50" r="36"/>
+    </clipPath>
+  </defs>
+
+  <!-- پس‌زمینه تیره کل دایره -->
+  <circle cx="50" cy="50" r="48" fill="#111111"/>
+
+  <!-- ناحیه داخلی ۴ ربع -->
+  <!-- ربع بالا-راست: آبی -->
+  <path d="M50 14 A36 36 0 0 1 86 50 L50 50 Z"
+    fill="url(#blueGrad)"/>
+
+  <!-- ربع پایین-چپ: آبی -->
+  <path d="M50 86 A36 36 0 0 1 14 50 L50 50 Z"
+    fill="url(#blueGrad)"/>
+
+  <!-- ربع بالا-چپ: سفید براق -->
+  <path d="M14 50 A36 36 0 0 1 50 14 L50 50 Z"
+    fill="url(#whiteGrad)"/>
+
+  <!-- ربع پایین-راست: سفید براق -->
+  <path d="M86 50 A36 36 0 0 1 50 86 L50 50 Z"
+    fill="url(#whiteGrad)"/>
+
+  <!-- هایلایت براق روی ربع سفید بالا-چپ -->
+  <path d="M14 50 A36 36 0 0 1 50 14 L50 50 Z"
+    fill="white" opacity="0.15"
+    clip-path="url(#innerClip)"/>
+
+  <!-- هایلایت کوچک گوشه بالا-چپ -->
+  <ellipse cx="32" cy="28" rx="12" ry="7"
+    fill="white" opacity="0.2"
+    transform="rotate(-45, 32, 28)"
+    clip-path="url(#innerClip)"/>
+
+  <!-- حلقه میانی جداکننده -->
+  <circle cx="50" cy="50" r="36" fill="none"
+    stroke="url(#midRing)" stroke-width="2.5"
+    filter="url(#shine)"/>
+
+  <!-- خطوط تقسیم‌کننده -->
+  <line x1="50" y1="14" x2="50" y2="86"
+    stroke="url(#midRing)" stroke-width="2.5"/>
+  <line x1="14" y1="50" x2="86" y2="50"
+    stroke="url(#midRing)" stroke-width="2.5"/>
+
+  <!-- حلقه بیرونی اصلی -->
+  <circle cx="50" cy="50" r="46" fill="none"
+    stroke="url(#bmwRing)" stroke-width="4"
+    filter="url(#shine)"/>
+
+  <!-- هایلایت روی حلقه بیرونی -->
+  <path d="M 18 18 A 40 40 0 0 1 82 18"
+    fill="none" stroke="white"
+    stroke-width="1.5" opacity="0.6"
+    stroke-linecap="round"/>
+
+  <!-- سایه پایین حلقه -->
+  <path d="M 18 82 A 40 40 0 0 0 82 82"
+    fill="none" stroke="black"
+    stroke-width="1" opacity="0.3"
+    stroke-linecap="round"/>
+</svg>

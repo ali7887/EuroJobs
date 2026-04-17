@@ -1,0 +1,12 @@
+<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- SAP لوگو — متن bold با proportions دقیق -->
+  <text x="50" y="36"
+    text-anchor="middle"
+    font-family="Arial Black, sans-serif"
+    font-size="36"
+    font-weight="900"
+    fill="white"
+    letter-spacing="2">SAP</text>
+  <!-- خط زیر متن -->
+  <line x1="8" y1="42" x2="92" y2="42" stroke="white" stroke-width="2" opacity="0.4"/>
+</svg>

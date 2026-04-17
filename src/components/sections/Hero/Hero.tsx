@@ -10,24 +10,6 @@ export default function Hero() {
   const [categoryValue, setCategoryValue] = useState("");
 
   const heroRef = useRef<HTMLDivElement>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
-
-  // Spotlight Animation
-  useEffect(() => {
-    const hero = heroRef.current;
-    const light = spotlightRef.current;
-    if (!hero || !light) return;
-
-    const move = (e: MouseEvent) => {
-      const r = hero.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-      light.style.transform = `translate(${x - 150}px, ${y - 150}px)`;
-    };
-
-    hero.addEventListener("mousemove", move);
-    return () => hero.removeEventListener("mousemove", move);
-  }, []);
 
   // Tag click handlers
   const handleTag = (tag: string) => {
@@ -40,6 +22,7 @@ export default function Hero() {
   // Stats counter
   useEffect(() => {
     const elements = document.querySelectorAll("[data-counter]") as NodeListOf<HTMLElement>;
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -70,27 +53,20 @@ export default function Hero() {
   return (
     <section ref={heroRef} className={styles.hero}>
 
-      {/* Spotlight */}
-      <div ref={spotlightRef} className={styles.spotlight}></div>
-
       {/* Primary Hero */}
       <div className={styles.primary}>
 
-        {/* Badge */}
         <div className={styles.badge}>Europe’s #1 Tech Job Board</div>
 
-        {/* Headline */}
         <h1 className={styles.headline}>
           Find Your Next <span className={styles.gradient}>Tech Job</span> in Europe
         </h1>
 
-        {/* Subtext */}
         <p className={styles.subtext}>
           Discover high‑growth tech opportunities from Europe’s fastest‑growing startups
           and global engineering teams.
         </p>
 
-        {/* Search Bar */}
         <div className={styles.searchBar}>
 
           <div className={styles.field}>
@@ -125,7 +101,6 @@ export default function Hero() {
           </button>
         </div>
 
-        {/* Tags */}
         <div className={styles.tags}>
           {["React", "Next.js", "Remote", "Berlin", "Senior"].map(tag => (
             <button
@@ -138,22 +113,18 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* CTA */}
         <button className={styles.primaryCTA}>
           Browse All Jobs →
         </button>
 
-        {/* Scroll Indicator */}
         <div className={styles.scroll}>
           <Mouse size={18} />
           <span>Scroll</span>
         </div>
       </div>
 
-      {/* Secondary Section */}
       <div className={styles.secondary}>
 
-        {/* Stats */}
         <div className={styles.stats}>
           <div className={styles.stat}>
             <span data-counter data-target="12450"></span>
@@ -176,14 +147,22 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Trusted By */}
         <div className={styles.logos}>
           <img src="/logos/google.svg" alt="google" />
           <img src="/logos/microsoft.svg" alt="microsoft" />
-          <img src="/logos/stripe.svg" alt="stripe" />
-          <img src="/logos/spotify.svg" alt="spotify" />
+
           <img src="/logos/amazon.svg" alt="amazon" />
+
+          {/* Germany */}
+          <img src="/logos/bmw.svg" alt="BMW" />
+          <img src="/logos/benz.svg" alt="Benz" />
+          <img src="/logos/deutschebank.svg" alt="Deutsche Bank" />
+          <img src="/logos/allianz.svg" alt="Allianz" />
+          <img src="/logos/sap.svg" alt="SAP" />
+          <img src="/logos/siemens.svg" alt="Siemens" />
+          <img src="/logos/deutschtelekom.svg" alt="Deutsche Telekom" />
         </div>
+
       </div>
     </section>
   );

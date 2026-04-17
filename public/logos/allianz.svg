@@ -1,0 +1,13 @@
+<svg viewBox="0 0 160 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- آرم Allianz: دایره با سه خط عمودی داخل -->
+  <g transform="translate(5, 5)">
+    <!-- دایره بیرونی -->
+    <circle cx="20" cy="20" r="18" fill="none" stroke="white" stroke-width="3"/>
+    <!-- سه خط عمودی داخل دایره -->
+    <line x1="12" y1="8" x2="12" y2="32" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="20" y1="5" x2="20" y2="35" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="28" y1="8" x2="28" y2="32" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <!-- متن Allianz -->
+  <text x="55" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="white" letter-spacing="0.5">Allianz</text>
+</svg>

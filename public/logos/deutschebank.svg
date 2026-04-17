@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- مربع بیرونی -->
+  <rect x="5" y="5" width="90" height="90" fill="none" stroke="white" stroke-width="5"/>
+  <!-- خط مورب از پایین-چپ به بالا-راست — نماد اصلی Deutsche Bank -->
+  <line x1="20" y1="80" x2="80" y2="20" stroke="white" stroke-width="8" stroke-linecap="square"/>
+</svg>

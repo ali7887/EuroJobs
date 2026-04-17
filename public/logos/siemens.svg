@@ -1,0 +1,11 @@
+<svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- نقطه/مربع کوچک Siemens در ابتدا -->
+  <rect x="5" y="18" width="14" height="14" rx="2" fill="white"/>
+  <!-- متن SIEMENS -->
+  <text x="30" y="36"
+    font-family="Arial, sans-serif"
+    font-size="24"
+    font-weight="700"
+    fill="white"
+    letter-spacing="3">SIEMENS</text>
+</svg>
