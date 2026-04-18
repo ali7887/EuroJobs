@@ -1,75 +1,26 @@
-"use client";
+import { FilterSection } from "./FilterSection";
+import { JobCard } from "./JobCard";
+import styles from "./featured-jobs.module.css";
 
-import { useMemo, useState } from "react";
-import styles from "./FeaturedJobs.module.css";
+interface FeaturedJobsProps {
+  jobs: any[];
+  userSkills: string[];
+}
 
-import FilterBar, { FilterState } from "./FilterBar";
-import FeaturedJobCard from "./FeaturedJobCard";
-
-// ✔ فقط از این استفاده کن
-import { FeaturedJob, UserSkill } from "./job";
-
-type Props = {
-  jobs: FeaturedJob[];
-  userSkills: UserSkill[];
-};
-
-export default function FeaturedJobs({ jobs, userSkills }: Props) {
-  const [filters, setFilters] = useState<FilterState>({
-    type: [],
-    location: [],
-    salary: [],
-    skills: [],
-    customSalaryMin: undefined,
-    customSalaryMax: undefined,
-  });
-
-  const filteredJobs = useMemo(() => {
-    if (!jobs) return []; // ✔ حتماً چک کن
-    return jobs.filter((job) => {
-      if (filters.type.length > 0 && !filters.type.includes(job.type))
-        return false;
-
-      if (filters.location.length > 0 && !filters.location.includes(job.workMode))
-        return false;
-
-      if (filters.skills.length > 0 && !filters.skills.some((s) => job.skills.includes(s)))
-        return false;
-
-      if (filters.salary.includes("custom")) {
-        const min = filters.customSalaryMin ?? 0;
-        const max = filters.customSalaryMax ?? 999;
-
-        const jobMin = job.salaryMin / 1000;
-        const jobMax = job.salaryMax / 1000;
-
-        if (jobMax < min || jobMin > max) return false;
-      }
-
-      return true;
-    });
-  }, [jobs, filters]);
-
+export default function FeaturedJobs({ jobs, userSkills }: FeaturedJobsProps) {
   return (
-    <section className={styles.section}>
-      <div className={styles.container}>
+    <div className={styles.wrapper}>
+      <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
 
-        <h2 className={styles.heading}>Featured Opportunities</h2>
-        <p className={styles.subheading}>Hand‑picked roles at high‑growth companies</p>
+      {/* Filters */}
+      <FilterSection userSkills={userSkills} />
 
-        <FilterBar filters={filters} onChange={setFilters} />
-
-        <div className={styles.grid}>
-          {filteredJobs.map((job) => (
-            <FeaturedJobCard key={job.id} job={job} userSkills={userSkills} />
-          ))}
-        </div>
-
-        {filteredJobs.length === 0 && (
-          <div className={styles.empty}>No jobs match your filters.</div>
-        )}
-
+      {/* Jobs Grid */}
+      <div className={styles.jobsGrid}>
+        {jobs.map((job, i) => (
+          <JobCard key={i} {...job} />
+        ))}
       </div>
-    </section>
+    </div>
   );
 }

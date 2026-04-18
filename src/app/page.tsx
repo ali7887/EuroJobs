@@ -12,7 +12,7 @@ import styles from './page.module.css';
 import featuredJobs from "@/components/sections/FeaturedJobs/data";
 
 // ❗ باید این را اضافه کنی
-import FeaturedJobs from "@/components/sections/FeaturedJobs/FeaturedJobs";
+import  FeaturedJobs  from "@/components/sections/FeaturedJobs/FeaturedJobs";
 
 // Categories
 let categories = [

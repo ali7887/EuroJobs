@@ -4,175 +4,171 @@
 
 import { FeaturedJob } from "./job";
 
-export const featuredJobs: FeaturedJob[] = [
+const featuredJobs: FeaturedJob[] = [
   {
     id: "1",
     title: "Senior Frontend Engineer",
-    company: "Vercel",
-    logo: "/logos/vercel.svg",
-    skills: ["React", "Next.js", "TypeScript"],
+    company: "TechNova",
+    logo: "/logos/technova.png",
+    skills: ["React", "Next.js", "TypeScript", "TailwindCSS"],
     location: "Remote",
 
-    applicants: 124,
-    views: 982,
-    matchScore: 92,
-    companySize: "200-500",
+    applicants: 42,
+    views: 1234,
+    matchScore: 87,
+    companySize: "50-100",
     postedAt: "2 days ago",
     employmentType: "Full-time",
 
     employerLastActive: 3,
-    employerReplyRate: 88,
-    avgResponseHours: 6,
-    trendingScore: 94,
-    jobHistoryInteractions: 321,
+    employerReplyRate: 92,
+    avgResponseHours: 10,
+    trendingScore: 67,
 
-    // 🔥 این‌ها باید اضافه شوند
     workMode: "remote",
     type: "full-time",
+
     salaryMin: 90000,
-    salaryMax: 130000,
-    trending: undefined
+    salaryMax: 140000,
   },
 
   {
     id: "2",
-    title: "Product Designer",
-    company: "Figma",
-    logo: "/logos/figma.svg",
-    skills: ["Figma", "UI", "UX"],
-    location: "San Francisco",
+    title: "Full‑Stack TypeScript Developer",
+    company: "CodeSmith Labs",
+    logo: "/logos/codesmith.png",
+    skills: ["Node.js", "React", "Next.js", "PostgreSQL", "TypeScript"],
+    location: "Hybrid - Berlin",
 
-    applicants: 82,
-    views: 640,
-    matchScore: 87,
-    companySize: "500+",
-    postedAt: "5 days ago",
+    applicants: 28,
+    views: 990,
+    matchScore: 82,
+    companySize: "20-50",
+    postedAt: "1 day ago",
     employmentType: "Full-time",
 
-    employerLastActive: 12,
-    employerReplyRate: 76,
-    avgResponseHours: 12,
-    trendingScore: 88,
-    jobHistoryInteractions: 210,
+    employerLastActive: 1,
+    employerReplyRate: 97,
+    avgResponseHours: 6,
+    trendingScore: 74,
 
     workMode: "hybrid",
     type: "full-time",
-    salaryMin: 80000,
-    salaryMax: 120000,
-    trending: undefined
+
+    salaryMin: 75000,
+    salaryMax: 125000,
   },
+
   {
     id: "3",
-    title: "Backend Engineer",
-    company: "Supabase",
-    logo: "/logos/supabase.svg",
-    skills: ["Node.js", "PostgreSQL", "Prisma"],
+    title: "AI/ML Engineer",
+    company: "DeepVision AI",
+    logo: "/logos/deepvision.png",
+    skills: ["Python", "PyTorch", "TensorFlow", "LLMs", "MLOps"],
     location: "Remote",
 
-    applicants: 40,
-    views: 420,
-    matchScore: 84,
+    applicants: 65,
+    views: 1980,
+    matchScore: 91,
     companySize: "100-200",
-    postedAt: "1 day ago",
+    postedAt: "3 days ago",
+    employmentType: "Full-time",
+
+    employerLastActive: 2,
+    employerReplyRate: 88,
+    avgResponseHours: 18,
+    trendingScore: 82,
+
+    workMode: "remote",
+    type: "full-time",
+
+    salaryMin: 110000,
+    salaryMax: 170000,
+  },
+
+  {
+    id: "4",
+    title: "DevOps / Cloud Engineer",
+    company: "SkyDeploy",
+    logo: "/logos/skydeploy.png",
+    skills: ["AWS", "Docker", "Kubernetes", "Terraform", "CI/CD"],
+    location: "Onsite - Toronto",
+
+    applicants: 18,
+    views: 720,
+    matchScore: 78,
+    companySize: "10-20",
+    postedAt: "4 days ago",
+    employmentType: "Contract",
+
+    employerLastActive: 5,
+    employerReplyRate: 84,
+    avgResponseHours: 22,
+    trendingScore: 55,
+
+    workMode: "onsite",
+    type: "contract",
+
+    salaryMin: 60000,
+    salaryMax: 90000,
+  },
+
+  {
+    id: "5",
+    title: "Senior UI/UX Designer",
+    company: "PixelCraft",
+    logo: "/logos/pixelcraft.png",
+    skills: ["Figma", "User Research", "Design Systems", "Prototyping"],
+    location: "Hybrid - Amsterdam",
+
+    applicants: 51,
+    views: 1500,
+    matchScore: 85,
+    companySize: "50-80",
+    postedAt: "5 days ago",
+    employmentType: "Full-time",
+
+    employerLastActive: 1,
+    employerReplyRate: 95,
+    avgResponseHours: 5,
+    trendingScore: 72,
+
+    workMode: "hybrid",
+    type: "full-time",
+
+    salaryMin: 70000,
+    salaryMax: 105000,
+  },
+
+  {
+    id: "6",
+    title: "Backend Engineer (Golang)",
+    company: "StreamFlow",
+    logo: "/logos/streamflow.png",
+    skills: ["Go", "gRPC", "Microservices", "Kafka", "SQL"],
+    location: "Remote",
+
+    applicants: 33,
+    views: 1120,
+    matchScore: 89,
+    companySize: "200-300",
+    postedAt: "6 days ago",
     employmentType: "Full-time",
 
     employerLastActive: 2,
     employerReplyRate: 91,
-    avgResponseHours: 4,
-    trendingScore: 89,
-    jobHistoryInteractions: 180,
+    avgResponseHours: 8,
+    trendingScore: 80,
 
     workMode: "remote",
     type: "full-time",
-    salaryMin: 85000,
-    salaryMax: 125000,
-    trending: undefined
-  },
 
-{
-  id: "4",
-  title: "Full‑Stack Developer",
-  company: "Shopify",
-  logo: "/logos/shopify.svg",
-  skills: ["React", "Remix", "GraphQL"],
-  location: "Canada",
-
-  applicants: 110,
-  views: 760,
-  matchScore: 90,
-  companySize: "1000+",
-  postedAt: "3 days ago",
-  employmentType: "Full-time",
-
-  employerLastActive: 6,
-  employerReplyRate: 80,
-  avgResponseHours: 8,
-  trendingScore: 92,
-  jobHistoryInteractions: 280,
-
-  workMode: "hybrid",
-  type: "full-time",
-  salaryMin: 95000,
-  salaryMax: 140000,
-  trending: undefined
-},{
-  id: "5",
-  title: "DevOps Engineer",
-  company: "DigitalOcean",
-  logo: "/logos/digitalocean.svg",
-  skills: ["Docker", "Kubernetes", "Terraform"],
-  location: "Remote",
-
-  applicants: 76,
-  views: 560,
-  matchScore: 86,
-  companySize: "500-1000",
-  postedAt: "6 days ago",
-  employmentType: "Full-time",
-
-  employerLastActive: 4,
-  employerReplyRate: 73,
-  avgResponseHours: 10,
-  trendingScore: 82,
-  jobHistoryInteractions: 150,
-
-  workMode: "remote",
-  type: "full-time",
-  salaryMin: 100000,
-  salaryMax: 145000,
-  trending: undefined
-},
-
-{
-  id: "6",
-  title: "AI / ML Engineer",
-  company: "OpenAI",
-  logo: "/logos/openai.svg",
-  skills: ["Python", "PyTorch", "Machine Learning"],
-  location: "San Francisco",
-
-  applicants: 140,
-  views: 1220,
-  matchScore: 95,
-  companySize: "500+",
-  postedAt: "1 day ago",
-  employmentType: "Full-time",
-
-  employerLastActive: 1,
-  employerReplyRate: 90,
-  avgResponseHours: 3,
-  trendingScore: 97,
-  jobHistoryInteractions: 520,
-
-  workMode: "hybrid",
-  type: "full-time",
-  salaryMin: 150000,
-  salaryMax: 210000,
-  trending: undefined
-}
-
-
+    salaryMin: 95000,
+    salaryMax: 150000,
+  }
 ];
+
+export default featuredJobs;
 
 
 /* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobCard.module.css ===== */
@@ -508,12 +504,103 @@ export const featuredJobs: FeaturedJob[] = [
 
 /* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobCard.tsx ===== */
 
-import { FeaturedJob, UserSkill } from "@/types/job";
+import styles from "./FeaturedJobCard.module.css";
+import { FeaturedJob, UserSkill } from "./job";
 
 type Props = {
   job: FeaturedJob;
   userSkills: UserSkill[];
 };
+
+export default function FeaturedJobCard({ job, userSkills }: Props) {
+  const skillIsMatch = (skill: string) => userSkills.includes(skill);
+
+  const matchClass =
+    job.matchScore >= 90
+      ? styles.matchHigh
+      : job.matchScore >= 75
+      ? styles.matchMid
+      : styles.matchLow;
+
+  return (
+    <div className={styles.card}>
+      {/* HEADER */}
+      <div className={styles.header}>
+        <div className={styles.companyInfo}>
+          <div className={styles.logo}>
+            <img src={job.logo} alt={job.company} />
+          </div>
+          <div className={styles.meta}>
+            <h3 className={styles.title}>{job.title}</h3>
+            <div className={styles.company}>{job.company}</div>
+            <div className={styles.location}>{job.location}</div>
+          </div>
+        </div>
+
+        <div className={styles.badges}>
+          <span className={`${styles.matchScore} ${matchClass}`}>
+            {job.matchScore}% Match
+          </span>
+
+          {job.trending && (
+            <span className={styles.urgentBadge}>Trending</span>
+          )}
+        </div>
+      </div>
+
+      <div className={styles.divider} />
+
+      {/* SKILLS */}
+      <div className={styles.skillsContainer}>
+        {job.skills.map((skill) => (
+          <span
+            key={skill}
+            className={
+              skillIsMatch(skill)
+                ? styles.skillMatch
+                : styles.skillLow
+            }
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      {/* ANALYTICS */}
+      <div className={styles.analytics}>
+        <div className={styles.metricItem}>
+          <span className={styles.metricLabel}>Applicants</span>
+          <span className={styles.metricValue}>{job.applicants}</span>
+        </div>
+
+        <div className={styles.metricItem}>
+          <span className={styles.metricLabel}>Views</span>
+          <span className={styles.metricValue}>{job.views}</span>
+        </div>
+
+        <div className={styles.metricItem}>
+          <span className={styles.metricLabel}>Reply Rate</span>
+          <span className={styles.metricValue}>
+            {job.employerReplyRate}%
+          </span>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <button
+        className={`${styles.cta} ${styles.ctaDefault}`}
+      >
+        Apply Before It's Gone
+      </button>
+
+      {/* FOOTER */}
+      <div className={styles.footer}>
+        <span className={styles.postedAt}>Posted {job.postedAt}</span>
+        <span className={styles.companySize}>{job.salaryMin / 1000}–{job.salaryMax / 1000}k</span>
+      </div>
+    </div>
+  );
+}
 
 
 /* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobs.module.css ===== */
@@ -568,12 +655,13 @@ type Props = {
 "use client";
 
 import { useMemo, useState } from "react";
-import { FilterState } from "./FilterBar";
-import FilterBar from "./FilterBar";
+import styles from "./FeaturedJobs.module.css";
+
+import FilterBar, { FilterState } from "./FilterBar";
 import FeaturedJobCard from "./FeaturedJobCard";
 
+// ✔ فقط از این استفاده کن
 import { FeaturedJob, UserSkill } from "./job";
-import styles from "./FeaturedJobs.module.css";
 
 type Props = {
   jobs: FeaturedJob[];
@@ -591,8 +679,10 @@ export default function FeaturedJobs({ jobs, userSkills }: Props) {
   });
 
   const filteredJobs = useMemo(() => {
+    if (!jobs) return []; // ✔ حتماً چک کن
     return jobs.filter((job) => {
-      if (filters.type.length > 0 && !filters.type.includes(job.type)) return false;
+      if (filters.type.length > 0 && !filters.type.includes(job.type))
+        return false;
 
       if (filters.location.length > 0 && !filters.location.includes(job.workMode))
         return false;
@@ -601,10 +691,13 @@ export default function FeaturedJobs({ jobs, userSkills }: Props) {
         return false;
 
       if (filters.salary.includes("custom")) {
-        const min = filters.customSalaryMin || 0;
-        const max = filters.customSalaryMax || 20;
+        const min = filters.customSalaryMin ?? 0;
+        const max = filters.customSalaryMax ?? 999;
 
-        if (job.salaryMin / 1000 < min || job.salaryMax / 1000 > max) return false;
+        const jobMin = job.salaryMin / 1000;
+        const jobMax = job.salaryMax / 1000;
+
+        if (jobMax < min || jobMin > max) return false;
       }
 
       return true;
@@ -627,9 +720,7 @@ export default function FeaturedJobs({ jobs, userSkills }: Props) {
         </div>
 
         {filteredJobs.length === 0 && (
-          <div className={styles.empty}>
-            No jobs match your filters.
-          </div>
+          <div className={styles.empty}>No jobs match your filters.</div>
         )}
 
       </div>
@@ -1069,34 +1160,40 @@ export const filtersConfig = {
 
 /* ===== FILE: src\components\sections\FeaturedJobs\job.ts ===== */
 
+// src/types/job.ts
+
+export type UserSkill = string;
+
 export type FeaturedJob = {
-  trending: any;
   id: string;
   title: string;
   company: string;
   logo: string;
-  skills: string[];
+  skills: UserSkill[];
   location: string;
+
   applicants: number;
   views: number;
   matchScore: number;
   companySize: string;
   postedAt: string;
   employmentType: string;
+
   employerLastActive: number;
   employerReplyRate: number;
   avgResponseHours: number;
   trendingScore: number;
-  jobHistoryInteractions: number;
+  //jHistoryInteractions: number;
 
-  // اضافه‌های مورد نیاز FilterBar
-  workMode: string;
-  type: string;
+  // Filtering extras
+  workMode: string;   // remote | hybrid | onsite
+  type: string;       // full-time | part-time | contract | internship
+
   salaryMin: number;
   salaryMax: number;
-};
 
-export type UserSkill = string;
+  trending?: boolean;
+};
 
 
 /* ===== FILE: src\components\sections\FeaturedJobs\types.ts ===== */
@@ -1117,128 +1214,3 @@ export type FeaturedJob = {
   description: string;
   applicants: number;
 };
-
-
-/* ===== FILE: src\components\sections\FeaturedJobs\useParallax.ts ===== */
-
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { RefObject } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
-
-export function useParallax(
-  section: RefObject<HTMLDivElement>,
-  cards: RefObject<HTMLDivElement[]>,
-  particleEngine: any
-) {
-  if (!section.current) return;
-
-  ScrollTrigger.create({
-    trigger: section.current,
-    start: "top bottom",
-    end: "bottom top",
-    scrub: 1.2,
-    onUpdate: (self) => {
-      const progress = self.progress;
-      if (particleEngine?.camera) {
-        particleEngine.camera.position.y = (progress - 0.5) * 15;
-      }
-    }
-  });
-
-  gsap.from(cards.current, {
-    opacity: 0,
-    yPercent: 25,
-    stagger: 0.1,
-    ease: "power3.out",
-    scrollTrigger: {
-      trigger: section.current,
-      start: "top 85%",
-      scrub: 1
-    }
-  });
-}
-
-
-/* ===== FILE: src\components\sections\FeaturedJobs\WebGLParticles.ts ===== */
-
-import {
-  WebGLRenderer,
-  Scene,
-  PerspectiveCamera,
-  Points,
-  PointsMaterial,
-  BufferGeometry,
-  BufferAttribute,
-  Color
-} from "three";
-
-export class WebGLParticles {
-  private renderer: InstanceType<typeof WebGLRenderer>;
-  private scene: InstanceType<typeof Scene>;
-  public camera: InstanceType<typeof PerspectiveCamera>;
-  private particles!: InstanceType<typeof Points>;
-  private width: number;
-  private height: number;
-
-  constructor(private canvas: HTMLCanvasElement) {
-    this.width = window.innerWidth;
-    this.height = 260;
-
-    this.renderer = new WebGLRenderer({
-      canvas: this.canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance"
-    });
-
-    this.renderer.setSize(this.width, this.height);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setClearAlpha(0.08);
-
-    this.scene = new Scene();
-    this.camera = new PerspectiveCamera(60, this.width / this.height, 1, 1000);
-    this.camera.position.z = 70;
-
-    this.createParticles();
-    this.animate();
-  }
-
-  private createParticles() {
-    const count = 900;
-
-    const geometry = new BufferGeometry();
-    const positions = new Float32Array(count * 3);
-
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 120;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 40;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 120;
-    }
-
-    geometry.setAttribute(
-      "position",
-      new BufferAttribute(positions, 3)
-    );
-
-    const material = new PointsMaterial({
-      size: 1.7,
-      transparent: true,
-      opacity: 0.65,
-      color: new Color(1, 1, 1)
-    });
-
-    this.particles = new Points(geometry, material);
-    this.scene.add(this.particles);
-  }
-
-  private animate = () => {
-    requestAnimationFrame(this.animate);
-
-    this.particles.rotation.y += 0.0006;
-    this.particles.rotation.x += 0.00025;
-
-    this.renderer.render(this.scene, this.camera);
-  };
-}
