@@ -1,0 +1,14 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.popover {
+  position: absolute;
+  background: white;
+  box-shadow: 0 4px 26px rgba(0,0,0,0.1);
+  padding: 16px;
+  border-radius: 10px;
+  z-index: 20;
+  top: 40px;
+}

@@ -1,4 +1,5 @@
 export interface JobListing {
+  trending: any;
   id: string;
 
   title: string;

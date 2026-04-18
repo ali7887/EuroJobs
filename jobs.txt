@@ -1,183 +1,504 @@
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\route.ts =====
-import { NextResponse } from "next/server";
-import { jobRepository } from "@/lib/repositories/job.repository";
-import { createJobSchema } from "../../../lib/validators/job.validator";
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const data = createJobSchema.parse(body);
 
-    const job = await jobRepository.create(data);
-    return NextResponse.json(job, { status: 201 });
+/* ===== FILE: src\components\sections\FeaturedJobs\data.ts ===== */
 
-  } catch (err: any) {
-    console.error("Cr Job Error:", err);
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
-    );
+import { JobListing } from "@/types/JobListing";
+
+export const featuredJobs: JobListing[] = [
+  {
+    id: "1",
+    title: "Frontend Engineer",
+    company: "TechNova",
+    logoColor: "#4A90E2",
+    location: "Berlin, Germany",
+    salary: "$120k – $180k",
+    jobType: "Remote",
+    skills: ["react", "typescript", "next.js"],
+    matchScore: 92,
+    applicants: 123,
+    views: 856,
+    isFeatured: true,
+    isNew: true,
+    postedAt: "2025-04-10",
+    trending: undefined
+  },
+  {
+    id: "2",
+    title: "React Developer",
+    company: "SkyForge",
+    logoColor: "#E25A4A",
+    location: "Amsterdam, Netherlands",
+    salary: "$90k – $130k",
+    jobType: "Hybrid",
+    skills: ["react", "javascript", "css"],
+    matchScore: 78,
+    applicants: 89,
+    views: 524,
+    postedAt: "2025-04-12",
+    trending: undefined
+  },
+  {
+    id: "3",
+    title: "DevOps Engineer",
+    company: "Fortiss",
+    logoColor: "#f44d3a",
+    location: "Cologne, Germany",
+    salary: "$100k – $150k",
+    jobType: "Part-time",
+    skills: ["react", "javascript", "kubernetes"],
+    matchScore: 90,
+    applicants: 12,
+    views: 870,
+    postedAt: "2025-07-22",
+    trending: undefined
+  },
+  {
+    id: "4",
+    title: "UI/UX Designer",
+    company: "Ferm",
+    logoColor: "#b4e24a",
+    location: "London, England",
+    salary: "$70k – $100k",
+    jobType: "Full-time",
+    skills: ["figma", "html", "css"],
+    matchScore: 68,
+    applicants: 112,
+    views: 1123,
+    postedAt: "2026-02-07",
+    trending: undefined
   }
+];
+
+
+/* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobCard.module.css ===== */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+  border-radius: 22px;
+  min-height: 370px;
+
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+
+  transition: all .25s ease;
 }
 
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\new\page.tsx =====
-import JobForm from "@/components/jobs/JobForm";
+.saveBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  opacity: 0.7;
+  transition: .2s ease;
+}
 
-export default function NewJobPage() {
+.saveBtn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  backdrop-filter: blur(10px);
+}
+
+.featured {
+  background: rgba(79,70,229,0.24);
+  color: #4338CA;
+}
+
+.new {
+  background: rgba(16,185,129,0.18);
+  color: #047857;
+}
+
+.top {
+  background: rgba(239,68,68,0.18);
+  color: #B91C1C;
+}
+
+.trending {
+  background: rgba(245,158,11,0.18);
+  color: #B45309;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+/* Title */
+.title {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.company {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* Salary */
+.salary {
+  margin: 16px 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Location */
+.locationRow {
+  font-size: 14px;
+  opacity: .9;
+  margin-bottom: 16px;
+}
+
+/* Skills */
+.skills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.skill {
+  background: rgba(255,255,255,.28);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* Metrics */
+.metrics {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.25);
+
+  display: flex;
+  gap: 20px;
+}
+
+.metric {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 13px;
+  opacity: .9;
+}
+
+.metric label {
+  margin: 0 4px;
+  font-weight: 600;
+  opacity: .6;
+}
+
+/* CTA */
+.applyBtn {
+  margin-top: 16px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+
+  background: linear-gradient(135deg, #4F46E5, #6366F1);
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+
+  transition: .25s ease;
+}
+
+.applyBtn:hover {
+  background: linear-gradient(135deg, #6366F1, #4F46E5);
+  box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+}
+
+
+
+/* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobCard.tsx ===== */
+
+"use client";
+
+import { motion } from "framer-motion";
+import styles from "./FeaturedJobCard.module.css";
+import { JobListing } from "@/types/JobListing";
+import { BookmarkIcon } from "@/components/icons/BookmarkIcon";
+import { Users, Eye, Target } from "lucide-react";
+import { generateColor } from "@/lib/utils/avatarColor";
+
+export default function FeaturedJobCard({ job }: { job: JobListing }) {
+  const avatarBg = generateColor(job.company);
+
+  const badges = [];
+  if (job.isFeatured) badges.push("FEATURED");
+  if (job.isNew) badges.push("NEW");
+  if (job.matchScore >= 85) badges.push("TOP MATCH");
+  if (job.trending) badges.push("TRENDING");
+
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">
-          Post a New Job
-        </h1>
-        <JobForm />
+    <motion.div
+      className={styles.card}
+      whileHover="hover"
+        animate={{ opacity: 1, y: 0 }}
+
+      initial="initial"
+      variants={{
+        initial: { opacity: 0, y: 20 },
+        hover: { scale: 1.04, y: -8 }
+      }}
+    >
+
+      {/* Save */}
+      <button className={styles.saveBtn}>
+        <BookmarkIcon />
+      </button>
+
+      {/* Badges */}
+      <div className={styles.badges}>
+        {badges.slice(0, 2).map((b) => (
+          <span key={b} className={`${styles.badge} ${styles[b.toLowerCase()]}`}>
+            {b}
+          </span>
+        ))}
       </div>
-    </main>
+
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.avatar} style={{ background: avatarBg }}>
+          {job.company[0]}
+        </div>
+
+        <div>
+          <h3 className={styles.title}>{job.title}</h3>
+          <p className={styles.company}>{job.company}</p>
+        </div>
+      </div>
+
+      {/* Salary */}
+      <p className={styles.salary}>{job.salary}</p>
+
+      <div className={styles.locationRow}>
+        📍 {job.location} · {job.jobType}
+      </div>
+
+      {/* Skills */}
+      <div className={styles.skills}>
+        {job.skills.slice(0, 5).map((s) => (
+          <span key={s} className={styles.skill}>
+            {s}
+          </span>
+        ))}
+      </div>
+
+      {/* Metrics */}
+      <div className={styles.metrics}>
+        <span className={styles.metric}>
+          <Users size={14} />  
+          <label>Applicants</label> {job.applicants}
+        </span>
+
+        <span className={styles.metric}>
+          <Eye size={14} />  
+          <label>Views</label> {job.views}
+        </span>
+
+        <span className={styles.metric}>
+          <Target size={14} />  
+          <label>Match</label> {job.matchScore}%
+        </span>
+      </div>
+
+      {/* CTA */}
+      <button className={styles.applyBtn}>
+        Apply Now →
+      </button>
+
+    </motion.div>
   );
 }
 
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\pages.tsx =====
-import ApplicationForm from "@/components/applications/ApplicationForm";
-import Card from "@/components/ui/Card";
 
-async function getJob(id: string) {
-  const response = await fetch(`http://localhost:3000/api/jobs/${id}`, {
-    cache: "no-store",
+
+/* ===== FILE: src\components\sections\FeaturedJobs\FeaturedJobsSkeleton.tsx ===== */
+
+import styles from "./FeaturedJobs.module.css";
+
+export default function FeaturedJobsSkeleton() {
+  return (
+    <div className={styles.skeletonGrid}>
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className={styles.skeleton}></div>
+      ))}
+    </div>
+  );
+}
+
+
+/* ===== FILE: src\components\sections\FeaturedJobs\filtersConfig.ts ===== */
+
+// src/data/featuredJobs/filtersConfig.ts
+
+export const jobFilters = [
+  { label: "All", value: "all" },
+  { label: "React", value: "react" },
+  { label: "Next.js", value: "next.js" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "CSS", value: "css" },
+];
+
+
+/* ===== FILE: src\components\sections\FeaturedJobs\types.ts ===== */
+
+
+
+/* ===== FILE: src\components\sections\FeaturedJobs\useParallax.ts ===== */
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { RefObject } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function useParallax(
+  section: RefObject<HTMLDivElement>,
+  cards: RefObject<HTMLDivElement[]>,
+  particleEngine: any
+) {
+  if (!section.current) return;
+
+  ScrollTrigger.create({
+    trigger: section.current,
+    start: "top bottom",
+    end: "bottom top",
+    scrub: 1.2,
+    onUpdate: (self) => {
+      const progress = self.progress;
+      if (particleEngine?.camera) {
+        particleEngine.camera.position.y = (progress - 0.5) * 15;
+      }
+    }
   });
-  return response.json();
+
+  gsap.from(cards.current, {
+    opacity: 0,
+    yPercent: 25,
+    stagger: 0.1,
+    ease: "power3.out",
+    scrollTrigger: {
+      trigger: section.current,
+      start: "top 85%",
+      scrub: 1
+    }
+  });
 }
 
-export default async function JobDetailPage({ 
-  params 
-}: { 
-  params: { id: string } 
-}) {
-  const job = await getJob(params.id);
 
-  return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card>
-          <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
-          <p className="text-xl text-gray-600 mb-4">{job.company}</p>
-          
-          <div className="flex gap-4 mb-6">
-            <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full">
-              {job.type}
-            </span>
-            <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full">
-              ${job.salary.toLocaleString()}
-            </span>
-            <span className="px-4 py-2 bg-gray-100 text-gray-800 rounded-full">
-              {job.location}
-            </span>
-          </div>
+/* ===== FILE: src\components\sections\FeaturedJobs\WebGLParticles.ts ===== */
 
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Description</h2>
-            <p className="text-gray-700">{job.description}</p>
-          </div>
+import {
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  Points,
+  PointsMaterial,
+  BufferGeometry,
+  BufferAttribute,
+  Color
+} from "three";
 
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Requirements</h2>
-            <p className="text-gray-700">{job.requirements}</p>
-          </div>
-        </Card>
+export class WebGLParticles {
+  private renderer: InstanceType<typeof WebGLRenderer>;
+  private scene: InstanceType<typeof Scene>;
+  public camera: InstanceType<typeof PerspectiveCamera>;
+  private particles!: InstanceType<typeof Points>;
+  private width: number;
+  private height: number;
 
-        <ApplicationForm jobId={job.id} />
-      </div>
-    </main>
-  );
-}
+  constructor(private canvas: HTMLCanvasElement) {
+    this.width = window.innerWidth;
+    this.height = 260;
 
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\route.ts =====
-import { NextResponse } from "next/server";
-import { jobRepository } from "@/lib/repositories/job.repository";
+    this.renderer = new WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const job = await jobRepository.findById(Number(id));
+    this.renderer.setSize(this.width, this.height);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setClearAlpha(0.08);
 
-    if (!job)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    this.scene = new Scene();
+    this.camera = new PerspectiveCamera(60, this.width / this.height, 1, 1000);
+    this.camera.position.z = 70;
 
-    return NextResponse.json(job);
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || "Failed" },
-      { status: 500 }
-    );
+    this.createParticles();
+    this.animate();
   }
-}
 
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\applications\route.ts =====
-import { NextResponse } from "next/server";
-import { applicationService } from "@/lib/services/application.service";
+  private createParticles() {
+    const count = 900;
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const list =
-      await applicationService.getJobApplications(Number(id));
+    const geometry = new BufferGeometry();
+    const positions = new Float32Array(count * 3);
 
-    return NextResponse.json(list);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 120;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 120;
+    }
 
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\applications\[applicationId]\route.ts =====
-import { NextResponse } from "next/server";
-import { applicationService } from "@/lib/services/application.service";
-
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-
-    const result = await applicationService.getApplicationById(Number(id));
-
-    return NextResponse.json(result);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed";
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
-}
-
-===== D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\apply\route.ts =====
-import { NextResponse } from "next/server";
-import { applicationService } from "@/lib/services/application.service";
-
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const body = await req.json();
-
-    // NOTE: userId ???? ?? auth/session ?????? ???
-    const userId = body.userId || 1;
-
-    const application = await applicationService.applyToJob(
-      userId,
-      Number(id),
-      body
+    geometry.setAttribute(
+      "position",
+      new BufferAttribute(positions, 3)
     );
 
-    return NextResponse.json(application);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed";
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
-}
+    const material = new PointsMaterial({
+      size: 1.7,
+      transparent: true,
+      opacity: 0.65,
+      color: new Color(1, 1, 1)
+    });
 
+    this.particles = new Points(geometry, material);
+    this.scene.add(this.particles);
+  }
+
+  private animate = () => {
+    requestAnimationFrame(this.animate);
+
+    this.particles.rotation.y += 0.0006;
+    this.particles.rotation.x += 0.00025;
+
+    this.renderer.render(this.scene, this.camera);
+  };
+}

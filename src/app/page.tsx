@@ -5,8 +5,14 @@ import { Code, Palette, TrendingUp, Users, Wrench, FileText } from 'lucide-react
 import { MainLayout } from '@/components/layout';
 import Hero from '@/components/sections/Hero/Hero';
 import { CategoryCard } from '@/components/ui/CategoryCard/CategoryCard';
-import FeaturedJobs from "@/components/sections/FeaturedJobs/FeaturedJobs";
+
 import styles from './page.module.css';
+
+// Featured jobs data
+import featuredJobs from "@/components/sections/FeaturedJobs/data";
+
+// ❗ باید این را اضافه کنی
+import FeaturedJobs from "@/components/sections/FeaturedJobs/FeaturedJobs";
 
 // Categories
 let categories = [
@@ -18,9 +24,9 @@ let categories = [
   { icon: FileText, name: 'Content', count: 234 },
 ];
 
-// Trending logic (85%+ of max)
 const maxCount = Math.max(...categories.map((c) => c.count));
 const TRENDING_THRESHOLD = 0.85;
+const userSkills = ["React", "Next.js", "TypeScript"];
 
 categories = categories.map((cat) => ({
   ...cat,
@@ -33,6 +39,13 @@ export default function HomePage() {
 
       <Hero />
 
+      {/* FEATURED JOB OPPORTUNITIES */}
+      <FeaturedJobs
+        jobs={featuredJobs}
+        userSkills={userSkills}
+      />
+
+      {/* POPULAR CATEGORIES */}
       <section className={styles.section}>
         <div className={styles.container}>
 
@@ -43,7 +56,6 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* View All */}
           <div className={styles.viewAll}>
             <Link href="/categories">View all categories →</Link>
           </div>
@@ -57,19 +69,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
-            <p className={styles.sectionSubtitle}>
-              Hand-picked roles at high-growth companies
-            </p>
-          </div>
-          <FeaturedJobs />
-        </div>
-      </section>
-
     </MainLayout>
   );
 }
-

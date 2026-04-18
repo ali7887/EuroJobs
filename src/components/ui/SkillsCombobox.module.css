@@ -1,0 +1,48 @@
+.combo {
+  position: relative;
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 100%;
+  z-index: 30;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.search {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.options {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

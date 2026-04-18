@@ -71,6 +71,14 @@
   gap: 24px;
 }
 
+/* ========================= FEATURED JOBS GRID ========================= */
+.featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  margin-top: 32px;
+}
+
 /* ========================= COMPANIES ========================= */
 .companiesGrid {
   display: flex;

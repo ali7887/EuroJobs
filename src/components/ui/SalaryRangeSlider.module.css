@@ -1,0 +1,36 @@
+.sliderBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.display {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.track {
+  position: relative;
+  height: 24px;
+}
+
+.range {
+  width: 100%;
+  position: absolute;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.presets button {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}

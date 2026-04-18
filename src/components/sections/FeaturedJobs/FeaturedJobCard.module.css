@@ -1,0 +1,327 @@
+/* =========================================================================
+   FeaturedJobCard.module.css — Clean Premium Light/Dark Adaptive
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   CARD WRAPPER
+--------------------------------------------------------------------------- */
+.card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 16px;
+
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 340px;
+
+  color: #1a1d2e;
+  transition:
+    transform 0.25s cubic-bezier(.16,.84,.44,1),
+    box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* -------------------------------------------------------------------------
+   HEADER
+--------------------------------------------------------------------------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+/* LOGO */
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f4f6fb;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6b7aff;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Meta */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f1117;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+}
+
+.company {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.location {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------
+   BADGES (top-right)
+--------------------------------------------------------------------------- */
+.badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.matchScore {
+  background: linear-gradient(135deg, #6b7aff, #4f46e5);
+  padding: 0.28rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* Match score رنگ‌بندی بر اساس درصد */
+.matchHigh {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.matchMid {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.matchLow {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.urgentBadge {
+  background: #fff1f0;
+  border: 1px solid #fca5a5;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #dc2626;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------
+   DIVIDER
+--------------------------------------------------------------------------- */
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 -0.25rem;
+}
+
+/* -------------------------------------------------------------------------
+   SKILLS
+--------------------------------------------------------------------------- */
+.skillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.skillMatch {
+  position: relative;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.28rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #1d4ed8;
+  transition: background 0.15s ease;
+}
+
+.skillMatch:hover {
+  background: #dbeafe;
+}
+
+/* نقطه سبز match */
+.skillMatch::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 1.5px solid #fff;
+}
+
+.skillLow {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 0.28rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+/* -------------------------------------------------------------------------
+   ANALYTICS
+--------------------------------------------------------------------------- */
+.analytics {
+  display: flex;
+  gap: 0;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.metricItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.55rem 0.5rem;
+  gap: 0.1rem;
+  border-right: 1px solid #f3f4f6;
+}
+
+.metricItem:last-child {
+  border-right: none;
+}
+
+.metricLabel {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* -------------------------------------------------------------------------
+   CTA BUTTONS
+--------------------------------------------------------------------------- */
+.cta {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.15s;
+  margin-top: auto;
+}
+
+.cta:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.cta:active {
+  transform: translateY(0);
+}
+
+/* High Match — سبز */
+.ctaHighMatch {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Urgent — قرمز */
+.ctaUrgent {
+  background: linear-gradient(135deg, #44efc1, #26dcdc);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Default — آبی */
+.ctaDefault {
+  background: linear-gradient(135deg, #6b7aff, #4f46e5);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(107, 122, 255, 0.3);
+}
+
+/* Competitive — outline */
+.ctaCompetitive {
+  background: transparent;
+  border: 1.5px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.ctaCompetitive:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* -------------------------------------------------------------------------
+   FOOTER
+--------------------------------------------------------------------------- */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: auto;
+}
+
+.postedAt {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-style: normal;
+}
+
+.companySize {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
