@@ -1,26 +1,33 @@
-import { FilterSection } from "./FilterSection";
-import { JobCard } from "./JobCard";
-import styles from "./featured-jobs.module.css";
+import JobsGrid from "./JobsGrid/JobsGrid"
+import { FeaturedJob } from "@/types/job"
+import styles from "./featured-jobs.module.css"
 
-interface FeaturedJobsProps {
-  jobs: any[];
-  userSkills: string[];
+type Props = {
+  jobs: FeaturedJob[]
+  userSkills: string[]
 }
 
-export default function FeaturedJobs({ jobs, userSkills }: FeaturedJobsProps) {
+
+export default function FeaturedJobs({ jobs, userSkills }: Props) {
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
+    <section className={styles.section}>
 
-      {/* Filters */}
-      <FilterSection userSkills={userSkills} />
+      <div className={styles.container}>
 
-      {/* Jobs Grid */}
-      <div className={styles.jobsGrid}>
-        {jobs.map((job, i) => (
-          <JobCard key={i} {...job} />
-        ))}
+        <div className={styles.header}>
+          <h2 className={styles.title}>
+            FEATURED JOB OPPORTUNITIES
+          </h2>
+
+          <p className={styles.subtitle}>
+            Curated opportunities matching your skills
+          </p>
+        </div>
+
+        <JobsGrid jobs={jobs} userSkills={userSkills} />
+
       </div>
-    </div>
-  );
+
+    </section>
+  )
 }

@@ -1,16 +1,25 @@
-export type UserSkill = string;
+export interface FeaturedJob {
+  id: string
 
-export type FeaturedJob = {
-  id: string;
-  company: string;
-  logo: string;
-  title: string;
-  type: string; // Full-Time, Part-Time, Contract...
-  location: string; // Remote, Hybrid, Onsite
-  salary: number;
-  skills: UserSkill[];
-  postedAt: string;
-  experience: string;
-  description: string;
-  applicants: number;
-};
+  title: string
+  company: string
+  location: string
+
+  logo: string
+
+  employmentType: "Full-time" | "Part-time" | "Contract"
+  workMode: "Remote" | "Hybrid" | "On-site"
+
+  salaryMin: number
+  salaryMax: number
+
+  matchScore: number
+
+  skills: string[]
+
+  applicants: number
+  views: number
+  employerReplyRate: number
+
+  postedAt: string
+}

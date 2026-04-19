@@ -1,97 +1,106 @@
-import styles from "./FeaturedJobCard.module.css";
-import { FeaturedJob, UserSkill } from "./job";
+import { FeaturedJob } from "@/types/job"
+import Chip from "@/components/ui/Chip"
+import styles from "./FeaturedJobCard.module.css"
 
 type Props = {
-  job: FeaturedJob;
-  userSkills: UserSkill[];
-};
+  job: FeaturedJob
+  userSkills: string[]
+}
 
-export default function FeaturedJobCard({ job, userSkills }: Props) {
-  const skillIsMatch = (skill: string) => userSkills.includes(skill);
+function getMatchColor(match: number) {
 
-  const matchClass =
-    job.matchScore >= 90
-      ? styles.matchHigh
-      : job.matchScore >= 75
-      ? styles.matchMid
-      : styles.matchLow;
+  if (match >= 90) return "#10B981"
+  if (match >= 80) return "#3B82F6"
+  if (match >= 70) return "#F59E0B"
+
+  return "#6B7280"
+}
+
+export default function FeaturedJobCard({ job }: Props) {
+
+  const salary = `$${job.salaryMin/1000}k–$${job.salaryMax/1000}k/mo`
 
   return (
     <div className={styles.card}>
+
       {/* HEADER */}
+
       <div className={styles.header}>
+
         <div className={styles.companyInfo}>
+
           <div className={styles.logo}>
             <img src={job.logo} alt={job.company} />
           </div>
+
           <div className={styles.meta}>
             <h3 className={styles.title}>{job.title}</h3>
-            <div className={styles.company}>{job.company}</div>
-            <div className={styles.location}>{job.location}</div>
+
+            <p className={styles.company}>
+              {job.company} • {job.workMode}
+            </p>
           </div>
+
         </div>
 
-        <div className={styles.badges}>
-          <span className={`${styles.matchScore} ${matchClass}`}>
-            {job.matchScore}% Match
-          </span>
+        <span
+          className={styles.match}
+          style={{ backgroundColor: getMatchColor(job.matchScore) }}
+        >
+          {job.matchScore}% Match
+        </span>
 
-          {job.trending && (
-            <span className={styles.urgentBadge}>Trending</span>
-          )}
-        </div>
       </div>
 
-      <div className={styles.divider} />
+      {/* SALARY */}
+
+      <div className={styles.salary}>
+        {salary}
+      </div>
 
       {/* SKILLS */}
-      <div className={styles.skillsContainer}>
-        {job.skills.map((skill) => (
-          <span
-            key={skill}
-            className={
-              skillIsMatch(skill)
-                ? styles.skillMatch
-                : styles.skillLow
-            }
-          >
-            {skill}
-          </span>
+
+      <div className={styles.skills}>
+        {job.skills.slice(0,4).map(skill => (
+          <Chip key={skill}>{skill}</Chip>
         ))}
       </div>
 
       {/* ANALYTICS */}
-      <div className={styles.analytics}>
-        <div className={styles.metricItem}>
-          <span className={styles.metricLabel}>Applicants</span>
-          <span className={styles.metricValue}>{job.applicants}</span>
+
+      <div className={styles.stats}>
+
+        <div className={styles.statItem}>
+          <div className={styles.statValue}>{job.applicants}</div>
+          <div className={styles.statLabel}>Applicants</div>
         </div>
 
-        <div className={styles.metricItem}>
-          <span className={styles.metricLabel}>Views</span>
-          <span className={styles.metricValue}>{job.views}</span>
+        <div className={styles.statItem}>
+          <div className={styles.statValue}>{job.views}</div>
+          <div className={styles.statLabel}>Views</div>
         </div>
 
-        <div className={styles.metricItem}>
-          <span className={styles.metricLabel}>Reply Rate</span>
-          <span className={styles.metricValue}>
-            {job.employerReplyRate}%
-          </span>
+        <div className={styles.statItem}>
+          <div className={styles.statValue}>{job.employerReplyRate}%</div>
+          <div className={styles.statLabel}>Reply</div>
         </div>
+
       </div>
-
-      {/* CTA */}
-      <button
-        className={`${styles.cta} ${styles.ctaDefault}`}
-      >
-        Apply Before It's Gone
-      </button>
 
       {/* FOOTER */}
+
       <div className={styles.footer}>
-        <span className={styles.postedAt}>Posted {job.postedAt}</span>
-        <span className={styles.companySize}>{job.salaryMin / 1000}–{job.salaryMax / 1000}k</span>
+
+        <span className={styles.date}>
+          {job.postedAt}
+        </span>
+
+        <button className={styles.applyButton}>
+          Apply →
+        </button>
+
       </div>
+
     </div>
-  );
+  )
 }

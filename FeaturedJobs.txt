@@ -509,7 +509,7 @@ import { FeaturedJob, UserSkill } from "./job";
 
 type Props = {
   job: FeaturedJob;
-  userSkills: UserSkill[];
+ userSkills: string[];
 };
 
 export default function FeaturedJobCard({ job, userSkills }: Props) {
@@ -665,7 +665,7 @@ import { FeaturedJob, UserSkill } from "./job";
 
 type Props = {
   jobs: FeaturedJob[];
-  userSkills: UserSkill[];
+ userSkills: string[];
 };
 
 export default function FeaturedJobs({ jobs, userSkills }: Props) {

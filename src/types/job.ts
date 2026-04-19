@@ -1,31 +1,43 @@
-// src/types/job.ts
+import { ReactNode } from "react";
 
-export type UserSkill = string;
+export type WorkMode =
+  | "remote"
+  | "hybrid"
+  | "onsite";
+
+export type EmploymentType =
+  | "full-time"
+  | "part-time"
+  | "contract"
+  | "internship";
 
 export type FeaturedJob = {
+  replyRate: ReactNode;
+  salary: ReactNode;
+  logoUrl: string | Blob | undefined;
   id: string;
   title: string;
   company: string;
   logo: string;
-  skills: UserSkill[];
+
   location: string;
+  skills: string[];
 
   applicants: number;
   views: number;
   matchScore: number;
+
   companySize: string;
   postedAt: string;
-  employmentType: string;
+
+  employmentType: EmploymentType;
+  workMode: WorkMode;
 
   employerLastActive: number;
   employerReplyRate: number;
   avgResponseHours: number;
-  trendingScore: number;
-  //jHistoryInteractions: number;
 
-  // Filtering extras
-  workMode: string;   // remote | hybrid | onsite
-  type: string;       // full-time | part-time | contract | internship
+  trendingScore: number;
 
   salaryMin: number;
   salaryMax: number;

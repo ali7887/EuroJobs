@@ -1,167 +1,96 @@
-import { FeaturedJob } from "./job";
+import { FeaturedJob } from "@/types/job";
 
 const featuredJobs: FeaturedJob[] = [
   {
-    id: "1",
-    title: "Senior Frontend Engineer",
+    id: "job-1",
+    title: "Senior React Developer",
     company: "TechNova",
-    logo: "/logos/technova.png",
-    skills: ["React", "Next.js", "TypeScript", "TailwindCSS"],
     location: "Remote",
+    logo: "/logos/technova.png",
+
+    employmentType: "full-time",
+    workMode: "remote",
+
+    salaryMin: 6000,
+    salaryMax: 9000,
+
+    matchScore: 92,
+
+    skills: ["React", "Next.js", "TypeScript"],
 
     applicants: 42,
-    views: 1234,
-    matchScore: 87,
-    companySize: "50-100",
+    views: 312,
+    employerReplyRate: 68,
+
     postedAt: "2 days ago",
-    employmentType: "Full-time",
-
-    employerLastActive: 3,
-    employerReplyRate: 92,
-    avgResponseHours: 10,
-    trendingScore: 67,
-
-    workMode: "remote",
-    type: "full-time",
-
-    salaryMin: 90000,
-    salaryMax: 140000,
+    companySize: "",
+    employerLastActive: 0,
+    avgResponseHours: 0,
+    trendingScore: 0,
+    replyRate: undefined,
+    salary: undefined,
+    logoUrl: undefined
   },
-
   {
-    id: "2",
-    title: "Full‑Stack TypeScript Developer",
-    company: "CodeSmith Labs",
-    logo: "/logos/codesmith.png",
-    skills: ["Node.js", "React", "Next.js", "PostgreSQL", "TypeScript"],
-    location: "Hybrid - Berlin",
+    id: "job-2",
+    title: "Frontend Engineer",
+    company: "Pixel Labs",
+    location: "Berlin",
+    logo: "/logos/pixel.png",
+
+    employmentType: "full-time",
+    workMode: "hybrid",
+
+    salaryMin: 5000,
+    salaryMax: 7500,
+
+    matchScore: 88,
+
+    skills: ["React", "TypeScript", "GraphQL"],
 
     applicants: 28,
-    views: 990,
-    matchScore: 82,
-    companySize: "20-50",
-    postedAt: "1 day ago",
-    employmentType: "Full-time",
+    views: 210,
+    employerReplyRate: 64,
 
-    employerLastActive: 1,
-    employerReplyRate: 97,
-    avgResponseHours: 6,
-    trendingScore: 74,
-
-    workMode: "hybrid",
-    type: "full-time",
-
-    salaryMin: 75000,
-    salaryMax: 125000,
-  },
-
-  {
-    id: "3",
-    title: "AI/ML Engineer",
-    company: "DeepVision AI",
-    logo: "/logos/deepvision.png",
-    skills: ["Python", "PyTorch", "TensorFlow", "LLMs", "MLOps"],
-    location: "Remote",
-
-    applicants: 65,
-    views: 1980,
-    matchScore: 91,
-    companySize: "100-200",
     postedAt: "3 days ago",
-    employmentType: "Full-time",
-
-    employerLastActive: 2,
-    employerReplyRate: 88,
-    avgResponseHours: 18,
-    trendingScore: 82,
-
-    workMode: "remote",
-    type: "full-time",
-
-    salaryMin: 110000,
-    salaryMax: 170000,
+    companySize: "",
+    employerLastActive: 0,
+    avgResponseHours: 0,
+    trendingScore: 0,
+    replyRate: undefined,
+    salary: undefined,
+    logoUrl: undefined
   },
-
   {
-    id: "4",
-    title: "DevOps / Cloud Engineer",
-    company: "SkyDeploy",
-    logo: "/logos/skydeploy.png",
-    skills: ["AWS", "Docker", "Kubernetes", "Terraform", "CI/CD"],
-    location: "Onsite - Toronto",
-
-    applicants: 18,
-    views: 720,
-    matchScore: 78,
-    companySize: "10-20",
-    postedAt: "4 days ago",
-    employmentType: "Contract",
-
-    employerLastActive: 5,
-    employerReplyRate: 84,
-    avgResponseHours: 22,
-    trendingScore: 55,
-
-    workMode: "onsite",
-    type: "contract",
-
-    salaryMin: 60000,
-    salaryMax: 90000,
-  },
-
-  {
-    id: "5",
-    title: "Senior UI/UX Designer",
-    company: "PixelCraft",
-    logo: "/logos/pixelcraft.png",
-    skills: ["Figma", "User Research", "Design Systems", "Prototyping"],
-    location: "Hybrid - Amsterdam",
-
-    applicants: 51,
-    views: 1500,
-    matchScore: 85,
-    companySize: "50-80",
-    postedAt: "5 days ago",
-    employmentType: "Full-time",
-
-    employerLastActive: 1,
-    employerReplyRate: 95,
-    avgResponseHours: 5,
-    trendingScore: 72,
-
-    workMode: "hybrid",
-    type: "full-time",
-
-    salaryMin: 70000,
-    salaryMax: 105000,
-  },
-
-  {
-    id: "6",
-    title: "Backend Engineer (Golang)",
-    company: "StreamFlow",
-    logo: "/logos/streamflow.png",
-    skills: ["Go", "gRPC", "Microservices", "Kafka", "SQL"],
+    id: "job-3",
+    title: "Next.js Developer",
+    company: "CloudStack",
     location: "Remote",
+    logo: "/logos/cloudstack.png",
 
-    applicants: 33,
-    views: 1120,
-    matchScore: 89,
-    companySize: "200-300",
-    postedAt: "6 days ago",
-    employmentType: "Full-time",
-
-    employerLastActive: 2,
-    employerReplyRate: 91,
-    avgResponseHours: 8,
-    trendingScore: 80,
-
+    employmentType: "contract",
     workMode: "remote",
-    type: "full-time",
 
-    salaryMin: 95000,
-    salaryMax: 150000,
+    salaryMin: 6500,
+    salaryMax: 9500,
+
+    matchScore: 90,
+
+    skills: ["Next.js", "Node.js", "AWS"],
+
+    applicants: 35,
+    views: 290,
+    employerReplyRate: 71,
+
+    postedAt: "1 day ago",
+    companySize: "",
+    employerLastActive: 0,
+    avgResponseHours: 0,
+    trendingScore: 0,
+    replyRate: undefined,
+    salary: undefined,
+    logoUrl: undefined
   }
-];
+]
 
-export default featuredJobs;
+export default featuredJobs

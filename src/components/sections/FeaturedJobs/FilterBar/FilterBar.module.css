@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.types {
+  display: flex;
+  gap: 8px;
+}
+
+.salary {
+  position: relative;
+}
