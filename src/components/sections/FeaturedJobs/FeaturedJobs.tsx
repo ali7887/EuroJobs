@@ -18,40 +18,46 @@ export default function FeaturedJobs({ jobs, userSkills }: Props) {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 20000]);
 
-  const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
+ const filteredJobs = useMemo(() => {
+  return jobs.filter((job) => {
 
-      if (
-        selectedJobTypes.length > 0 &&
-        !selectedJobTypes.includes(job.employmentType)
-      ) {
-        return false;
-      }
+    if (
+      selectedJobTypes.length > 0 &&
+      !selectedJobTypes
+        .map(t => t.toLowerCase())
+        .includes(job.employmentType.toLowerCase())
+    ) {
+      return false;
+    }
 
-      if (
-        selectedModes.length > 0 &&
-        !selectedModes.includes(job.workMode)
-      ) {
-        return false;
-      }
+    if (
+      selectedModes.length > 0 &&
+      !selectedModes
+        .map(m => m.toLowerCase())
+        .includes(job.workMode.toLowerCase())
+    ) {
+      return false;
+    }
 
-      if (
-        selectedSkills.length > 0 &&
-        !selectedSkills.every(skill => job.skills.includes(skill))
-      ) {
-        return false;
-      }
+    if (
+      selectedSkills.length > 0 &&
+      !selectedSkills.every(skill =>
+        job.skills.map(s => s.toLowerCase()).includes(skill.toLowerCase())
+      )
+    ) {
+      return false;
+    }
 
-      if (
-        job.salaryMin < salaryRange[0] ||
-        job.salaryMax > salaryRange[1]
-      ) {
-        return false;
-      }
+    if (
+      job.salaryMax < salaryRange[0] ||
+      job.salaryMin > salaryRange[1]
+    ) {
+      return false;
+    }
 
-      return true;
-    });
-  }, [jobs, selectedJobTypes, selectedModes, selectedSkills, salaryRange]);
+    return true;
+  });
+}, [jobs, selectedJobTypes, selectedModes, selectedSkills, salaryRange]);
 
   return (
     <section className={styles.section}>

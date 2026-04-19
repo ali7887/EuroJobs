@@ -1,13 +1,16 @@
-type Props = {
-  children: React.ReactNode
-  active?: boolean
-  onClick?: () => void
-}
+import React from "react";
 
-export default function Chip({ children, active, onClick }: Props) {
+type Props = {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+};
+
+export default function Chip({ children, className = "", ...props }: Props) {
   return (
-    <button onClick={onClick}>
+    <button className={className} {...props}>
       {children}
     </button>
-  )
+  );
 }
+
