@@ -1,17 +1,60 @@
-import JobsGrid from "./JobsGrid/JobsGrid"
-import { FeaturedJob } from "@/types/job"
-import styles from "./featured-jobs.module.css"
+"use client";
+
+import { useState, useMemo } from "react";
+import JobsGrid from "./JobsGrid/JobsGrid";
+import FilterSection from "./FilterSection";
+import { FeaturedJob } from "@/types/job";
+import styles from "./featured-jobs.module.css";
 
 type Props = {
-  jobs: FeaturedJob[]
-  userSkills: string[]
-}
-
+  jobs: FeaturedJob[];
+  userSkills: string[];
+};
 
 export default function FeaturedJobs({ jobs, userSkills }: Props) {
+
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([]);
+  const [selectedModes, setSelectedModes] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 20000]);
+
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+
+      if (
+        selectedJobTypes.length > 0 &&
+        !selectedJobTypes.includes(job.employmentType)
+      ) {
+        return false;
+      }
+
+      if (
+        selectedModes.length > 0 &&
+        !selectedModes.includes(job.workMode)
+      ) {
+        return false;
+      }
+
+      if (
+        selectedSkills.length > 0 &&
+        !selectedSkills.every(skill => job.skills.includes(skill))
+      ) {
+        return false;
+      }
+
+      if (
+        job.salaryMin < salaryRange[0] ||
+        job.salaryMax > salaryRange[1]
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [jobs, selectedJobTypes, selectedModes, selectedSkills, salaryRange]);
+
   return (
     <section className={styles.section}>
-
       <div className={styles.container}>
 
         <div className={styles.header}>
@@ -24,10 +67,20 @@ export default function FeaturedJobs({ jobs, userSkills }: Props) {
           </p>
         </div>
 
-        <JobsGrid jobs={jobs} userSkills={userSkills} />
+        <FilterSection
+          selectedJobTypes={selectedJobTypes}
+          setSelectedJobTypes={setSelectedJobTypes}
+          selectedModes={selectedModes}
+          setSelectedModes={setSelectedModes}
+          selectedSkills={selectedSkills}
+          setSelectedSkills={setSelectedSkills}
+          salaryRange={salaryRange}
+          setSalaryRange={setSalaryRange}
+        />
+
+        <JobsGrid jobs={filteredJobs} userSkills={userSkills} />
 
       </div>
-
     </section>
-  )
+  );
 }
