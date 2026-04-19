@@ -1,16 +1,25 @@
 import React from "react";
+import styles from "./Chip.module.css";
 
-type Props = {
+interface ChipProps {
   children: React.ReactNode;
-  className?: string;
+  active?: boolean;
   onClick?: () => void;
-};
+  className?: string;
+}
 
-export default function Chip({ children, className = "", ...props }: Props) {
+export default function Chip({
+  children,
+  active,
+  onClick,
+  className = ""
+}: ChipProps) {
   return (
-    <button className={className} {...props}>
+    <button
+      className={`${styles.chip} ${active ? styles.active : ""} ${className}`}
+      onClick={onClick}
+    >
       {children}
     </button>
   );
 }
-

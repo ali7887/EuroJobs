@@ -1,15 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './Footer.module.css';
+import { FaTwitter, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 
-import { 
- 
-  ShieldCheck, 
-  Users, 
-  Briefcase, 
-  Star, 
-  Globe 
+import {
+  ShieldCheck,
+  Users,
+  Briefcase,
+  Star,
+  Globe
 } from "lucide-react";
+
+
+
+
+
 
 
 export const Footer: React.FC = () => {
@@ -33,11 +38,15 @@ export const Footer: React.FC = () => {
 
             {/* Social Icons */}
             <div className={styles.social}>
-{/*               <Link href="#"><Twitter className={styles.socialIcon} /></Link>
-              <Link href="#"><Linkedin className={styles.socialIcon} /></Link>
-              <Link href="#"><Github className={styles.socialIcon} /></Link>
-              <Link href="#"><Instagram className={styles.socialIcon} /></Link> */}
+              <Link href="#"><FaTwitter className={styles.socialIcon} /></Link>
+              <Link href="#"><FaLinkedin className={styles.socialIcon} /></Link>
+              <Link href="#"><FaGithub className={styles.socialIcon} /></Link>
+              <Link href="#"><FaInstagram className={styles.socialIcon} /></Link>
             </div>
+
+
+
+
 
             {/* Newsletter */}
             <div>
@@ -122,7 +131,7 @@ export const Footer: React.FC = () => {
         {/* --- Bottom Bar (Sub-footer) --- */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {year} JobBoard. All rights reserved.
+            © {year} EuroJobs. All rights reserved.
           </p>
 
           <div className={styles.legal}>
@@ -142,8 +151,16 @@ export const Footer: React.FC = () => {
 
         {/* Designer Credit */}
         <p className={styles.designer}>
-          Designed & Built by <a href="https://alikiani.vercel.app" target="_blank">Ali Kiani</a>
+          Designed & Built by{" "}
+          <a
+            href="https://alikiani.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ali Kiani
+          </a>
         </p>
+
       </div>
     </footer>
   );
