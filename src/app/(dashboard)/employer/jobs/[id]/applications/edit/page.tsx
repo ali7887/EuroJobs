@@ -1,18 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react"; // ✅ اضافه کردن use از ری‌اکت
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
+// ✅ تعریف تایپ مطابق با استانداردهای نکس 15
+interface EditJobPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function EditJobPage({ params }: EditJobPageProps) {
   const router = useRouter();
+  
+  // ✅ در نکس 15، پارامترها به صورت پرومیس هستند، با هوک use آن‌ها را باز می‌کنیم
+  const { id } = use(params); 
+  
   const [job, setJob] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`/api/employer/jobs/${params.id}`)
-      .then(r => r.json())
+    // ✅ حالا از id که استخراج شده استفاده می‌کنیم
+    fetch(`/api/employer/jobs/${id}`)
+      .then((r) => r.json())
       .then(setJob);
-  }, [params.id]);
+  }, [id]);
 
   const submit = async (e: any) => {
     e.preventDefault();
@@ -24,27 +34,43 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
       salary: Number(e.target.salary.value),
     };
 
-    await fetch(`/api/employer/jobs/${params.id}`, {
+    // ✅ اصلاح مسیر API
+    await fetch(`/api/employer/jobs/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
-    router.push(`/employer/jobs/${params.id}`);
+    router.push(`/employer/jobs/${id}`);
   };
 
-  if (!job) return <div>در حال بارگذاری...</div>;
+  if (!job) return <div className="p-10 text-center">در حال بارگذاری...</div>;
 
   return (
-    <form onSubmit={submit} className="space-y-4">
-      <h1 className="text-xl font-semibold">ویرایش شغل</h1>
+    <form onSubmit={submit} className="max-w-2xl mx-auto p-6 space-y-4">
+      <h1 className="text-xl font-bold mb-6">ویرایش شغل</h1>
 
-      <input name="title" defaultValue={job.title} className="input" />
-      <textarea name="description" defaultValue={job.description} className="input" />
-      <input name="location" defaultValue={job.location} className="input" />
-      <input name="salary" defaultValue={job.salary ?? ""} type="number" className="input" />
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">عنوان شغل</label>
+        <input name="title" defaultValue={job.title} className="input border p-2 rounded" />
+      </div>
 
-      <Button type="submit">ذخیره تغییرات</Button>
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">توضیحات</label>
+        <textarea name="description" defaultValue={job.description} className="input border p-2 rounded h-32" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">موقعیت مکانی</label>
+        <input name="location" defaultValue={job.location} className="input border p-2 rounded" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">حقوق</label>
+        <input name="salary" defaultValue={job.salary ?? ""} type="number" className="input border p-2 rounded" />
+      </div>
+
+      <Button type="submit" className="w-full">ذخیره تغییرات</Button>
     </form>
   );
 }

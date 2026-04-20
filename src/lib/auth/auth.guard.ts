@@ -1,7 +1,8 @@
 import { extractAccessToken } from "./token.extractor";
 import { getAuthContext } from "./auth.context";
+import { NextRequest } from "next/server";
 
-export async function requireAuth() {
+export async function requireAuth(req: NextRequest) {
 
   const token = await extractAccessToken();
 

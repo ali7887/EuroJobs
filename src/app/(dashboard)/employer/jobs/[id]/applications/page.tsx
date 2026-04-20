@@ -1,3 +1,4 @@
+//ok
 import { db } from "@/lib/db"
 import { applications } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
