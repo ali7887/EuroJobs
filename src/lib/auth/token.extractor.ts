@@ -1,21 +1,14 @@
-import { cookies, headers } from "next/headers";
+import { NextRequest } from "next/server";
 
-export async function extractAccessToken(): Promise<string | null> {
+export function extractAccessToken(req: NextRequest): string | null {
+  const cookieToken = req.cookies.get("accessToken")?.value;
+  if (cookieToken) return cookieToken;
 
-  const cookieStore = cookies();
-  const tokenFromCookie = (await cookieStore).get("accessToken");
-
-  if (tokenFromCookie) {
-    return tokenFromCookie.value;
-  }
-
-  const authHeader = (await headers()).get("authorization");
-
+  const authHeader = req.headers.get("authorization");
   if (!authHeader) return null;
 
-  const [type, token] = authHeader.split(" ");
-
-  if (type !== "Bearer") return null;
+  const [scheme, token] = authHeader.split(" ");
+  if (scheme !== "Bearer" || !token) return null;
 
   return token;
 }

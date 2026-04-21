@@ -43,3 +43,8 @@ export interface RegisterInput {
   name: string;
   role?: 'employer' | 'jobseeker';
 }
+export type UserRole =
+  | "admin"
+  | "employer"
+  | "candidate"
+  | "user";

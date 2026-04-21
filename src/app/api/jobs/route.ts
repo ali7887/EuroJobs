@@ -11,6 +11,6 @@ export async function POST(req: NextRequest) {
   const user = await getCurrentUser(req);
   const body = await req.json();
 
-  const job = await jobService.createJob(String(user.id), body); // ✅ آرگومان دوم داده شد
+  const job = await jobService.createJob(String(user.userId), body); // ✅ آرگومان دوم داده شد
   return NextResponse.json(job);
 }

@@ -1,45 +1,49 @@
-import { NextRequest, NextResponse } from "next/server"
-import { authService } from "@/lib/auth/auth.service"
-import { getRefreshTokenFromCookie } from "@/lib/auth/cookie.utilities"
+import {
+  verifyRefreshToken,
+  signAccessToken,
+  signRefreshToken
+} from "@/lib/jwt/jwt.utils";
 
-export async function POST(req: NextRequest) {
+import { db } from "@/lib/db";
+import { refreshTokens } from "@/lib/db/schema/refresh_tokens";
+import { eq } from "drizzle-orm";
 
-  try {
+export async function POST(req: Request) {
 
-    const refreshToken = getRefreshTokenFromCookie(req)
+  const { refreshToken } = await req.json();
 
-    if (!refreshToken) {
-      return NextResponse.json(
-        { error: "Missing refresh token" },
-        { status: 401 }
-      )
-    }
+  const payload = await verifyRefreshToken(refreshToken);
 
-    const tokens = await authService.refresh(refreshToken)
+  const stored = await db.query.refreshTokens.findFirst({
+    where: eq(refreshTokens.token, refreshToken)
+  });
 
-    const res = NextResponse.json({
-      tokens: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
-      }
-    })
-
-    res.cookies.set("refreshToken", tokens.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      sameSite: "lax"
-    })
-
-    return res
-
-  } catch (error) {
-
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 401 }
-    )
-
+  if (!stored || stored.revoked) {
+    return Response.json({ error: "Invalid token" }, { status: 401 });
   }
 
+  await db
+    .update(refreshTokens)
+    .set({ revoked: true })
+    .where(eq(refreshTokens.id, stored.id));
+
+  const accessToken = await signAccessToken({
+    userId: String(payload.userId),
+    role: "user"
+  });
+
+  const newRefresh = await signRefreshToken({
+    userId: payload.userId
+  });
+
+  await db.insert(refreshTokens).values({
+    userId: payload.userId,
+    token: newRefresh,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  });
+
+  return Response.json({
+    accessToken,
+    refreshToken: newRefresh
+  });
 }

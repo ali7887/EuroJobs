@@ -1,46 +1,20 @@
-import { NextRequest, NextResponse } from "next/server"
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils"
-import { userService } from "@/lib/services/user.service"
+import { NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth/auth.guard";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema/users";
+import { eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
-
-  const authHeader = req.headers.get("authorization")
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    )
-  }
-
-  const token = authHeader.slice(7)
-
   try {
+    const ctx = await requireAuth(req);
 
-    const payload: any = await verifyAccessToken(token)
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, ctx.userId));
 
-    const userId = payload?.sub ?? payload?.userId
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Invalid token" },
-        { status: 401 }
-      )
-    }
-
-    const user = await userService.findById(Number(userId))
-
-    return NextResponse.json({
-      data: user
-    })
-
+    return NextResponse.json({ data: user });
   } catch {
-
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    )
-
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
 }

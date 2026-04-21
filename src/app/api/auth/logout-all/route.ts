@@ -1,25 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { authService } from "@/lib/auth/auth.service";
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
-import { clearRefreshTokenCookie } from "@/lib/auth/cookie.utilities";
+import { NextRequest } from "next/server";
+import { requireAuth } from "@/lib/auth/auth.guard";
+import { db } from "@/lib/db";
+import { refreshTokens } from "@/lib/db/schema/refresh_tokens";
+import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
-  try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
-    const token = authHeader.replace("Bearer ", "");
-    const payload = await verifyAccessToken(token);
+  const ctx = await requireAuth(req);
 
-    await authService.logoutAll(Number(payload.userId));
+  await db
+    .update(refreshTokens)
+    .set({ revoked: true })
+    .where(eq(refreshTokens.userId, ctx.userId));
 
-    const res = NextResponse.json({ success: true });
-    clearRefreshTokenCookie(res);
-
-    return res;
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 401 });
-  }
+  return Response.json({ success: true });
 }

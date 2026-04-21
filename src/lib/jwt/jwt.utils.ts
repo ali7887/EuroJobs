@@ -1,113 +1,98 @@
 import { SignJWT, jwtVerify } from "jose";
-import type {
-  AccessTokenPayload,
-  RefreshTokenPayload,
-} from "@/lib/types/token.types";
+import type { AccessTokenPayload } from "./jwt.types";
 
-function getSecret(secret: string) {
-  return new TextEncoder().encode(secret);
-}
+const secret = new TextEncoder().encode(
+  process.env.JWT_SECRET || "dev-secret"
+);
 
-const ACCESS_SECRET = process.env.JWT_SECRET!;
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
-const ACCESS_EXPIRY = "15m";
-const REFRESH_EXPIRY = "7d";
+const ACCESS_TOKEN_EXPIRES = "15m";
+const RESET_TOKEN_EXPIRES = "10m";
 
-/* ============================
-   TYPE GUARDS (SAFE)
-============================ */
-
-function isAccessPayload(payload: any): payload is AccessTokenPayload {
-  return (
-    payload &&
-    typeof payload.sub === "string" &&
-    typeof payload.userId === "string" &&
-    typeof payload.role === "string" &&
-    payload.type === "access"
-  );
-}
-
-function isRefreshPayload(payload: any): payload is RefreshTokenPayload {
-  return (
-    payload &&
-    typeof payload.tokenId === "string" &&
-    typeof payload.userId === "string" &&
-    payload.type === "refresh"
-  );
-}
-
-/* ============================
-   ACCESS TOKEN
-============================ */
-
+/**
+ * Sign Access Token
+ */
 export async function signAccessToken(
   payload: Omit<AccessTokenPayload, "type">
 ) {
-  return new SignJWT({ ...payload, type: "access" })
+  return await new SignJWT({
+    ...payload,
+    type: "access",
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime(ACCESS_EXPIRY)
-    .sign(getSecret(ACCESS_SECRET));
+    .setExpirationTime(ACCESS_TOKEN_EXPIRES)
+    .sign(secret);
 }
 
+/**
+ * Verify Access Token
+ */
 export async function verifyAccessToken(
   token: string
 ): Promise<AccessTokenPayload> {
-  const { payload } = await jwtVerify(token, getSecret(ACCESS_SECRET));
+  const { payload } = await jwtVerify(token, secret);
 
-  if (!isAccessPayload(payload)) {
+  if (
+    !payload ||
+    typeof payload.userId !== "string" ||
+    typeof payload.role !== "string" ||
+    payload.type !== "access"
+  ) {
     throw new Error("Invalid access token payload");
   }
 
-  return payload;
+  return payload as unknown as AccessTokenPayload;
 }
 
-/* ============================
-   REFRESH TOKEN
-============================ */
-
-export async function signRefreshToken(
-  payload: Omit<RefreshTokenPayload, "type">
-) {
-  return new SignJWT({ ...payload, type: "refresh" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(REFRESH_EXPIRY)
-    .sign(getSecret(REFRESH_SECRET));
-}
-
-export async function verifyRefreshToken(
-  token: string
-): Promise<RefreshTokenPayload> {
-  const { payload } = await jwtVerify(token, getSecret(REFRESH_SECRET));
-
-  if (!isRefreshPayload(payload)) {
-    throw new Error("Invalid refresh token payload");
-  }
-
-  return payload;
-}
-
-/* ============================
-   RESET TOKEN
-============================ */
-
+/**
+ * Sign Reset Password Token
+ */
 export async function signResetToken(payload: { userId: string }) {
-  return new SignJWT({ ...payload, type: "reset" })
+  return await new SignJWT({
+    ...payload,
+    type: "reset",
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("15m")
-    .sign(getSecret(ACCESS_SECRET));
+    .setExpirationTime(RESET_TOKEN_EXPIRES)
+    .sign(secret);
 }
 
-export async function verifyResetToken(
-  token: string
-): Promise<{ userId: string }> {
-  const { payload } = await jwtVerify(token, getSecret(ACCESS_SECRET));
+/**
+ * Verify Reset Password Token
+ */
+export async function verifyResetToken(token: string) {
+  const { payload } = await jwtVerify(token, secret);
 
-  if (!payload || typeof payload.userId !== "string") {
-    throw new Error("Invalid reset token payload");
+  if (
+    !payload ||
+    typeof payload.userId !== "string" ||
+    payload.type !== "reset"
+  ) {
+    throw new Error("Invalid reset token");
   }
 
-  return { userId: payload.userId };
+  return payload as { userId: string; type: "reset" };
+}
+// --------------------------
+// Refresh Token
+// --------------------------
+export async function signRefreshToken(payload: { userId: number }) {
+  return await new SignJWT({ ...payload, type: "refresh" })
+    .setExpirationTime("30d")
+    .setProtectedHeader({ alg: "HS256" })
+    .sign(new TextEncoder().encode(process.env.JWT_SECRET!));
+}
+
+export async function verifyRefreshToken(token: string) {
+  const { payload } = await jwtVerify(
+    token,
+    new TextEncoder().encode(process.env.JWT_SECRET!)
+  );
+
+  if (payload.type !== "refresh") {
+    throw new Error("Invalid token type");
+  }
+
+  return payload as { userId: number };
 }
