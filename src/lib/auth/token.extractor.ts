@@ -1,16 +1,11 @@
 import { NextRequest } from "next/server";
 
-export function extractAccessToken(req: NextRequest): string | null {
-  // 1. Try cookie
-  const cookieToken = req.cookies.get("accessToken")?.value;
-  if (cookieToken) return cookieToken;
+export function getTokenFromRequest(req: NextRequest): string | null {
+  const cookie = req.cookies.get("access_token")?.value;
+  if (cookie) return cookie;
 
-  // 2. Try Authorization header
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader) return null;
+  const auth = req.headers.get("authorization");
+  if (auth?.startsWith("Bearer ")) return auth.slice(7);
 
-  const [scheme, token] = authHeader.split(" ");
-  if (scheme !== "Bearer" || !token) return null;
-
-  return token;
+  return null;
 }

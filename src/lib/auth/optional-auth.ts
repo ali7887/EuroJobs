@@ -1,19 +1,18 @@
-import { NextRequest } from "next/server";
-import { extractAccessToken } from "./token.extractor";
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+import { getTokenFromRequest } from "./token.extractor";
+import { verifyAccessToken } from "../jwt/jwt.utils";
 import type { AuthContext } from "./auth.context";
-import type { UserRole } from "../types/auth.types";
 
-export async function optionalAuth(req: NextRequest): Promise<AuthContext | null> {
-  const token = extractAccessToken(req);
+export async function optionalAuth(req: Request): Promise<AuthContext | null> {
+  const token = getTokenFromRequest(req as any);
   if (!token) return null;
 
   try {
     const payload = await verifyAccessToken(token);
 
     return {
-      userId: Number(payload.userId),
-      role: payload.role as UserRole,
+      userId: String(payload.userId),
+      email: payload.email,
+      role: payload.role,
     };
   } catch {
     return null;

@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.id, ctx.userId));
+      .where(eq(users.id, Number(ctx.userId)));
 
     return NextResponse.json({ data: user });
   } catch {

@@ -1,21 +1,11 @@
-import { NextRequest } from "next/server";
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+import { AuthUser } from "./auth.middleware";
 
-export async function ensureRole(
-  req: NextRequest,
-  allowedRoles: string[]
-) {
-  const token = req.cookies.get("access_token")?.value;
-
-  if (!token) {
-    throw new Error("Unauthorized");
-  }
-
-  const payload = await verifyAccessToken(token);
-
-  if (!allowedRoles.includes(payload.role)) {
+export function ensureRole(userRole: string, allowed: string[]) {
+  if (!allowed.includes(userRole)) {
     throw new Error("Forbidden");
   }
-
-  return payload;
 }
+
+export const requireRole = ensureRole;
+
+

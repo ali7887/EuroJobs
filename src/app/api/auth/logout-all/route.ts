@@ -8,10 +8,13 @@ export async function POST(req: NextRequest) {
 
   const ctx = await requireAuth(req);
 
+
+
+
   await db
     .update(refreshTokens)
     .set({ revoked: true })
-    .where(eq(refreshTokens.userId, ctx.userId));
+    .where(eq(refreshTokens.userId, Number(ctx.userId)));
 
   return Response.json({ success: true });
 }

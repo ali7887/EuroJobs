@@ -1,23 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jobService } from "@/lib/services/job.service";
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+import { withAuth } from "@/lib/auth/with-auth";
+import { requireRole } from "@/lib/auth/role.guard";
 
-export async function POST(req: NextRequest) {
-  try {
-    const token = req.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+export const POST = withAuth(async (req: NextRequest, user) => {
 
-    const user = await verifyAccessToken(token);
-    if (user.role !== "employer" && user.role !== "admin") {
-      return NextResponse.json({ error: "EMPLOYER_ONLY" }, { status: 403 });
-    }
+  requireRole(user, ["employer", "admin"]);
 
-    const body = await req.json();
+  const body = await req.json();
 
-    const job = await jobService.createJob(user.userId, body);
+  // create job logic here
 
-    return NextResponse.json({ job }, { status: 201 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
+  return NextResponse.json({
+    success: true
+  });
+
+});

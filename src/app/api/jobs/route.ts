@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureRole } from "@/lib/auth/role.guard";
+import { getAuthUser } from "@/lib/auth/auth.context";
+import { requireRole } from "@/lib/auth/require-role";
 
-export async function POST(req: NextRequest) {
-  try {
-    const user = await ensureRole(req, ["recruiter", "admin"]);
+export async function GET(req: NextRequest) {
+  const user = getAuthUser(req);
+  requireRole(user, ["recruiter", "admin"]);
 
-    return NextResponse.json({
-      message: "Job created",
-      userId: user.userId,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Forbidden" },
-      { status: 403 }
-    );
-  }
+  return NextResponse.json({
+    message: "ok",
+    userId: user.userId,
+  });
 }

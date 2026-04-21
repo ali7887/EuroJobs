@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/auth.guard";
 
-export function withRole(
-  roles: string[],
+export function withAuth(
   handler: (req: NextRequest, user: any) => Promise<NextResponse>
 ) {
   return async function (req: NextRequest): Promise<NextResponse> {
     try {
       const user = await requireAuth(req);
-
-      if (!roles.includes(user.role)) {
-        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-      }
-
       return await handler(req, user);
 
     } catch (error: any) {
@@ -20,7 +14,7 @@ export function withRole(
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
       }
 
-      console.error("withRole error:", error);
+      console.error("withAuth error:", error);
       return NextResponse.json({ message: "Server Error" }, { status: 500 });
     }
   };

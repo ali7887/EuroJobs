@@ -1,23 +1,23 @@
-import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
-import type { AccessTokenPayload } from "@/lib/jwt/jwt.types";
-import type { UserRole } from "../types/auth.types"; // یا مسیری که فایل را در آن ساخته‌ای
+export interface AuthContext {
+  userId: string;
+  email: string;
+  role: string; // "user" | "employer" | "admin" | ...
+}
 
-export type AuthContext = {
-  userId: number;
-  role: UserRole;
-};
+import { NextRequest } from "next/server";
 
-/**
- * تبدیل توکن خام به Context استاندارد پروژه
- * این تابع پل ارتباطی بین JWT و منطق بیزینسی ماست.
- */
-export async function getAuthContext(token: string): Promise<AuthContext> {
-  // تایید امضای توکن و استخراج اطلاعات
-  const payload = (await verifyAccessToken(token)) as AccessTokenPayload;
+export function getAuthUser(req: NextRequest): AuthContext {
+  const userId = req.headers.get("x-user-id");
+  const email = req.headers.get("x-user-email");
+  const role = req.headers.get("x-user-role");
 
-  // بازگرداندن مقادیر واقعی (Values) و نه تایپ‌ها
+  if (!userId || !role) {
+    throw new Error("Unauthorized");
+  }
+
   return {
-    userId: Number(payload.userId), // تبدیل رشته به عدد برای مطابقت با schema دیتابیس
-    role: payload.role as UserRole, // Type Casting برای اطمینان از صحت نقش کاربری
+    userId,
+    email: email ?? "",
+    role,
   };
 }
