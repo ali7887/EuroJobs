@@ -71,7 +71,9 @@ src\app\api\auth\logout-all
 src\app\api\auth\me
 src\app\api\auth\refresh
 src\app\api\auth\register
+src\app\api\auth\resend-verification
 src\app\api\auth\reset-password
+src\app\api\auth\verify-email
 src\app\api\auth\[...nextauth]
 src\app\api\companies
 src\app\api\employer
@@ -152,8 +154,10 @@ src\lib\db\schema
 src\lib\domain
 src\lib\guards
 src\lib\jwt
+src\lib\mail
 src\lib\middleware
 src\lib\repositories
+src\lib\security
 src\lib\services
 src\lib\services\ai
 src\lib\services\search

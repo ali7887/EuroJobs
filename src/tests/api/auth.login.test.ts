@@ -1,40 +1,36 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { POST } from "@/app/api/auth/login/route"
-import { createPostRequest } from "../helpers/api-test-client"
-import { resetTestDB } from "@/lib/db/test-db"
-import { authService } from "@/lib/auth/auth.service"
+import { describe, it, expect, beforeEach } from "vitest";
+import { POST } from "@/app/api/auth/login/route";
+import { createPostRequest } from "../helpers/api-test-client";
+import { resetTestDB } from "@/lib/db/test-db";
+import { authService } from "@/lib/services/auth.service";
 
 describe("POST /api/auth/login", () => {
-
   beforeEach(async () => {
-    await resetTestDB()
-  })
+    await resetTestDB();
+  });
 
   it("should login user", async () => {
-
-    const email = `user-${Date.now()}@test.com`
-    const password = "Password123"
+    const email = `user-${Date.now()}@test.com`;
+    const password = "Password123";
 
     await authService.register({
       email,
       password,
-      name: "Test User"
-    })
+      name: "Test User",
+    });
 
     const request = createPostRequest("/api/auth/login", {
       email,
-      password
-    })
+      password,
+    });
 
-    const response = await POST(request)
+    const response = await POST(request);
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(200);
 
-    const body = await response.json()
+    const body = await response.json();
 
-    expect(body.tokens.accessToken).toBeDefined()
-    expect(body.user.email).toBe(email)
-
-  })
-
-})
+    expect(body.tokens.accessToken).toBeDefined();
+    expect(body.user.email).toBe(email);
+  });
+});

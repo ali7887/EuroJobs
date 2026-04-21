@@ -1,6 +1,6 @@
-//D:\project\NEW\job-board-saas\src\tests\integration\auth.integration.test.ts
 import { describe, it, expect, beforeEach } from "vitest"
-import { authService } from "@/lib/auth/auth.service"
+import { authService } from "@/lib/services/auth.service";
+
 import { resetTestDB } from "@/lib/db/test-db"
 
 describe("Auth Integration", () => {
@@ -21,11 +21,10 @@ describe("Auth Integration", () => {
 
     expect(result.user.email).toBe(email)
 
-    // new correct structure
-    expect(result.tokens.accessToken).toBeDefined()
-    expect(result.tokens.refreshToken).toBeDefined()
+    // FIXED: correct token access
+    expect(result.accessToken).toBeDefined()
+    expect(result.refreshToken).toBeDefined()
   })
-
 
   it("should login existing user and return tokens", async () => {
 
@@ -43,8 +42,10 @@ describe("Auth Integration", () => {
     })
 
     expect(result.user.email).toBe(email)
-    expect(result.tokens.accessToken).toBeDefined()
-    expect(result.tokens.refreshToken).toBeDefined()
+
+    // FIXED
+    expect(result.accessToken).toBeDefined()
+    expect(result.refreshToken).toBeDefined()
   })
 
 })

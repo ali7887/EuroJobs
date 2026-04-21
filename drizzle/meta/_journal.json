@@ -43,6 +43,13 @@
       "when": 1776680868368,
       "tag": "0005_hard_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776767308623,
+      "tag": "0006_fresh_zarda",
+      "breakpoints": true
     }
   ]
 }

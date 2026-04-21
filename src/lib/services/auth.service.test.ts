@@ -1,6 +1,6 @@
 //D:\project\NEW\job-board-saas\src\lib\services\auth.service.test.ts
 import { describe, it, expect } from "vitest"
-import { authService } from "@/lib/auth/auth.service"
+import { authService } from "@/lib/services/auth.service";
 
 describe("authService.register", () => {
 

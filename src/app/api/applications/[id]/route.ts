@@ -21,7 +21,8 @@ export async function PATCH(
   }
 
   // چک کردن دسترسی (فقط صاحب اپلیکیشن یا کارفرما - فعلاً ساده)
-  if (current.userId !== user.userId && user.role !== "EMPLOYER") {
+  if (current.userId !== user.userId && user.role !== "employer") 
+ {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

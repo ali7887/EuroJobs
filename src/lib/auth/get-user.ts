@@ -1,10 +1,7 @@
 import { NextRequest } from "next/server";
 import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
 
-export async function ensureRole(
-  req: NextRequest,
-  allowedRoles: string[]
-) {
+export async function getUserFromRequest(req: NextRequest) {
   const token = req.cookies.get("access_token")?.value;
 
   if (!token) {
@@ -12,10 +9,6 @@ export async function ensureRole(
   }
 
   const payload = await verifyAccessToken(token);
-
-  if (!allowedRoles.includes(payload.role)) {
-    throw new Error("Forbidden");
-  }
 
   return payload;
 }

@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jobService } from "@/lib/services/job.service";
-import { getCurrentUser } from "@/lib/auth/get-current-user";
-
-export async function GET() {
-  const jobs = await jobService.getJobs(); // ✅ حالا این تابع اضافه شده
-  return NextResponse.json(jobs);
-}
+import { ensureRole } from "@/lib/auth/role.guard";
 
 export async function POST(req: NextRequest) {
-  const user = await getCurrentUser(req);
-  const body = await req.json();
+  try {
+    const user = await ensureRole(req, ["recruiter", "admin"]);
 
-  const job = await jobService.createJob(String(user.userId), body); // ✅ آرگومان دوم داده شد
-  return NextResponse.json(job);
+    return NextResponse.json({
+      message: "Job created",
+      userId: user.userId,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Forbidden" },
+      { status: 403 }
+    );
+  }
 }

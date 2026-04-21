@@ -4,6 +4,7 @@ import {
   varchar,
   text,
   timestamp,
+  boolean, // FIX
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -12,6 +13,7 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
   name: varchar("name", { length: 100 }),
   passwordHash: varchar("password_hash", { length: 255 }),
+  emailVerified: boolean("email_verified").default(false).notNull(), // FIXED
   role: varchar("role", { length: 20 }).default("user"),
   avatarUrl: text("avatar_url"),
   updatedAt: timestamp("updated_at"),
@@ -20,5 +22,4 @@ export const users = pgTable("users", {
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
-// Optional – many parts of your system expect this!
 export type SafeUser = Omit<User, "passwordHash">;

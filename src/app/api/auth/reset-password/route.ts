@@ -1,7 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { authService } from "@/lib/services/auth.service";
+import { authRateLimit } from "@/lib/security/rate-profiles";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // ✅ Rate Limit FIRST
+  authRateLimit(req);
+
   try {
     const { token, password } = await req.json();
 

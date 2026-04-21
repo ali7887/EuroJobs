@@ -1,40 +1,33 @@
-//D:\project\NEW\job-board-saas\src\middleware.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
 
-const protectedRoutes = [
-  "/admin",
-  "/employer",
-  "/candidate"
-];
-
-export function middleware(req: NextRequest) {
-
-  const { pathname } = req.nextUrl;
-
-  const isProtectedRoute = protectedRoutes.some(route =>
-    pathname.startsWith(route)
-  );
-
-  if (!isProtectedRoute) {
-    return NextResponse.next();
-  }
-
-  const token = req.cookies.get("accessToken");
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("access_token")?.value;
 
   if (!token) {
-
-    const loginUrl = new URL("/login", req.url);
-
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
-  return NextResponse.next();
+  try {
+    await verifyAccessToken(token);
+
+    return NextResponse.next();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 401 }
+    );
+  }
 }
 
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/employer/:path*",
-    "/candidate/:path*"
-  ]
+    "/api/jobs/:path*",
+    "/api/applications/:path*",
+    "/api/admin/:path*",
+  ],
 };

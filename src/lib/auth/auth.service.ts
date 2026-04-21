@@ -1,94 +1,62 @@
-import { signAccessToken } from "@/lib/jwt/jwt.utils"
-import { db } from "@/lib/db"
-import { users } from "@/lib/db/schema"
-import { eq } from "drizzle-orm"
+import type { User } from "@/lib/db/schema";
+import type { UserRole } from "@/lib/jwt/jwt.types";
 
-class AuthService {
+import {
+  signAccessToken,
+  signRefreshToken,
+  signResetPasswordToken,
+  signEmailVerificationToken
+} from "@/lib/jwt/jwt.utils";
 
-  async register({
-    email,
-    password,
-    name
-  }: {
-    email: string
-    password: string
-    name: string
-  }) {
+import { db } from "@/lib/db";
+import { refreshTokens } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
-    const user = await db
-      .insert(users)
-      .values({
-        email,
-        passwordHash: password,
-        name
-      })
-      .returning()
-      .then(r => r[0])
+import { v4 as uuidv4 } from "uuid";
 
-    const tokens = {
-      accessToken: await signAccessToken({
-        userId: String(user.id),
-        role: user.role ?? "user"
-      }),
-      refreshToken: "temp-refresh-token"
-    }
+export async function loginUser(user: User) {
+  const accessToken = await signAccessToken({
+    userId: user.id,
+    email: user.email,
+    role: user.role as UserRole,
+  });
 
-    return { user, tokens }
-  }
+  const refreshTokenId = uuidv4();
+  const refreshToken = await signRefreshToken({
+    tokenId: refreshTokenId,
+    userId: user.id,
+  });
 
-  async login({
-    email,
-    password
-  }: {
-    email: string
-    password: string
-  }) {
+  await db.insert(refreshTokens).values({
+    userId: user.id,
+    token: refreshTokenId,
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    revoked: false
+  });
 
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .then(r => r[0])
-
-    if (!user) {
-      throw new Error("Invalid credentials")
-    }
-
-    if (user.passwordHash !== password) {
-      throw new Error("Invalid credentials")
-    }
-
-    const tokens = {
-      accessToken: await signAccessToken({
-        userId: String(user.id),
-        role: user.role ?? "user"
-      }),
-      refreshToken: "temp-refresh-token"
-    }
-
-    return { user, tokens }
-  }
-
-  async refresh(refreshToken: string) {
-
-    const accessToken = await signAccessToken({
-      userId: "1",
-      role: "user"
-    })
-
-    return {
-      accessToken,
-      refreshToken
-    }
-  }
-
-  async logout(_refreshToken: string) {
-    return { success: true }
-  }
-
-  async logoutAll(_userId: number) {
-    return { success: true }
-  }
+  return { accessToken, refreshToken };
 }
 
-export const authService = new AuthService()
+export async function sendPasswordResetEmail(user: User) {
+  const resetToken = await signResetPasswordToken({
+    userId: user.id,
+    email: user.email,
+  });
+
+  return resetToken;
+}
+
+export async function sendVerificationEmail(user: User) {
+  const token = await signEmailVerificationToken({
+    userId: user.id,
+    email: user.email,
+  });
+
+  return token;
+}
+
+export const authService = {
+  loginUser,
+  sendPasswordResetEmail,
+  sendVerificationEmail
+};

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { authService } from "@/lib/auth/auth.service"
+import { authService } from "@/lib/services/auth.service";
+
+
 import {
   getRefreshTokenFromCookie,
   clearRefreshTokenCookie
