@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAccessToken } from '@/lib/jwt/jwt.utils';
 import { userService } from '@/lib/services/user.service';
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
 

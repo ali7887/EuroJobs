@@ -1,7 +1,10 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+﻿
+
+import { NextRequest, NextResponse } from "next/server";
 import { applicationService } from "@/lib/services/application.service";
 import { jobService } from "@/lib/services/job.service";
 import { auth } from "@/lib/auth/auth";
+export const dynamic = "force-dynamic";
 
 export async function PATCH(
   req: NextRequest,

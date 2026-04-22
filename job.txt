@@ -1,0 +1,122 @@
+
+/* ===== FILE: D:\project\NEW\job-board-saas\src\app\api\jobs\route.ts ===== */
+
+import { NextResponse } from "next/server";
+import { jobService } from "@/lib/services/job.service";
+
+export async function GET() {
+
+  const jobs = await jobService.list();
+
+  return NextResponse.json({
+    data: jobs
+  });
+
+}
+
+/* ===== FILE: D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\route.ts ===== */
+
+import { NextRequest, NextResponse } from "next/server";
+import { jobService } from "@/lib/services/job.service";
+import { withAuth } from "@/app/api/with-auth";
+import { requireRole } from "@/lib/auth/require-role";
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { jobId: string } }
+) {
+  const job = await jobService.getById(Number(params.jobId));
+
+  if (!job) {
+    return NextResponse.json(
+      { message: "Job not found" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({ data: job });
+}
+
+export const DELETE = withAuth(
+  async (
+    req: NextRequest,
+    user,
+    { params }: { params: { jobId: string } }
+  ) => {
+
+    requireRole(user, ["employer", "admin"]);
+
+    await jobService.remove(Number(params.jobId));
+
+    return NextResponse.json({
+      success: true
+    });
+
+  }
+);
+
+/* ===== FILE: D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\applications\route.ts ===== */
+
+import { NextRequest, NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
+
+
+export async function GET(req: NextRequest, { params }: { params: { jobId: string } })
+
+ {
+  const { jobId } = await context.params;
+
+  const idNum = Number(jobId);
+  if (isNaN(idNum)) {
+    return NextResponse.json({ error: "Invalid jobId" }, { status: 400 });
+  }
+
+  const applications = await applicationService.getJobApplications(idNum);
+  return NextResponse.json(applications);
+}
+
+/* ===== FILE: D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\applications\[applicationId]\route.ts ===== */
+
+import { NextRequest, NextResponse } from "next/server";
+import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { jobId: string; applicationId: string } }
+) {
+  const { applicationId } = await params;
+
+  const application = await jobApplicationsRepository.findById(
+    Number(applicationId)
+  );
+
+  if (!application) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(application);
+}
+
+/* ===== FILE: D:\project\NEW\job-board-saas\src\app\api\jobs\[jobId]\apply\route.ts ===== */
+
+import { NextResponse } from "next/server";
+import { withAuth } from "@/app/api/with-auth";
+import { requireRole } from "@/lib/auth/require-role";
+import { applicationService } from "@/lib/services/application.service";
+
+export const POST = withAuth(
+  async (req, user, { params }: { params: { jobId: string } }) => {
+
+    requireRole(user, ["user"]); // فقط کارجو
+
+    const body = await req.json();
+
+    const application = await applicationService.apply({
+      userId: Number(user.userId),
+      jobId: Number(params.jobId),
+      ...body
+    });
+
+    return NextResponse.json({ success: true, data: application });
+  }
+);

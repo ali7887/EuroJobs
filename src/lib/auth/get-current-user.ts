@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+export const runtime = "nodejs";
 
 export async function getCurrentUser(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value;

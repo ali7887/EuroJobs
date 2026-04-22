@@ -15,6 +15,7 @@ import {
 } from "@/lib/jwt/jwt.utils";
 
 import type { UserRole } from "@/lib/jwt/jwt.types";
+export const runtime = "nodejs";
 
 export const authService = {
 

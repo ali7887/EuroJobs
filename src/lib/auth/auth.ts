@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+export const runtime = "nodejs";
 
 export async function auth() {
   const cookieStore = await cookies();

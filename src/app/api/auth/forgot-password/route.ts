@@ -5,6 +5,7 @@ import { users } from "@/lib/db/schema/users";
 import { eq } from "drizzle-orm";
 import { signResetPasswordToken } from "@/lib/jwt/jwt.utils";
 import { sendPasswordResetEmail } from "@/lib/mail/send-password-reset";
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   // Prevent brute-force

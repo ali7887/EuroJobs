@@ -1,4 +1,5 @@
 import { jobApplicationsRepository } from "@/lib/repositories/job-applications.repository";
+import { ApplicationStatus } from "@/lib/db/schema/applications";
 
 export const applicationService = {
   applyToJob: async (userId: number, jobId: number, data: any) => {
@@ -14,10 +15,13 @@ export const applicationService = {
   },
 
   getJobApplications: async (jobId: number) => {
-    return jobApplicationsRepository.findExisting(jobId, 0); // مثال
+    return jobApplicationsRepository.findExisting(jobId, 0);
   },
 
-  updateStatus: async (id: number, data: { status: string }) => {
+  updateStatus: async (
+    id: number,
+    data: { status: ApplicationStatus }
+  ) => {
     return jobApplicationsRepository.updateStatus(id, data.status);
   },
 

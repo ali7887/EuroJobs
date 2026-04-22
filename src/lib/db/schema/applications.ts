@@ -5,23 +5,58 @@ import {
   text,
   timestamp,
   integer,
+  pgEnum,
+  index
 } from "drizzle-orm/pg-core";
+
 import { users } from "./users";
+import { jobs } from "./jobs";
 
-export const applications = pgTable("applications", {
-  id: serial("id").primaryKey(),
+export const applicationStatusEnum = pgEnum("application_status", [
+  "pending",
+  "reviewing",
+  "accepted",
+  "rejected",
+]);
 
-  jobId: integer("job_id"),
-  userId: integer("user_id").references(() => users.id),
+export type ApplicationStatus =
+  (typeof applicationStatusEnum.enumValues)[number];
 
-  status: varchar("status", { length: 30 }).default("pending"),
+export const applications = pgTable(
+  "applications",
+  {
+    id: serial("id").primaryKey(),
 
-  resumePath: text("resume_path"),
-  coverLetter: text("cover_letter"),
+    jobId: integer("job_id")
+      .notNull()
+      .references(() => jobs.id, { onDelete: "cascade" }),
 
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at"),
-});
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    status: applicationStatusEnum("status")
+      .default("pending")
+      .notNull(),
+
+    resumePath: text("resume_path"),
+
+    coverLetter: text("cover_letter"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => new Date()),
+  },
+
+  (table) => ({
+    jobIdx: index("applications_job_idx").on(table.jobId),
+
+    userIdx: index("applications_user_idx").on(table.userId),
+
+    statusIdx: index("applications_status_idx").on(table.status),
+  })
+);
 
 export type Application = typeof applications.$inferSelect;
 export type NewApplication = typeof applications.$inferInsert;

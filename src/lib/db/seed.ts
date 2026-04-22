@@ -1,6 +1,6 @@
 //D:\project\NEW\job-board-saas\src\lib\db\seed.ts
 import { drizzle } from "drizzle-orm/node-postgres";
-import { users, jobs } from "./schema.ts";
+import { users, jobs } from "./schema";
 import { eq } from "drizzle-orm";
 import pkg from "pg";
 

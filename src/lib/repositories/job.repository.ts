@@ -3,6 +3,11 @@ import { jobs } from "@/lib/db/schema";
 import { eq, like } from "drizzle-orm";
 
 export const jobRepository = {
+
+    async updateById(id: number, data: any) {
+    await db.update(jobs).set(data).where(eq(jobs.id, id));
+    return this.findById(id);
+  },
   create: async (data: any) => {
     return db.insert(jobs).values(data).returning();
   },

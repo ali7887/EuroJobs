@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
+export const runtime = "nodejs";
 
 const employerRoutes = ["/dashboard/employer"];
 

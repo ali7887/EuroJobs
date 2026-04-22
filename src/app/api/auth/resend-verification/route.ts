@@ -5,6 +5,7 @@ import { users } from "@/lib/db/schema/users";
 import { eq } from "drizzle-orm";
 import { signEmailVerificationToken } from "@/lib/jwt/jwt.utils";
 import { sendVerificationEmail } from "@/lib/mail/send-verification";
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   authRateLimit(req);

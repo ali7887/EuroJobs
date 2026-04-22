@@ -4,6 +4,7 @@ import { getTokenFromRequest } from "@/lib/auth/token.extractor";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+export const runtime = "nodejs";
 
 export interface AuthUser {
   id: string;

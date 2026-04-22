@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema/users";
 import { eq } from "drizzle-orm";
 import { verifyEmailVerificationToken } from "@/lib/jwt/jwt.utils";
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {

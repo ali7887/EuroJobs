@@ -1,14 +1,14 @@
 import { applicationService } from "@/lib/services/application.service";
 import { jobApplicationsRepository as repo } from "@/lib/repositories/job-applications.repository";
 import { mockApplication } from "../__mocks__/application.mock";
+import { ApplicationStatus } from "@/lib/db/schema/applications";
 
 jest.mock("@/lib/repositories/job-applications.repository", () => ({
   jobApplicationsRepository: {
     findExisting: jest.fn(),
     create: jest.fn(),
     findById: jest.fn(),
-    findByUser: jest.fn(),
-    findByJob: jest.fn(),
+    getApplicationsByUser: jest.fn(),
     updateStatus: jest.fn(),
     delete: jest.fn(),
   },
@@ -26,7 +26,9 @@ describe("applicationService.applyToJob", () => {
 
     const result = await applicationService.applyToJob(20, 10, {});
 
-    expect(result).toEqual(mockApplication({ status: "pending" }));
+    expect(result).toEqual(
+      mockApplication({ status: "pending" })
+    );
   });
 
   it("should throw error when already applied", async () => {
@@ -54,28 +56,14 @@ describe("applicationService.getApplicationById", () => {
 describe("applicationService.updateStatus", () => {
   it("should update status and return updated record", async () => {
     jobApplicationsRepository.updateStatus.mockResolvedValue([
-      mockApplication({ status: "approved" }),
+      mockApplication({ status: "accepted" }),
     ]);
 
     const result = await applicationService.updateStatus(1, {
-      status: "approved",
+      status: "accepted" as ApplicationStatus,
     });
 
-    expect(result[0].status).toBe("approved");
-  });
-});
-
-describe("applicationService.updateStatus", () => {
-  it("should update status and return updated record", async () => {
-    jobApplicationsRepository.updateStatus.mockResolvedValue([
-      mockApplication({ status: "approved" }),
-    ]);
-
-    const result = await applicationService.updateStatus(1, {
-      status: "approved",
-    });
-
-    expect(result[0].status).toBe("approved");
+    expect(result[0].status).toBe("accepted");
   });
 });
 
@@ -85,7 +73,6 @@ describe("applicationService.deleteApplication", () => {
 
     const result = await applicationService.deleteApplication(1);
 
-    expect(result).toEqual({});   // یا expect(result).toBeDefined()
+    expect(result).toEqual({});
   });
 });
-

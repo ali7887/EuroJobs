@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { applications } from "@/lib/db/schema";
+import { applications, ApplicationStatus } from "@/lib/db/schema/applications";
 import { eq, and } from "drizzle-orm";
 
 export const jobApplicationsRepository = {
@@ -16,7 +16,7 @@ export const jobApplicationsRepository = {
     });
   },
 
-  create: async (data: any) => {
+  create: async (data: typeof applications.$inferInsert) => {
     return db.insert(applications).values(data).returning();
   },
 
@@ -29,7 +29,7 @@ export const jobApplicationsRepository = {
     });
   },
 
-  updateStatus: async (id: number, status: string) => {
+  updateStatus: async (id: number, status: ApplicationStatus) => {
     return db
       .update(applications)
       .set({ status })

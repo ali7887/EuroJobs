@@ -1,9 +1,10 @@
 export interface AuthContext {
-  userId: string;
+  userId: number;
   email: string;
   role: string; // "user" | "employer" | "admin" | ...
 }
 
+import { User } from "lucide-react";
 import { NextRequest } from "next/server";
 
 export function getAuthUser(req: NextRequest): AuthContext {
@@ -16,7 +17,7 @@ export function getAuthUser(req: NextRequest): AuthContext {
   }
 
   return {
-    userId,
+    userId: Number(userId),
     email: email ?? "",
     role,
   };
