@@ -2,6 +2,7 @@
 import styles from "./job-card.module.css"
 import { JobCardDTO } from "@/types/job-card"
 
+
 interface Props {
   job: JobCardDTO
 }

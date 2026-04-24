@@ -1,39 +1,25 @@
-import { db } from "@/lib/db"
-import { jobs } from "@/lib/db/schema"
-import { eq } from "drizzle-orm"
-import ApplyButton from "./ApplyButton"
+import { JobDTO } from "@/lib/dto/job.dto"
+import JobList from "@/components/jobs/JobList"
 
-export default async function JobsPage(){
+async function getJobs(): Promise<JobDTO[]> {
+  const res = await fetch("http://localhost:3000/api/jobs", {
+    cache: "no-store",
+  })
 
-const list = await db
-.select()
-.from(jobs)
-.where(eq(jobs.published,true))
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs")
+  }
 
-return (
+  return res.json()
+}
 
-<div>
+export default async function JobsPage() {
+  const jobs = await getJobs()
 
-<h1>Jobs</h1>
-
-{list.map((job:any)=>(
-
-<div key={job.id}>
-
-<h3>{job.title}</h3>
-
-<p>{job.location}</p>
-
-<p>{job.salary}</p>
-
-<ApplyButton jobId={job.id}/>
-
-</div>
-
-))}
-
-</div>
-
-)
-
+  return (
+    <main className="container">
+      <h1>Jobs</h1>
+      <JobList jobs={jobs} />
+    </main>
+  )
 }

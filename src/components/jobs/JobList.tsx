@@ -1,6 +1,11 @@
 import JobCard from "./JobCard"
 import styles from "./job-list.module.css"
 import { JobCardDTO } from "@/types/job-card"
+import { JobDTO } from "@/lib/dto/job.dto"
+
+interface JobListProps {
+  jobs: JobDTO[]
+}
 
 interface Props {
   jobs: JobCardDTO[]
