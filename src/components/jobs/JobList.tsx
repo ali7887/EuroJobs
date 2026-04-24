@@ -1,38 +1,26 @@
-import React from "react";
-import { mapJobType } from "@/lib/utils/job.utils";
-import type { InferModel } from "drizzle-orm";
-import { jobs } from "@/lib/db/schema";
-
-type Job = InferModel<typeof jobs>;
+import JobCard from "./JobCard"
+import styles from "./job-list.module.css"
+import { JobCardDTO } from "@/types/job-card"
 
 interface Props {
-  jobs: Job[];
+  jobs: JobCardDTO[]
 }
 
-export function JobList({ jobs }: Props) {
+export default function JobList({ jobs }: Props) {
+
+  if (!jobs || jobs.length === 0) {
+    return (
+      <p className={styles.empty}>
+        No jobs found
+      </p>
+    )
+  }
+
   return (
-    <div className="job-list">
-      {jobs.map((job) => {
-        const safeType = mapJobType(job.type ?? "Full-time");
-
-        return (
-          <div key={job.id} className="job-card">
-            <h3>{job.title}</h3>
-
-            <p>{job.description}</p>
-
-            <p>نوع شغل: {safeType}</p>
-            <p>شرکت: {job.companyId}</p>
-
-            <p>
-              ثبت شده در:{" "}
-              {job.createdAt
-                ? new Date(job.createdAt).toLocaleDateString("fa-IR")
-                : "نامشخص"}
-            </p>
-          </div>
-        );
-      })}
+    <div className={styles.grid}>
+      {jobs.map((job) => (
+        <JobCard key={job.id} job={job} />
+      ))}
     </div>
-  );
+  )
 }

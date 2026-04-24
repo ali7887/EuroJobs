@@ -1,12 +1,12 @@
 ﻿export function mapJobType(type: string | null): string {
-  if (!type) return 'Full-time';
+  if (!type) return "Full-time";
 
   const mapping: Record<string, string> = {
-    'Full-time': 'تمام وقت',
-    'Part-time': 'پاره وقت',
-    'Contract': 'قراردادی',
-    'Freelance': 'فریلنس'
+    "full-time": "Full-time",
+    "part-time": "Part-time",
+    "contract": "Contract",
+    "freelance": "Freelance",
   };
 
-  return mapping[type] ?? type;
+  return mapping[type.toLowerCase()] ?? type;
 }

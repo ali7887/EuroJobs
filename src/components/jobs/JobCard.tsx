@@ -1,51 +1,44 @@
-﻿// src/components/jobs/JobCard.tsx
-import Link from 'next/link';
+﻿import Link from "next/link"
+import styles from "./job-card.module.css"
+import { JobCardDTO } from "@/types/job-card"
 
-export type JobTypeDisplay = 'Full-time' | 'Part-time' | 'Contract' | 'Remote' | 'Hybrid';
-
-export interface JobCardProps {
-  id: number | string;
-  title: string;
-  company: string;
-  location: string;
-  type: JobTypeDisplay;
-  salary?: string | number | null;
-  postedAt: string; // متن آماده نمایش (مثلاً "Apr 10")
+interface Props {
+  job: JobCardDTO
 }
 
-export default function JobCard({
-  id,
-  title,
-  company,
-  location,
-  type,
-  salary,
-  postedAt,
-}: JobCardProps) {
-  return (
-    <Link
-      href={`/jobs/${id}`}
-      className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
-    >
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-600">{company}</p>
-          <p className="mt-1 text-xs text-gray-500">{location}</p>
-        </div>
+export default function JobCard({ job }: Props) {
 
-        <div className="flex flex-col items-end gap-1">
-          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-            {type}
+  return (
+    <div className={styles.card}>
+
+      <h3 className={styles.title}>
+        <Link href={`/jobs/${job.id}`}>
+          {job.title}
+        </Link>
+      </h3>
+
+      <div className={styles.meta}>
+
+        {job.location && (
+          <span className={styles.location}>
+            {job.location}
           </span>
-          {salary != null && salary !== '' && (
-            <span className="text-sm font-medium text-gray-900">
-              {typeof salary === 'number' ? `$${salary.toLocaleString()}` : salary}
-            </span>
-          )}
-          <span className="text-xs text-gray-400">Posted {postedAt}</span>
-        </div>
+        )}
+
+        {job.type && (
+          <span className={styles.type}>
+            {job.type}
+          </span>
+        )}
+
       </div>
-    </Link>
-  );
+
+      {job.salary && (
+        <div className={styles.salary}>
+          ${job.salary}
+        </div>
+      )}
+
+    </div>
+  )
 }

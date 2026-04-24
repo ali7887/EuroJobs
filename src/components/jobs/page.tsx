@@ -1,20 +1,33 @@
-﻿import { Suspense } from 'react';
-import { JobList } from '@/components/jobs/JobList';
+﻿import JobList from "@/components/jobs/JobList"
+import { JobCardDTO } from "@/types/job-card"
 
-function JobsContent() {
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Job Listings</h1>
-      {/* ✅ JobList بدون props هم کار می‌کند چون همه optional هستند */}
-      <JobList jobs={[]} />
-    </main>
-  );
+async function getJobs(): Promise<JobCardDTO[]> {
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/jobs`,
+    { cache: "no-store" }
+  )
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs")
+  }
+
+  return res.json()
 }
 
-export default function JobsPage() {
+export default async function JobsPage() {
+
+  const jobs = await getJobs()
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <JobsContent />
-    </Suspense>
-  );
+    <main className="max-w-6xl mx-auto px-6 py-12">
+
+      <h1 className="text-3xl font-bold mb-8">
+        Job Opportunities
+      </h1>
+
+      <JobList jobs={jobs} />
+
+    </main>
+  )
 }

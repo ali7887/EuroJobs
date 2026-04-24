@@ -7,7 +7,11 @@ export function mapJob(job: typeof jobs.$inferSelect) {
     description: job.description,
     location: job.location,
     salary: job.salary,
-    isRemote: job.isRemote,     // ← چون در schema اضافه کردیم
+    isRemote: job.isRemote,
     createdAt: job.createdAt,
+
+    // computed fields
+    postedAt: job.createdAt,
+    type: job.type ?? "Full-time",
   }
 }

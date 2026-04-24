@@ -1,0 +1,40 @@
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.title a {
+  text-decoration: none;
+  color: #111827;
+}
+
+.title a:hover {
+  color: #2563eb;
+}
+
+.meta {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.salary {
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 14px;
+}
