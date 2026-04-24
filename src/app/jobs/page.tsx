@@ -1,25 +1,38 @@
-import { JobDTO } from "@/lib/dto/job.dto"
-import JobList from "@/components/jobs/JobList"
+import JobSearchBar from "@/components/jobs/JobSearchBar";
+import { getJobs } from "@/lib/db/queries/jobs";
 
-async function getJobs(): Promise<JobDTO[]> {
-  const res = await fetch("http://localhost:3000/api/jobs", {
-    cache: "no-store",
-  })
+type Props = {
+  searchParams: {
+    search?: string;
+    location?: string;
+    type?: string;
+  };
+};
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch jobs")
-  }
-
-  return res.json()
-}
-
-export default async function JobsPage() {
-  const jobs = await getJobs()
+export default async function JobsPage({ searchParams }: Props) {
+  const jobs = await getJobs({
+    search: searchParams.search,
+    location: searchParams.location,
+    type: searchParams.type,
+  });
 
   return (
-    <main className="container">
-      <h1>Jobs</h1>
-      <JobList jobs={jobs} />
-    </main>
-  )
+    <div className="jobs-page">
+
+      <JobSearchBar />
+
+      <div className="jobs-list">
+        {jobs.map((job) => (
+          <div key={job.id} className="job-card">
+            <h2>{job.title}</h2>
+            <p>{job.companyId}</p>
+            <p>
+              {job.location} • {job.type}
+            </p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
 }
