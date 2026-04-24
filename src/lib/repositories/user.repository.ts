@@ -4,21 +4,50 @@ import { eq } from 'drizzle-orm';
 import type { User, NewUser } from '@/lib/db/schema';
 
 export class UserRepository {
-  static findById(userId: number) {
-    throw new Error("Method not implemented.");
-  }
-  static findByEmail(email: string) {
-    throw new Error("Method not implemented.");
-  }
-  static create(arg0: { name: string; email: string; password: string; role: string; }) {
-    throw new Error("Method not implemented.");
-  }
-  findAll() {
-    throw new Error("Method not implemented.");
+
+  // -----------------------
+  // Static implementations
+  // -----------------------
+  static async findById(id: string): Promise<User | null> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+
+    return result[0] ?? null;
   }
 
-  async findById(id: number): Promise<User | null> {
+  static async findByEmail(email: string): Promise<User | null> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
+    return result[0] ?? null;
+  }
+
+  static async create(data: NewUser): Promise<User> {
+    const result = await db
+      .insert(users)
+      .values(data)
+      .returning();
+
+    return result[0];
+  }
+
+  // If needed, implement static delete as well
+  // static async delete(id: string) { ... }
+
+  // --------------------------------
+  // Instance-based implementations
+  // --------------------------------
+  async findAll(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  async findById(id: string): Promise<User | null> {
     const result = await db
       .select()
       .from(users)
@@ -29,7 +58,6 @@ export class UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-
     const result = await db
       .select()
       .from(users)
@@ -40,7 +68,6 @@ export class UserRepository {
   }
 
   async create(data: NewUser): Promise<User> {
-
     const result = await db
       .insert(users)
       .values(data)
@@ -49,8 +76,7 @@ export class UserRepository {
     return result[0];
   }
 
-  async update(id: number, data: Partial<NewUser>): Promise<User | null> {
-
+  async update(id: string, data: Partial<NewUser>): Promise<User | null> {
     const result = await db
       .update(users)
       .set(data)
@@ -60,8 +86,7 @@ export class UserRepository {
     return result[0] ?? null;
   }
 
-  async delete(id: number): Promise<boolean> {
-
+  async delete(id: string): Promise<boolean> {
     const result = await db
       .delete(users)
       .where(eq(users.id, id))
@@ -69,5 +94,4 @@ export class UserRepository {
 
     return result.length > 0;
   }
-
 }

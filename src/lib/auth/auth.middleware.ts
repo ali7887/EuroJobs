@@ -28,7 +28,7 @@ export async function authenticate(request: NextRequest): Promise<AuthUser> {
   const [user] = await db
     .select()
     .from(users)
-    .where(eq(users.id, payload.userId))
+    .where(eq(users.id, String(payload.userId)))
     .limit(1);
 
   if (!user) {

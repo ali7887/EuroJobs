@@ -1,30 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db/db";
+import { db } from "@/lib/db";
 import { jobs } from "@/lib/db/schema/jobs";
 import { applications } from "@/lib/db/schema/applications";
 import { eq, and } from "drizzle-orm";
 import { requireAuth } from "@/lib/auth/auth.guard";
 
 export async function POST(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ jobId: string }> }
 ) {
   try {
-    const user = await requireAuth(req);
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { jobId } = await params;
-    const jobIdNum = parseInt(jobId, 10);
+    const user = await requireAuth(request);
 
-    if (isNaN(jobIdNum)) {
-      return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
-    }
-
-    // بررسی وجود شغل
     const job = await db.query.jobs.findFirst({
-      where: eq(jobs.id, jobIdNum),
+      where: eq(jobs.id, jobId),
     });
 
     if (!job) {
@@ -38,10 +28,9 @@ export async function POST(
       );
     }
 
-    // بررسی درخواست تکراری
     const existingApplication = await db.query.applications.findFirst({
       where: and(
-        eq(applications.jobId, jobIdNum),
+        eq(applications.jobId, jobId),
         eq(applications.userId, user.userId)
       ),
     });
@@ -53,15 +42,14 @@ export async function POST(
       );
     }
 
-    const body = await req.json();
+    const body = await request.json();
 
-    // ثبت درخواست
     const [application] = await db
       .insert(applications)
       .values({
-        jobId: jobIdNum,
+        jobId,
         userId: user.userId,
-        resumePath: body.resumePath || body.resumeUrl, // پشتیبانی از هر دو نام
+        resumePath: body.resumePath || body.resumeUrl,
         coverLetter: body.coverLetter,
       })
       .returning();

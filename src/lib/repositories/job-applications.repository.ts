@@ -3,33 +3,56 @@ import { applications, ApplicationStatus } from "@/lib/db/schema/applications";
 import { eq, and } from "drizzle-orm";
 
 export const jobApplicationsRepository = {
-  findById: async (id: number) => {
-    return db.query.applications.findFirst({
-      where: eq(applications.id, id),
-    });
-  },
+findById: async (
+  id: string
+): Promise<(typeof applications.$inferSelect) | null> => {
+  const application = await db.query.applications.findFirst({
+    where: eq(applications.id, id),
+  });
+  return application ?? null;
+},
 
-  getApplicationsByUser: async (userId: number) => {
+
+  getApplicationsByUser: async (
+    userId: string
+  ): Promise<(typeof applications.$inferSelect)[]> => {
     return db.query.applications.findMany({
       where: eq(applications.userId, userId),
       with: { job: true },
     });
   },
 
-  create: async (data: typeof applications.$inferInsert) => {
-    return db.insert(applications).values(data).returning();
-  },
-
-  findExisting: async (jobId: number, userId: number) => {
+  getApplicationsByJob: async (
+    jobId: string
+  ): Promise<(typeof applications.$inferSelect)[]> => {
     return db.query.applications.findMany({
-      where: and(
-        eq(applications.jobId, jobId),
-        eq(applications.userId, userId)
-      ),
+      where: eq(applications.jobId, jobId),
+      with: {
+        user: true,
+        job: true,
+      },
     });
   },
 
-  updateStatus: async (id: number, status: ApplicationStatus) => {
+  create: async (
+    data: typeof applications.$inferInsert
+  ): Promise<(typeof applications.$inferSelect)[]> => {
+    return db.insert(applications).values(data).returning();
+  },
+
+  findExisting: async (
+    jobId: string,
+    userId: string
+  ): Promise<(typeof applications.$inferSelect)[]> => {
+    return db.query.applications.findMany({
+      where: and(eq(applications.jobId, jobId), eq(applications.userId, userId)),
+    });
+  },
+
+  updateStatus: async (
+    id: string,
+    status: ApplicationStatus
+  ): Promise<(typeof applications.$inferSelect)[]> => {
     return db
       .update(applications)
       .set({ status })
@@ -37,7 +60,7 @@ export const jobApplicationsRepository = {
       .returning();
   },
 
-  delete: async (id: number) => {
+  delete: async (id: string): Promise<(typeof applications.$inferSelect)[]> => {
     return db
       .delete(applications)
       .where(eq(applications.id, id))

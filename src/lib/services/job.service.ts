@@ -10,42 +10,47 @@ export const jobService = {
     return jobRepository.findAll(limit, offset);
   },
 
-  async getById(id: number) {
+  async getById(id: string) {
     return jobRepository.findById(id);
   },
 
-  async update(id: number, data: any) {
+  async update(id: string, data: any) {
     const job = await jobRepository.findById(id);
     if (!job) throw new Error("Job not found");
     return jobRepository.updateById(id, data);
   },
 
-  async remove(id: number) {
+  async remove(id: string) {
     return jobRepository.delete(id);
   },
 
-  async getJob(id: number) {
+  async getJob(id: string) {
     return jobRepository.findById(id);
   },
 
-  async updateJob(id: number, userId: number, data: any) {
+  async updateJob(id: string, userId: string, data: any) {
     const job = await jobRepository.findById(id);
     if (!job) throw new Error("Job not found");
-    if (Number(job.employerId) !== Number(userId)) throw new Error("Forbidden");
+
+    if (job.employerId !== userId) throw new Error("Forbidden");
+
     return jobRepository.updateById(id, data);
   },
 
-  async deleteJob(id: number, userId: number) {
+  async deleteJob(id: string, userId: string) {
     const job = await jobRepository.findById(id);
     if (!job) throw new Error("Job not found");
-    if (Number(job.employerId) !== Number(userId)) throw new Error("Forbidden");
+
+    if (job.employerId !== userId) throw new Error("Forbidden");
+
     return jobRepository.delete(id);
   },
 
-  async getEmployerJobs(userId: number | string) {
+  async getEmployerJobs(userId: string) {
     const jobs = await jobRepository.findAll(100, 0);
+
     return jobs.filter(
-      (job: any) => Number(job.employerId) === Number(userId)
+      (job: any) => job.employerId === userId
     );
   },
 

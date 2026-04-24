@@ -1,1 +1,0 @@
-ALTER TABLE "jobs" ADD COLUMN "status" varchar(30) DEFAULT 'open';

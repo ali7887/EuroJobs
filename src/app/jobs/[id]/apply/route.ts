@@ -1,36 +1,19 @@
-import { NextResponse } from "next/server"
-import { applicationService } from "@/lib/services/application.service"
+import { NextRequest, NextResponse } from "next/server";
+import { applicationService } from "@/lib/services/application.service";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-){
-  const { id } = await params
-  const jobId = Number(id)
+) {
+  const { id } = await params;
+  const userId = req.headers.get("userId")!;
+  const body = await req.json();
 
-  try {
+  const data = await applicationService.applyToJob(
+    userId,
+    id,
+    body
+  );
 
-    const body = await req.json()
-
-    const application = await applicationService.applyToJob(
-      body.userId,
-      jobId,
-      {
-        resumeUrl: body.resumeUrl,
-        coverLetter: body.coverLetter
-      }
-    )
-
-    return NextResponse.json(application)
-
-  } catch (error) {
-
-    console.error(error)
-
-    return NextResponse.json(
-      { error: "failed to apply" },
-      { status: 500 }
-    )
-
-  }
+  return NextResponse.json(data, { status: 201 });
 }

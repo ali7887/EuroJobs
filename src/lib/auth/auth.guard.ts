@@ -1,10 +1,10 @@
-import { NextRequest } from "next/server";
 import { getTokenFromRequest } from "./token.extractor";
 import { verifyAccessToken } from "@/lib/jwt/jwt.utils";
 import type { AuthContext } from "./auth.context";
+
 export const runtime = "nodejs";
 
-export async function requireAuth(req: NextRequest): Promise<AuthContext> {
+export async function requireAuth(req: Request): Promise<AuthContext> {
   const token = getTokenFromRequest(req);
   if (!token) {
     throw Object.assign(new Error("Unauthorized"), { status: 401 });
@@ -12,8 +12,12 @@ export async function requireAuth(req: NextRequest): Promise<AuthContext> {
 
   const payload = await verifyAccessToken(token);
 
+  if (typeof payload.userId !== "string") {
+    throw Object.assign(new Error("Invalid user identifier format"), { status: 400 });
+  }
+
   return {
-    userId: Number(payload.userId),
+    userId: payload.userId,
     email: payload.email,
     role: payload.role,
   };

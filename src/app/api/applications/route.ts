@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     }
 
     const applications =
-      await applicationService.getJobApplications(Number(id));
+      await applicationService.getJobApplications(id);
 
     if (!applications) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });

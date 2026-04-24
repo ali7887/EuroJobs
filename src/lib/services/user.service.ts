@@ -44,17 +44,12 @@ export class UserService {
     this.repository = new UserRepository();
   }
 
-  /** ===============================
-   *  CREATE (REGISTER)
-   * =============================== */
+  /** REGISTER */
   async register(data: unknown): Promise<SafeUser> {
     const validated = userRegisterSchema.parse(data);
 
     const existing = await this.repository.findByEmail(validated.email);
-
-    if (existing) {
-      throw new Error("Email already exists");
-    }
+    if (existing) throw new Error("Email already exists");
 
     const passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS);
 
@@ -73,72 +68,50 @@ export class UserService {
     return toSafeUser(user);
   }
 
-  /** ===============================
-   *  GET USER BY ID (FULL USER)
-   * =============================== */
-  async findById(id: number): Promise<User | null> {
-    return await this.repository.findById(id);
+  /** GET FULL USER */
+  async findById(id: string): Promise<User | null> {
+    return this.repository.findById(id);
   }
 
-  /** ===============================
-   *  GET SAFE USER BY ID
-   * =============================== */
-  async getUserById(id: number): Promise<SafeUser> {
+  /** GET SAFE USER */
+  async getUserById(id: string): Promise<SafeUser> {
     const user = await this.repository.findById(id);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
+    if (!user) throw new Error("User not found");
 
     return toSafeUser(user);
   }
 
-  /** ===============================
-   *  GET USER BY EMAIL (FULL USER)
-   * =============================== */
+  /** GET FULL BY EMAIL */
   async findByEmail(email: string): Promise<User | null> {
-    return await this.repository.findByEmail(email);
+    return this.repository.findByEmail(email);
   }
 
-  /** ===============================
-   *  GET SAFE USER BY EMAIL
-   * =============================== */
+  /** GET SAFE BY EMAIL */
   async getUserByEmail(email: string): Promise<SafeUser> {
     const user = await this.repository.findByEmail(email);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
+    if (!user) throw new Error("User not found");
 
     return toSafeUser(user);
   }
 
-  /** ===============================
-   *  LIST USERS (SAFE)
-   * =============================== */
+  /** LIST USERS */
   async listUsers(): Promise<SafeUser[]> {
-    const users = (this.repository.findAll()) as unknown as User[];
-    return users.map((u) => toSafeUser(u));
-  }
-  async updatePassword(userId: number, newPassword: string) {
-  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-
-  const updated = await this.repository.update(userId, {
-    passwordHash,
-  });
-
-  if (!updated) {
-    throw new Error("User not found");
+    const users = await this.repository.findAll();
+    return users.map(toSafeUser);
   }
 
-  return updated;
-}
+  /** UPDATE PASSWORD — FIXED UUID TYPE */
+  async updatePassword(userId: string, newPassword: string): Promise<User> {
+    const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
+    const updated = await this.repository.update(userId, { passwordHash });
+    if (!updated) throw new Error("User not found");
 
-  /** ===============================
-   *  UPDATE USER
-   * =============================== */
-  async updateUser(id: number, data: unknown): Promise<SafeUser> {
+    return updated;
+  }
+
+  /** UPDATE USER — FIXED UUID TYPE */
+  async updateUser(id: string, data: unknown): Promise<SafeUser> {
     const validated = userUpdateSchema.parse(data);
 
     const updateData: Partial<User> = {
@@ -160,29 +133,21 @@ export class UserService {
 
     const updated = await this.repository.update(id, updateData);
 
-    if (!updated) {
-      throw new Error("User not found");
-    }
+    if (!updated) throw new Error("User not found");
 
     return toSafeUser(updated);
   }
 
-  /** ===============================
-   *  DELETE USER
-   * =============================== */
-  async deleteUser(id: number): Promise<{ success: true }> {
+  /** DELETE USER — FIXED UUID TYPE */
+  async deleteUser(id: string): Promise<{ success: true }> {
     const deleted = await this.repository.delete(id);
 
-    if (!deleted) {
-      throw new Error("User not found");
-    }
+    if (!deleted) throw new Error("User not found");
 
     return { success: true };
   }
 
-  /** ===============================
-   *  VERIFY LOGIN
-   * =============================== */
+  /** VERIFY LOGIN */
   async verifyCredentials(
     email: string,
     plainPassword: string
@@ -201,9 +166,7 @@ export class UserService {
 
     return user;
   }
-  
 }
 
 export const userService = new UserService();
-
 export type { SafeUser };

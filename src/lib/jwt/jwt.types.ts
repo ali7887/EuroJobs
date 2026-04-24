@@ -1,7 +1,7 @@
 export type UserRole = 'admin' | 'employer' | 'candidate' | 'user';
 
 export interface AccessTokenPayload {
-  userId: number;
+  userId: string;
   email: string;
   role: UserRole;
   type: 'access';
@@ -10,13 +10,13 @@ export interface AccessTokenPayload {
 
 export interface RefreshTokenPayload {
   tokenId: string;
-  userId: number;
+  userId: string;
   type: 'refresh';
   [key: string]: unknown;
 }
 
 export interface ResetPasswordTokenPayload {
-  userId: number;
+  userId: string;
   email: string;
   type: 'reset';
   iat?: number;
@@ -25,7 +25,7 @@ export interface ResetPasswordTokenPayload {
 }
 
 export interface EmailVerifyTokenPayload {
-  userId: number;
+  userId: string;
   email: string;
   type: 'email-verify';
   iat?: number;
@@ -35,7 +35,7 @@ export interface EmailVerifyTokenPayload {
 
 export interface StoredRefreshToken {
   id: string;
-  userId: number;
+  userId: string;
   tokenHash: string;
   expiresAt: string;
   createdAt: string;

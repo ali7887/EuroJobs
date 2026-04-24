@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     const payload = await verifyEmailVerificationToken(token);
 
-    const userId = Number(payload.userId);
+    const userId = payload.userId;
 
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),

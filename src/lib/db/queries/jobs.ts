@@ -8,15 +8,18 @@ export async function createJob(data: {
   location?: string;
   salary?: number;
   type?: string;
-  companyId?: number;
-  employerId: number;
+  companyId?: string;
+  employerId: string; // UUID
 }) {
   const [job] = await db.insert(jobs).values(data).returning();
   return job;
 }
 
-export async function getJobById(id: number) {
-  const [job] = await db.select().from(jobs).where(eq(jobs.id, id));
+export async function getJobById(id: string) {
+  const [job] = await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.id, id));
   return job;
 }
 
@@ -55,7 +58,10 @@ export async function getJobs(params: {
   return rows;
 }
 
-export async function updateJob(id: number, data: Partial<typeof jobs.$inferInsert>) {
+export async function updateJob(
+  id: string,
+  data: Partial<typeof jobs.$inferInsert>,
+) {
   const [updated] = await db
     .update(jobs)
     .set(data)

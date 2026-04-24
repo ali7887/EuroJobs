@@ -1,48 +1,54 @@
-// src/app/api/jobs/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { jobs } from "@/lib/db/schema";
-import { eq, and, desc, SQL } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "@/lib/auth/auth.guard";
 
-export async function GET(req: NextRequest) {
+// -----------------------------------------------------------------------------
+// GET /api/jobs
+// -----------------------------------------------------------------------------
+export async function GET(req: Request) {
   try {
     const user = await requireAuth(req);
     const { searchParams } = new URL(req.url);
-    const isActive = searchParams.get("isActive");
-    const published = searchParams.get("published");
 
-    const conditions: SQL[] = [];
+    const isActiveParam = searchParams.get("isActive");
+    const publishedParam = searchParams.get("published");
+
+    const conditions = [];
 
     if (user.role === "employer") {
       conditions.push(eq(jobs.employerId, user.userId));
     }
 
-    if (isActive !== null) {
-      conditions.push(eq(jobs.isActive, isActive === "true"));
+    if (isActiveParam !== null) {
+      conditions.push(eq(jobs.isActive, isActiveParam === "true"));
     }
 
-    if (published !== null) {
-      conditions.push(eq(jobs.published, published === "true"));
+    if (publishedParam !== null) {
+      conditions.push(eq(jobs.published, publishedParam === "true"));
     }
 
     const result = await db
       .select()
       .from(jobs)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .where(conditions.length ? and(...conditions) : undefined)
       .orderBy(desc(jobs.createdAt));
 
     return NextResponse.json(result);
   } catch (error: any) {
-    if (error?.status === 401) {
+    if (error?.status === 401)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+
     console.error("GET /api/jobs error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
-export async function POST(req: NextRequest) {
+// -----------------------------------------------------------------------------
+// POST /api/jobs
+// -----------------------------------------------------------------------------
+export async function POST(req: Request) {
   try {
     const user = await requireAuth(req);
 
@@ -54,17 +60,14 @@ export async function POST(req: NextRequest) {
 
     const [job] = await db
       .insert(jobs)
-      .values({
-        ...body,
-        employerId: user.userId,
-      })
+      .values({ ...body, employerId: user.userId })
       .returning();
 
     return NextResponse.json(job, { status: 201 });
   } catch (error: any) {
-    if (error?.status === 401) {
+    if (error?.status === 401)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+
     console.error("POST /api/jobs error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

@@ -7,7 +7,7 @@ export async function GET() {
   if (!userId)
     return new Response("Unauthorized", { status: 401 });
 
-  const apps = await applicationService.getUserApplications(Number(userId));
+  const apps = await applicationService.getUserApplications(userId);
 
   return Response.json({
     applications: apps,

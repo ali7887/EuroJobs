@@ -1,20 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/auth.guard";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema/users";
 import { eq } from "drizzle-orm";
 
-export async function GET(req: NextRequest) {
+export async function GET(request: Request) {
   try {
-    const ctx = await requireAuth(req);
+    const ctx = await requireAuth(request);
+
+    // تضمین اینکه userId یک string UUID است
+    if (typeof ctx.userId !== "string") {
+      return NextResponse.json(
+        { error: "Invalid user identifier" },
+        { status: 400 },
+      );
+    }
 
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.id, Number(ctx.userId)));
+      .where(eq(users.id, ctx.userId));
 
     return NextResponse.json({ data: user });
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }

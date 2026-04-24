@@ -5,11 +5,12 @@ import type { JobEmbeddingRecord } from "@/app/api/ai/match/matcher.types";
 
 export const matcherRepository = {
   async upsertEmbedding(
-    jobId: number,
+    jobId: string,
     embedding: number[]
   ): Promise<JobEmbeddingRecord> {
     const embeddingString = JSON.stringify(embedding);
 
+    // Check existing
     const existing = await db
       .select()
       .from(job_embeddings)
@@ -32,6 +33,7 @@ export const matcherRepository = {
       };
     }
 
+    // Insert new
     const inserted = await db
       .insert(job_embeddings)
       .values({
@@ -47,9 +49,7 @@ export const matcherRepository = {
     };
   },
 
-  async getEmbeddingByJobId(
-    jobId: number
-  ): Promise<JobEmbeddingRecord | null> {
+  async getEmbeddingByJobId(jobId: string): Promise<JobEmbeddingRecord | null> {
     const res = await db
       .select()
       .from(job_embeddings)

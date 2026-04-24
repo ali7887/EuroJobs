@@ -3,7 +3,7 @@ import { db } from "..";
 import { eq } from "drizzle-orm";
 
 export async function updateApplicationStatus(
-  id: number,
+  id: string,
   status: ApplicationStatus
 ) {
   const [updated] = await db

@@ -1,5 +1,5 @@
 export interface AuthContext {
-  userId: number;
+  userId: string;
   email: string;
   role: string; // "user" | "employer" | "admin" | ...
 }
@@ -17,7 +17,7 @@ export function getAuthUser(req: NextRequest): AuthContext {
   }
 
   return {
-    userId: Number(userId),
+    userId: userId,
     email: email ?? "",
     role,
   };

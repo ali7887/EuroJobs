@@ -16,18 +16,23 @@ jest.mock("@/lib/repositories/job-applications.repository", () => ({
 
 const jobApplicationsRepository = repo as jest.Mocked<typeof repo>;
 
+// Test UUIDs
+const userId = "550e8400-e29b-41d4-a716-446655440002";
+const jobId = "550e8400-e29b-41d4-a716-446655440001";
+const applicationId = "550e8400-e29b-41d4-a716-446655440000";
+
 describe("applicationService.applyToJob", () => {
   it("should create a new application when none exists", async () => {
     jobApplicationsRepository.findExisting.mockResolvedValue([]);
 
     jobApplicationsRepository.create.mockResolvedValue([
-      mockApplication({ status: "pending" }),
+      mockApplication({ id: applicationId, status: "pending" }),
     ]);
 
-    const result = await applicationService.applyToJob(20, 10, {});
+    const result = await applicationService.applyToJob(userId, jobId, {});
 
     expect(result).toEqual(
-      mockApplication({ status: "pending" })
+      mockApplication({ id: applicationId, status: "pending" })
     );
   });
 
@@ -37,7 +42,7 @@ describe("applicationService.applyToJob", () => {
     ]);
 
     await expect(
-      applicationService.applyToJob(20, 10, {})
+      applicationService.applyToJob(userId, jobId, {})
     ).rejects.toThrow("Already applied");
   });
 });
@@ -45,11 +50,11 @@ describe("applicationService.applyToJob", () => {
 describe("applicationService.getApplicationById", () => {
   it("should return the application", async () => {
     jobApplicationsRepository.findById.mockResolvedValue(
-      mockApplication({ id: 1 })
+      mockApplication({ id: applicationId })
     );
 
-    const result = await applicationService.getApplicationById(1);
-    expect(result).toEqual(mockApplication({ id: 1 }));
+    const result = await applicationService.getApplicationById(applicationId);
+    expect(result).toEqual(mockApplication({ id: applicationId }));
   });
 });
 
@@ -59,7 +64,7 @@ describe("applicationService.updateStatus", () => {
       mockApplication({ status: "accepted" }),
     ]);
 
-    const result = await applicationService.updateStatus(1, {
+    const result = await applicationService.updateStatus(applicationId, {
       status: "accepted" as ApplicationStatus,
     });
 
@@ -69,10 +74,12 @@ describe("applicationService.updateStatus", () => {
 
 describe("applicationService.deleteApplication", () => {
   it("should delete application", async () => {
-    jobApplicationsRepository.delete.mockResolvedValue({} as any);
+    jobApplicationsRepository.delete.mockResolvedValue([
+      mockApplication({ id: applicationId }),
+    ]);
 
-    const result = await applicationService.deleteApplication(1);
+    const result = await applicationService.deleteApplication(applicationId);
 
-    expect(result).toEqual({});
+    expect(result).toEqual([mockApplication({ id: applicationId })]);
   });
 });

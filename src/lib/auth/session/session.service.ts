@@ -23,14 +23,14 @@ export const sessionService = {
     return result[0] ?? null
   },
 
-  async delete(sessionId: number) {
+  async delete(sessionId: string) {
 
     await db
       .delete(sessions)
       .where(eq(sessions.id, sessionId))
   },
 
-  async deleteByUserId(userId: number) {
+  async deleteByUserId(userId: string) {
 
     await db
       .delete(sessions)

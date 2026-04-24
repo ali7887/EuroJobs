@@ -1,7 +1,6 @@
-// src/app/api/ai/match/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { MatcherService, matcherService } from '@/app/api/ai/match/matcher.service';
+import { MatcherService } from '@/app/api/ai/match/matcher.service';
 import { db } from '@/lib/db';
 import { jobs } from '@/lib/db/schema';
 
@@ -21,17 +20,22 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
 
   const { skills } = parsed.data;
 
-  // همه jobهای active منتشر شده را بگیر (با توجه به schema خودت adjust کن)
+  // Fetch all jobs
   const jobRows = await db.select().from(jobs);
+
+  // Normalize into MatchableJob (UUID-safe)
   const matchableJobs = jobRows.map((j) => ({
-    id: j.id,
-    title: j.title,
-    description: j.description,
+    id: j.id as string,                 // UUID
+    title: j.title ?? "",               // normalize for matcher
+    description: j.description ?? "",   // normalize for matcher
   }));
 
   const matches = await matcher.findMatchingJobs(skills, matchableJobs, 5);

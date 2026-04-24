@@ -11,10 +11,10 @@ export class UserRepository {
     return result[0];
   }
 
-  async findById(id: number) {
-    const result = await db.select().from(users).where(eq(users.id, id));
-    return result[0];
-  }
+  async findById(id: string) {
+  return db.select().from(users).where(eq(users.id, id));
+}
+
 
   async create(data: typeof users.$inferInsert) {
     const result = await db.insert(users).values(data).returning();

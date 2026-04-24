@@ -4,10 +4,11 @@ import { eq, like } from "drizzle-orm";
 
 export const jobRepository = {
 
-    async updateById(id: number, data: any) {
+  async updateById(id: string, data: any) {
     await db.update(jobs).set(data).where(eq(jobs.id, id));
     return this.findById(id);
   },
+
   create: async (data: any) => {
     return db.insert(jobs).values(data).returning();
   },
@@ -20,7 +21,7 @@ export const jobRepository = {
       .offset(offset);
   },
 
-  findById: async (id: number) => {
+  findById: async (id: string) => {
     return db
       .select()
       .from(jobs)
@@ -29,7 +30,7 @@ export const jobRepository = {
       .then(res => res[0] ?? null);
   },
 
-  delete: async (id: number) => {
+  delete: async (id: string) => {
     return db.delete(jobs).where(eq(jobs.id, id));
   },
 

@@ -5,7 +5,7 @@
   "scripts": {
     "ci": "npm run type-check && npm run test && npm run build",
     "dev": "node -r ./node-tls-fix.js node_modules/next/dist/bin/next dev",
-    "build": "rimraf .next && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

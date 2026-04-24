@@ -1,6 +1,10 @@
-import { Application } from "@/lib/db/schema";
+import { type Application } from "@/lib/db/schema";
 
-export type ApplicationStatus = "pending" | "reviewing" | "accepted" | "rejected";
+export type ApplicationStatus =
+  | "pending"
+  | "reviewing"
+  | "accepted"
+  | "rejected";
 
 export interface ApplicationCreateInput {
   jobId: string;

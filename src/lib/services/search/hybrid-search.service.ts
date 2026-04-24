@@ -8,12 +8,12 @@ export const hybridSearchService = {
       keywordSearchService.search(query),
     ]);
 
-    const scores = new Map<number, number>();
+    const scores = new Map<string, number>();
 
     for (const item of ai) scores.set(item.id, (scores.get(item.id) ?? 0) + item.score * 0.65);
     for (const item of keyword) scores.set(item.id, (scores.get(item.id) ?? 0) + item.score * 0.35);
 
-    const merged = new Map<number, any>();
+    const merged = new Map<string, any>();
     [...ai, ...keyword].forEach((job) => {
       if (!merged.has(job.id)) merged.set(job.id, job);
     });

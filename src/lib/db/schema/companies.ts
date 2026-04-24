@@ -1,19 +1,22 @@
 import {
   pgTable,
-  serial,
   varchar,
+  uuid,
   text,
-  integer,
+  
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
 export const companies = pgTable("companies", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 150 }).notNull(),
   logoUrl: text("logo_url"),
   website: text("website"),
   description: text("description"),
-  ownerId: integer("owner_id").references(() => users.id),
+  ownerId: uuid("owner_id")
+  .notNull()
+  .references(() => users.id)
+
 });
 
 export type Company = typeof companies.$inferSelect;

@@ -1,9 +1,12 @@
-import { pgTable, serial, integer, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { users } from "./users";
 
 export const refreshTokens = pgTable("refresh_tokens", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
 
-  userId: integer("user_id").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 
   token: text("token").notNull(),
 
@@ -11,5 +14,8 @@ export const refreshTokens = pgTable("refresh_tokens", {
 
   expiresAt: timestamp("expires_at").notNull(),
 
-  createdAt: timestamp("created_at").defaultNow()
+  createdAt: timestamp("created_at").defaultNow(),
 });
+
+export type RefreshToken = typeof refreshTokens.$inferSelect;
+export type NewRefreshToken = typeof refreshTokens.$inferInsert;

@@ -29,7 +29,7 @@ const RESET_TOKEN_EXPIRES = "15m";
 const EMAIL_VERIFY_EXPIRES = "30m";
 
 export async function signAccessToken(payload: {
-  userId: number;
+  userId: string;
   email: string;
   role: UserRole;
 }): Promise<string> {
@@ -48,7 +48,7 @@ export async function verifyAccessToken(
   const { payload } = await jwtVerify(token, getSecret("JWT_SECRET"));
 
   if (
-    typeof payload.userId !== "number" ||
+    typeof payload.userId !== "string" ||
     typeof payload.email !== "string" ||
     typeof payload.role !== "string" ||
     payload.type !== "access"
@@ -61,7 +61,7 @@ export async function verifyAccessToken(
 
 export async function signRefreshToken(payload: {
   tokenId: string;
-  userId: number;
+  userId: string;
 }): Promise<string> {
   const tokenPayload: RefreshTokenPayload = { ...payload, type: "refresh" };
 
@@ -79,7 +79,7 @@ export async function verifyRefreshToken(
 
   if (
     typeof payload.tokenId !== "string" ||
-    typeof payload.userId !== "number" ||
+    typeof payload.userId !== "string" ||
     payload.type !== "refresh"
   ) {
     throw new Error("Invalid refresh token payload");
@@ -89,7 +89,7 @@ export async function verifyRefreshToken(
 }
 
 export async function signResetPasswordToken(payload: {
-  userId: number;
+  userId: string;
   email: string;
 }): Promise<string> {
   const tokenPayload: ResetPasswordTokenPayload = { ...payload, type: "reset" };
@@ -107,7 +107,7 @@ export async function verifyResetPasswordToken(
   const { payload } = await jwtVerify(token, getSecret("JWT_RESET_SECRET"));
 
   if (
-    typeof payload.userId !== "number" ||
+    typeof payload.userId !== "string" ||
     typeof payload.email !== "string" ||
     payload.type !== "reset"
   ) {
@@ -118,7 +118,7 @@ export async function verifyResetPasswordToken(
 }
 
 export async function signEmailVerificationToken(payload: {
-  userId: number;
+  userId: string;
   email: string;
 }): Promise<string> {
   const tokenPayload: EmailVerifyTokenPayload = {
@@ -142,7 +142,7 @@ export async function verifyEmailVerificationToken(
   );
 
   if (
-    typeof payload.userId !== "number" ||
+    typeof payload.userId !== "string" ||
     typeof payload.email !== "string" ||
     payload.type !== "email-verify"
   ) {

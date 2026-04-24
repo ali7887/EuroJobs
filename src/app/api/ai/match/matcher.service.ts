@@ -1,44 +1,30 @@
 import { MatcherRepository } from './matcher.repository';
-import { db } from '@/lib/db';
-import { jobs } from '@/lib/db/schema';
-
-type MatchableJob = {
-  id: number;
-  title: string | null;
-  description: string | null;
-};
+import type { MatchableJob } from './matcher.types';
 
 export class MatcherService {
   private repository = new MatcherRepository();
 
   /**
-   * ساده‌ترین matcher فعلاً
-   * بعداً می‌توان embedding یا AI اضافه کرد
+   * Matcher ساده براساس شمارش keywordها
    */
   async findMatchingJobs(
     skills: string[],
     jobList: MatchableJob[],
     limit = 5
   ): Promise<MatchableJob[]> {
-
     if (!skills.length) return [];
 
     const normalizedSkills = skills.map((s) => s.toLowerCase());
 
     const scored = jobList.map((job) => {
-      const text =
-        `${job.title ?? ''} ${job.description ?? ''}`.toLowerCase();
+      const text = `${job.title ?? ''} ${job.description ?? ''}`.toLowerCase();
 
       let score = 0;
-
       for (const skill of normalizedSkills) {
         if (text.includes(skill)) score++;
       }
 
-      return {
-        job,
-        score,
-      };
+      return { job, score };
     });
 
     const sorted = scored

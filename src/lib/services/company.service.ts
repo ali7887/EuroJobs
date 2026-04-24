@@ -1,6 +1,6 @@
 // src/lib/services/company.service.ts
-import { CompanyRepository } from '../repositories/company.repository';
-import { Company } from '../db/schema';
+import { CompanyRepository } from "../repositories/company.repository";
+import { Company } from "../db/schema";
 
 export class CompanyService {
 
@@ -8,24 +8,24 @@ export class CompanyService {
     return CompanyRepository.findAll();
   }
 
-  async getCompanyById(id: number): Promise<Company | undefined> {
+  async getCompanyById(id: string): Promise<Company | null> {
     return CompanyRepository.findById(id);
   }
 
   async createCompany(
-    input: Omit<Company, 'id'>
+    input: Omit<Company, "id">
   ): Promise<Company> {
     return CompanyRepository.create(input);
   }
 
   async updateCompany(
-    id: number,
-    input: Partial<Omit<Company, 'id'>>
+    id: string,
+    input: Partial<Omit<Company, "id">>
   ): Promise<Company | null> {
     return CompanyRepository.update(id, input);
   }
 
-  async deleteCompany(id: number): Promise<boolean> {
+  async deleteCompany(id: string): Promise<boolean> {
     return CompanyRepository.delete(id);
   }
 

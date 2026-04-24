@@ -1,6 +1,7 @@
 import {
   pgTable,
   serial,
+  uuid,
   varchar,
   text,
   timestamp,
@@ -11,7 +12,7 @@ import {
 export const users = pgTable(
   "users",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
 
     email: varchar("email", { length: 200 }).notNull(),
 

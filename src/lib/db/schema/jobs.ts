@@ -5,10 +5,13 @@ import {
   varchar,
   integer,
   boolean,
+  uuid,
   timestamp,
   pgEnum,
   index
 } from "drizzle-orm/pg-core";
+import { companies } from "./companies";
+import { users } from "./users";
 
 // ENUM job status
 export const jobStatusEnum = pgEnum("job_status", [
@@ -21,7 +24,7 @@ export const jobStatusEnum = pgEnum("job_status", [
 export const jobs = pgTable(
   "jobs",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
 
     title: varchar("title", { length: 255 }).notNull(),
 
@@ -35,9 +38,9 @@ export const jobs = pgTable(
 
     type: varchar("type", { length: 50 }),
 
-    companyId: integer("company_id"),
+    companyId: uuid("company_id").references(() => companies.id),
 
-    employerId: integer("employer_id"),
+    employerId: uuid("employer_id").references(() => users.id),
 
     isActive: boolean("is_active").default(true),
 

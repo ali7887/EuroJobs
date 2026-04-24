@@ -1,10 +1,9 @@
 import {
   pgTable,
-  serial,
   varchar,
   text,
   timestamp,
-  integer,
+  uuid,
   pgEnum,
   index
 } from "drizzle-orm/pg-core";
@@ -25,13 +24,13 @@ export type ApplicationStatus =
 export const applications = pgTable(
   "applications",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
 
-    jobId: integer("job_id")
+    jobId: uuid("job_id")
       .notNull()
       .references(() => jobs.id, { onDelete: "cascade" }),
 
-    userId: integer("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
 
@@ -43,20 +42,18 @@ export const applications = pgTable(
 
     coverLetter: text("cover_letter"),
 
-    createdAt: timestamp("created_at").defaultNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
 
-    updatedAt: timestamp("updated_at")
-      .$onUpdate(() => new Date()),
+    updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
   },
 
   (table) => ({
     jobIdx: index("applications_job_idx").on(table.jobId),
-
     userIdx: index("applications_user_idx").on(table.userId),
-
     statusIdx: index("applications_status_idx").on(table.status),
   })
 );
 
+// 🎯 Drizzle modern inferred types (بدون هیچ deprecation)
 export type Application = typeof applications.$inferSelect;
 export type NewApplication = typeof applications.$inferInsert;

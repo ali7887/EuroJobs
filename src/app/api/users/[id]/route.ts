@@ -7,7 +7,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const user = await userService.getUserById(Number(id));
+
+    // UUID → string، پس Number(id) ممنوع
+    const user = await userService.getUserById(id);
+
     return NextResponse.json(user);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed";

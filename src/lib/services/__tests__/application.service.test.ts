@@ -24,7 +24,7 @@ describe("applicationService.applyToJob", () => {
       mockApplication({ status: "pending" }),
     ]);
 
-    const result = await applicationService.applyToJob(20, 10, {});
+    const result = await applicationService.applyToJob("20", "10", {});
 
     expect(result).toEqual(
       mockApplication({ status: "pending" })
@@ -37,7 +37,7 @@ describe("applicationService.applyToJob", () => {
     ]);
 
     await expect(
-      applicationService.applyToJob(20, 10, {})
+      applicationService.applyToJob("20", "10", {})
     ).rejects.toThrow("Already applied");
   });
 });
@@ -45,11 +45,11 @@ describe("applicationService.applyToJob", () => {
 describe("applicationService.getApplicationById", () => {
   it("should return the application", async () => {
     jobApplicationsRepository.findById.mockResolvedValue(
-      mockApplication({ id: 1 })
+      mockApplication({ id: "1" })
     );
 
-    const result = await applicationService.getApplicationById(1);
-    expect(result).toEqual(mockApplication({ id: 1 }));
+    const result = await applicationService.getApplicationById("1");
+    expect(result).toEqual(mockApplication({ id: "1" }));
   });
 });
 
@@ -59,7 +59,7 @@ describe("applicationService.updateStatus", () => {
       mockApplication({ status: "accepted" }),
     ]);
 
-    const result = await applicationService.updateStatus(1, {
+    const result = await applicationService.updateStatus("1", {
       status: "accepted" as ApplicationStatus,
     });
 
@@ -71,7 +71,7 @@ describe("applicationService.deleteApplication", () => {
   it("should delete application", async () => {
     jobApplicationsRepository.delete.mockResolvedValue({} as any);
 
-    const result = await applicationService.deleteApplication(1);
+    const result = await applicationService.deleteApplication("1");
 
     expect(result).toEqual({});
   });

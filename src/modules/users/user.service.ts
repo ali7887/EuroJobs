@@ -1,8 +1,8 @@
-import { db } from '@/lib/db';
-import { users } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcryptjs';
-import type { User, SafeUser } from '@/lib/db/schema';
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
+import type { User, SafeUser } from "@/lib/db/schema";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
@@ -18,9 +18,8 @@ function toSafeUser(user: User): SafeUser {
 // ─────────────────────────────────────────────────────────────
 
 export const userService = {
-
   // ─── Find By Id ────────────────────────────────────────────
-  async findById(id: number): Promise<SafeUser | null> {
+  async findById(id: string): Promise<SafeUser | null> {
     const rows = await db.select().from(users).where(eq(users.id, id));
     return rows[0] ? toSafeUser(rows[0]) : null;
   },
@@ -46,13 +45,12 @@ export const userService = {
     email: string;
     password: string;
     name: string;
-    
   }): Promise<SafeUser> {
     const email = data.email.toLowerCase();
 
     // چک تکراری نبودن ایمیل
     const exists = await this.findByEmail(email);
-    if (exists) throw new Error('Email already in use');
+    if (exists) throw new Error("Email already in use");
 
     const now = new Date();
 
@@ -62,7 +60,6 @@ export const userService = {
         email,
         passwordHash: await bcrypt.hash(data.password, 10),
         name: data.name,
-        
         avatarUrl: null,
         createdAt: now,
         updatedAt: now,
@@ -74,8 +71,8 @@ export const userService = {
 
   // ─── Update User ───────────────────────────────────────────
   async updateUser(
-    id: number,
-    data: Partial<Pick<User, 'name' | 'avatarUrl'>>
+    id: string,
+    data: Partial<Pick<User, "name" | "avatarUrl">>
   ): Promise<SafeUser | null> {
     const now = new Date();
 
@@ -83,7 +80,7 @@ export const userService = {
       .update(users)
       .set({
         ...data,
-        updatedAt: now, // اصلاح خطا
+        updatedAt: now,
       })
       .where(eq(users.id, id))
       .returning();

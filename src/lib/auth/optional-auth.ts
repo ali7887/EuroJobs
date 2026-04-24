@@ -1,6 +1,7 @@
 import { getTokenFromRequest } from "./token.extractor";
 import { verifyAccessToken } from "../jwt/jwt.utils";
 import type { AuthContext } from "./auth.context";
+
 export const runtime = "nodejs";
 
 export async function optionalAuth(req: Request): Promise<AuthContext | null> {
@@ -8,10 +9,14 @@ export async function optionalAuth(req: Request): Promise<AuthContext | null> {
   if (!token) return null;
 
   try {
-    const payload = await verifyAccessToken(token);
+    const payload: any = await verifyAccessToken(token);
+
+    if (!payload?.userId) {
+      return null;
+    }
 
     return {
-      userId: Number(payload.userId),
+      userId: payload.userId, // UUID string
       email: payload.email,
       role: payload.role,
     };

@@ -3,15 +3,8 @@ import { jobService } from "@/lib/services/job.service";
 
 export async function GET(
   _req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-
-  const job = await jobService.getJob(Number(id));
-
-  if (!job) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(job);
+  const { id } = await params;
+  return NextResponse.json(await jobService.getById(id));
 }

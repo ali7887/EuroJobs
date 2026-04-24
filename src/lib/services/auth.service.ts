@@ -167,7 +167,7 @@ export const authService = {
     return { success: true }
   },
 
-  async sendVerificationEmail(userId: number) {
+  async sendVerificationEmail(userId: string) {
 
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId)

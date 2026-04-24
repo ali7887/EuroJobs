@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function createCompany(data: {
   name: string;
-  ownerId: number;
+  ownerId: string;
   logoUrl?: string;
   website?: string;
   description?: string;
@@ -14,16 +14,26 @@ export async function createCompany(data: {
   return company;
 }
 
-export async function getCompanyById(id: number) {
-  const [company] = await db.select().from(companies).where(eq(companies.id, id));
+export async function getCompanyById(id: string) {
+  const [company] = await db
+    .select()
+    .from(companies)
+    .where(eq(companies.id, id));
+
   return company;
 }
 
-export async function getCompanyJobs(companyId: number) {
-  return db.select().from(jobs).where(eq(jobs.companyId, companyId));
+export async function getCompanyJobs(companyId: string) {
+  return db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.companyId, companyId));
 }
 
-export async function updateCompany(id: number, data: Partial<typeof companies.$inferInsert>) {
+export async function updateCompany(
+  id: string,
+  data: Partial<typeof companies.$inferInsert>
+) {
   const [updated] = await db
     .update(companies)
     .set(data)

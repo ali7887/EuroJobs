@@ -1,16 +1,23 @@
-// src/app/api/ai/match/matcher.types.ts
-
-export interface JobEmbeddingRecord {
-  id: number;             // PK در دیتابیس (serial)
-  jobId: number;          // ارجاع به jobs.id
-  embedding: number[];    // بردار embedding
-  updatedAt: Date | null        // آخرین زمان بروزرسانی
+export interface MatchableJob {
+  id: string;                  // UUID
+  title: string | null;
+  description: string | null;
 }
 
 export interface MatchResult {
-  jobId: number;
+  jobId: string;               // UUID
   jobTitle: string;
-  score: number;          // 0..100
+  score: number;
   reasons: string[];
   missingSkills: string[];
+}
+
+/**
+ * رکورد Embedding ذخیره‌شده در DB
+ */
+export interface JobEmbeddingRecord {
+  id: string;                  // UUID
+  jobId: string;               // UUID
+  embedding: number[];         // ذخیره در DB به صورت JSON
+  updatedAt: Date | null;
 }

@@ -1,4 +1,3 @@
-//ok
 import { db } from "@/lib/db";
 import { job_embeddings } from "@/lib/db/schema";
 import type { JobEmbeddingRecord } from "./matcher.types";
@@ -6,8 +5,7 @@ import { eq } from "drizzle-orm";
 
 export class MatcherRepository {
   /**
-   * ذخیره‌ی embedding یا به‌روزرسانی اگر قبلاً وجود داشته باشد
-   * استفاده از UPSERT برای اتمیک بودن عملیات
+   * ذخیره یا آپدیت Embedding یک شغل
    */
   async saveEmbedding(record: Omit<JobEmbeddingRecord, "id">): Promise<void> {
     const embeddingJson = JSON.stringify(record.embedding);
@@ -15,11 +13,10 @@ export class MatcherRepository {
     await db
       .insert(job_embeddings)
       .values({
-        jobId: record.jobId,
+        jobId: record.jobId, // UUID
         embedding: embeddingJson,
         updatedAt: record.updatedAt ?? new Date(),
       })
-      // 🟢 UPSERT برای جلوگیری از race-condition
       .onConflictDoUpdate({
         target: job_embeddings.jobId,
         set: {
@@ -30,17 +27,16 @@ export class MatcherRepository {
   }
 
   /**
-   * بازخوانی تمام Embeddingها
+   * واکشی همه‌ی embeddings
    */
   async getAllEmbeddings(): Promise<JobEmbeddingRecord[]> {
     const rows = await db.select().from(job_embeddings);
 
-  return rows.map((r) => ({
-  id: r.id,
-  jobId: r.jobId,
-  embedding: JSON.parse(r.embedding),
-  updatedAt: r.updatedAt ? new Date(r.updatedAt) : null,
-}));
-
+    return rows.map((r) => ({
+      id: r.id as string,
+      jobId: r.jobId as string,
+      embedding: JSON.parse(r.embedding) as number[],
+      updatedAt: r.updatedAt ? new Date(r.updatedAt) : null,
+    }));
   }
 }
