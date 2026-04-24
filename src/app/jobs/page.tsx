@@ -1,38 +1,26 @@
-import JobSearchBar from "@/components/jobs/JobSearchBar";
-import { getJobs } from "@/lib/db/queries/jobs";
+import JobList from "@/components/jobs/JobList"
+import { JobCardDTO } from "@/types/job-card"
 
-type Props = {
-  searchParams: {
-    search?: string;
-    location?: string;
-    type?: string;
-  };
-};
+async function getJobs(): Promise<JobCardDTO[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/jobs`,
+    { cache: "no-store" }
+  );
 
-export default async function JobsPage({ searchParams }: Props) {
-  const jobs = await getJobs({
-    search: searchParams.search,
-    location: searchParams.location,
-    type: searchParams.type,
-  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs");
+  }
+
+  return res.json();
+}
+
+export default async function JobsPage() {
+  const jobs = await getJobs();
 
   return (
-    <div className="jobs-page">
-
-      <JobSearchBar />
-
-      <div className="jobs-list">
-        {jobs.map((job) => (
-          <div key={job.id} className="job-card">
-            <h2>{job.title}</h2>
-            <p>{job.companyId}</p>
-            <p>
-              {job.location} • {job.type}
-            </p>
-          </div>
-        ))}
-      </div>
-
-    </div>
+    <main className="max-w-6xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-bold mb-8">Job Opportunities</h1>
+      <JobList jobs={jobs} />
+    </main>
   );
 }

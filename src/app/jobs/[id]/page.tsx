@@ -1,27 +1,35 @@
-import { JobDTO } from "@/lib/dto/job.dto"
+import { getJobById } from "@/lib/db/queries/jobs";
+import styles from "./job-details.module.css";
+import { ApplyForm } from "@/components/jobs/ApplyForm";
 
-async function getJob(id: string): Promise<JobDTO> {
-  const res = await fetch(`http://localhost:3000/api/jobs/${id}`, {
-    cache: "no-store",
-  })
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch job")
-  }
-
-  return res.json()
+interface JobDetailsPageProps {
+  params: { id: string };
 }
 
-export default async function JobDetailsPage({ params }: { params: { id: string } }) {
-  const job = await getJob(params.id)
+export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
+  const job = await getJobById(params.id);
+
+  if (!job) {
+    return <div className={styles.notFound}>Job not found</div>;
+  }
 
   return (
-    <main className="container">
-      <h1>{job.title}</h1>
-      <p>{job.location}</p>
-      <p>{job.type}</p>
-      <p>{job.salary}</p>
-      <p>{job.description}</p>
+    <main className={styles.container}>
+      <h1 className={styles.title}>{job.title}</h1>
+      <p className={styles.location}>{job.location}</p>
+      <p className={styles.type}>{job.type}</p>
+
+      <div className={styles.section}>
+        <h2>Description</h2>
+        <p>{job.description}</p>
+      </div>
+
+      <div className={styles.section}>
+        <h2>Salary</h2>
+        <p>{job.salary}</p>
+      </div>
+
+      <ApplyForm jobId={job.id} />
     </main>
-  )
+  );
 }
