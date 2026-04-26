@@ -1,7 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
+import React from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import "./applications.css";
 
 export default async function ApplicationsDashboardPage() {
-  const { userId } = await auth();
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
 
   if (!userId) return <p>Unauthorized</p>;
 
@@ -12,31 +16,27 @@ export default async function ApplicationsDashboardPage() {
   const { applications } = await res.json();
 
   return (
-    <div className="max-w-4xl mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Your Applications</h1>
+    <div className="page-container">
+      <h1 className="page-title">Your Applications</h1>
 
-      <div className="space-y-4">
+      <div className="applications-list">
         {applications.length === 0 && (
-          <p className="text-gray-500">You haven't applied to any jobs yet.</p>
+          <p className="empty-text">You have not applied to any jobs yet.</p>
         )}
 
         {applications.map((app: any) => (
-          <div
-            key={app.id}
-            className="border p-4 rounded-lg shadow-sm hover:shadow transition"
-          >
-            <h2 className="text-xl font-semibold">{app.job.title}</h2>
-            <p className="text-gray-600">
-              Status: <span className="font-medium">{app.status}</span>
+          <div key={app.id} className="application-item">
+            <h2 className="job-title">{app.job.title}</h2>
+
+            <p className="status">
+              Status: <span className="status-value">{app.status}</span>
             </p>
-            <p className="text-gray-600 text-sm">
+
+            <p className="date">
               Applied At: {new Date(app.createdAt).toLocaleDateString()}
             </p>
 
-            <a
-              href={`/jobs/${app.jobId}`}
-              className="text-blue-500 underline mt-2 inline-block"
-            >
+            <a href={`/jobs/${app.jobId}`} className="job-link">
               View job →
             </a>
           </div>

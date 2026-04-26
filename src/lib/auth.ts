@@ -5,7 +5,25 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+
+// ----------------- helpers -----------------
+
+async function verifyPassword(password: string, hashed: string) {
+  const enc = new TextEncoder();
+
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    enc.encode(password)
+  );
+
+  const hex = [...new Uint8Array(hashBuffer)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return hex === hashed;
+}
+
+// ----------------- auth options -----------------
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -36,10 +54,15 @@ export const authOptions: AuthOptions = {
         if (!admin) return null;
         if (admin.role !== "admin") return null;
 
-        const hash = admin.passwordHash || "";
+        // حل خطای TypeScript که passwordHash ممکن است null باشد
+        if (!admin.passwordHash) return null;
 
-        const valid = await bcrypt.compare(credentials.password, hash);
-        if (!valid) return null;
+        const ok = await verifyPassword(
+          credentials.password,
+          admin.passwordHash
+        );
+
+        if (!ok) return null;
 
         return {
           id: admin.id,
@@ -47,6 +70,7 @@ export const authOptions: AuthOptions = {
           role: admin.role
         };
       }
+
     })
   ],
 
@@ -54,15 +78,16 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user && user.role) {
-        token.role = user.role;
+      if (user && (user as any).role) {
+        token.role = (user as any).role;
       }
       return token;
     },
 
     async session({ session, token }) {
-      if (session.user && token.role) {
-        session.user.role = token.role;
+      if (session.user) {
+        // صریحاً به string تبدیل می‌کنیم تا TS غر نزند
+        session.user.role = token.role as string;
       }
       return session;
     },
@@ -74,7 +99,7 @@ export const authOptions: AuthOptions = {
       if (account.provider !== "credentials") return true;
 
       // Credentials only for admin
-      if (user?.role === "admin") return true;
+      if ((user as any)?.role === "admin") return true;
 
       return false;
     }

@@ -2,9 +2,6 @@ import { db } from "@/lib/db";
 import { users, refreshTokens } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-import bcrypt from "bcryptjs";
-import { v4 as uuidv4 } from "uuid";
-
 import {
   signAccessToken,
   signRefreshToken,
@@ -15,171 +12,112 @@ import {
 } from "@/lib/jwt/jwt.utils";
 
 import type { UserRole } from "@/lib/jwt/jwt.types";
+
 export const runtime = "nodejs";
+
+// SHA-256 helpers
+async function sha256(str: string): Promise<string> {
+  const enc = new TextEncoder();
+  const hash = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(hash)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+async function verifyPassword(plain: string, hash: string) {
+  return (await sha256(plain)) === hash;
+}
 
 export const authService = {
 
-  async register({
-    email,
-    password,
-    name
-  }: {
-    email: string
-    password: string
-    name?: string
-  }) {
-
+  async register({ email, password, name }: { email: string; password: string; name?: string }) {
     const existing = await db.query.users.findFirst({
       where: eq(users.email, email)
-    })
+    });
+    if (existing) throw new Error("User already exists");
 
-    if (existing) {
-      throw new Error("User already exists")
-    }
+    const passwordHash = await sha256(password);
 
-    const passwordHash = await bcrypt.hash(password, 10)
+    const inserted = await db.insert(users)
+      .values({ email, name, passwordHash, role: "user" })
+      .returning();
 
-    const inserted = await db.insert(users).values({
-      email,
-      name,
-      passwordHash,
-      role: "user"
-    }).returning()
+    const user = inserted[0];
 
-    const user = inserted[0]
-
-    const accessToken = await signAccessToken({
-      userId: user.id,
-      email: user.email,
-      role: (user.role as UserRole) ?? "user"
-    })
-
-    const refreshId = uuidv4()
-
-    const refreshToken = await signRefreshToken({
-      tokenId: refreshId,
-      userId: user.id
-    })
+    const refreshId = crypto.randomUUID();
 
     await db.insert(refreshTokens).values({
       userId: user.id,
       token: refreshId,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      expiresAt: new Date(Date.now() + 30 * 24 * 3600 * 1000),
       revoked: false
-    })
+    });
 
     return {
       user,
-      accessToken,
-      refreshToken
-    }
+      accessToken: await signAccessToken({
+        userId: user.id,
+        email: user.email,
+        role: (user.role as UserRole) ?? "user",
+      }),
+      refreshToken: await signRefreshToken({
+        tokenId: refreshId,
+        userId: user.id
+      })
+    };
   },
 
-  async login({
-    email,
-    password
-  }: {
-    email: string
-    password: string
-  }) {
+  async login({ email, password }: { email: string; password: string }) {
+    const user = await db.query.users.findFirst({ where: eq(users.email, email) });
 
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, email)
-    })
+    if (!user || !user.passwordHash) throw new Error("Invalid credentials");
 
-    if (!user || !user.passwordHash) {
-      throw new Error("Invalid credentials")
-    }
+    const ok = await verifyPassword(password, user.passwordHash);
+    if (!ok) throw new Error("Invalid credentials");
 
-    const valid = await bcrypt.compare(password, user.passwordHash)
-
-    if (!valid) {
-      throw new Error("Invalid credentials")
-    }
-
-    const accessToken = await signAccessToken({
-      userId: user.id,
-      email: user.email,
-      role: (user.role as UserRole) ?? "user"
-    })
-
-    const refreshId = uuidv4()
-
-    const refreshToken = await signRefreshToken({
-      tokenId: refreshId,
-      userId: user.id
-    })
+    const refreshId = crypto.randomUUID();
 
     await db.insert(refreshTokens).values({
       userId: user.id,
       token: refreshId,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      expiresAt: new Date(Date.now() + 30 * 24 * 3600 * 1000),
       revoked: false
-    })
+    });
 
     return {
       user,
-      accessToken,
-      refreshToken
-    }
+      accessToken: await signAccessToken({
+        userId: user.id,
+        email: user.email,
+        role: (user.role as UserRole) ?? "user"
+      }),
+      refreshToken: await signRefreshToken({
+        tokenId: refreshId,
+        userId: user.id
+      })
+    };
+  },
+
+  async resetPassword(token: string, newPassword: string) {
+    const payload = await verifyResetPasswordToken(token);
+    const hash = await sha256(newPassword);
+
+    await db.update(users)
+      .set({ passwordHash: hash })
+      .where(eq(users.id, payload.userId));
+
+    return { success: true };
   },
 
   async logout(refreshToken: string) {
 
-    const payload = await verifyRefreshToken(refreshToken)
+  const payload = await verifyRefreshToken(refreshToken)
 
-    await db
-      .update(refreshTokens)
-      .set({ revoked: true })
-      .where(eq(refreshTokens.token, payload.tokenId))
+  await db
+    .update(refreshTokens)
+    .set({ revoked: true })
+    .where(eq(refreshTokens.token, payload.tokenId))
 
-    return { success: true }
-  },
-
-  async sendPasswordResetEmail(email: string) {
-
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, email)
-    })
-
-    if (!user) {
-      throw new Error("User not found")
-    }
-
-    const token = await signResetPasswordToken({
-      userId: user.id,
-      email: user.email
-    })
-
-    return { token }
-  },
-
-  async resetPassword(token: string, newPassword: string) {
-
-    const payload = await verifyResetPasswordToken(token)
-
-    const hash = await bcrypt.hash(newPassword, 10)
-
-    await db.update(users)
-      .set({ passwordHash: hash })
-      .where(eq(users.id, payload.userId))
-
-    return { success: true }
-  },
-
-  async sendVerificationEmail(userId: string) {
-
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, userId)
-    })
-
-    if (!user) throw new Error("User not found")
-
-    const token = await signEmailVerificationToken({
-      userId: user.id,
-      email: user.email
-    })
-
-    return { token }
-  }
+  return { success: true }
 }
+
+};

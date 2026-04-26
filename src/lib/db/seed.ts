@@ -1,11 +1,18 @@
-//D:\project\NEW\job-board-saas\src\lib\db\seed.ts
-import { drizzle } from "drizzle-orm/node-postgres";
-import { users, jobs } from "./schema";
-import pkg from "pg";
 import dotenv from "dotenv";
-dotenv.config();
+import { drizzle } from "drizzle-orm/node-postgres";
+import { users, companies, jobs } from "@/lib/db/schema";
+import pkg from "pg";
 
+dotenv.config();
 const { Client } = pkg;
+
+async function sha256(str: string): Promise<string> {
+  const enc = new TextEncoder();
+  const hash = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(hash)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 async function seed() {
   const client = new Client({
@@ -13,53 +20,52 @@ async function seed() {
   });
 
   await client.connect();
-
   const db = drizzle(client);
 
   console.log("🌱 Seeding database...");
 
-  // حذف داده‌های قبلی (اختیاری)
   await db.delete(jobs);
+  await db.delete(companies);
   await db.delete(users);
 
-  // کاربر اولیه
-  const [admin] = await db
-    .insert(users)
+  const adminPass = await sha256("Password123");
+
+  const [admin] = await db.insert(users)
     .values({
-      name: "Ali Admin",
-      email: "ali@example.com",
+      email: "admin@jobboard.com",
+      name: "Admin",
+      passwordHash: adminPass,
+      role: "admin",
+      updatedAt: new Date(),
     })
     .returning();
 
-  console.log("User created:", admin);
+  const [company] = await db.insert(companies)
+    .values({
+      name: "Acme Corp",
+      ownerId: admin.id,
+    })
+    .returning();
 
-  // شغل‌های نمونه
-  const jobsData = [
+  await db.insert(jobs).values([
     {
-      title: "Frontend Developer (React/Next.js)",
-      company: "TechNova",
-      description: "Hiring Senior React/Next.js developer",
-      userId: admin.id,
+      title: "Senior Frontend Engineer",
+      description: "React, Next.js, TypeScript",
+      location: "Remote",
+      level: "senior",
+      companyId: company.id,
+      status: "open",
       published: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
-    {
-      title: "Full Stack Engineer (TS + Node)",
-      company: "SoftCloud",
-      description: "Node.js + TypeScript engineer needed",
-      userId: admin.id,
-      published: true,
-    },
-  ];
+  ]);
 
-  const insertedJobs = await db.insert(jobs).values(jobsData).returning();
-
-  console.log("Jobs inserted:", insertedJobs);
-
+  console.log("✅ Seed done.");
   await client.end();
-  console.log("🌱 Seed complete!");
 }
 
-seed().catch((err) => {
+seed().catch(err => {
   console.error(err);
   process.exit(1);
 });

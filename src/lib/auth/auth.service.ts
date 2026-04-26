@@ -12,7 +12,7 @@ import { db } from "@/lib/db";
 import { refreshTokens } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-import { v4 as uuidv4 } from "uuid";
+
 export const runtime = "nodejs";
 
 export async function loginUser(user: User) {
@@ -22,7 +22,7 @@ export async function loginUser(user: User) {
     role: user.role as UserRole,
   });
 
-  const refreshTokenId = uuidv4();
+  const refreshTokenId = crypto.randomUUID();
   const refreshToken = await signRefreshToken({
     tokenId: refreshTokenId,
     userId: user.id,

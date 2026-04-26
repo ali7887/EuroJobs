@@ -14,7 +14,7 @@ export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id; // UUID as string
+  const id = params.id; 
 
   const result = await db
     .select()

@@ -8,7 +8,7 @@ export class UserRepository {
   // -----------------------
   // Static implementations
   // -----------------------
-  static async findById(id: string): Promise<User | null> {
+  static async getById(id: string): Promise<User | null> {
     const result = await db
       .select()
       .from(users)
@@ -47,7 +47,7 @@ export class UserRepository {
     return db.select().from(users);
   }
 
-  async findById(id: string): Promise<User | null> {
+  async getById(id: string): Promise<User | null> {
     const result = await db
       .select()
       .from(users)

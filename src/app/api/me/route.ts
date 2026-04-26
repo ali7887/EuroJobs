@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     }
 
     // UUID ها string هستند → نیازی به Number() نیست
-    const user = await userService.findById(userId);
+    const user = await userService.getById(userId);
 
     return NextResponse.json({ data: user });
 

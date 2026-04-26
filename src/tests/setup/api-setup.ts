@@ -1,5 +1,0 @@
-process.env = {
-  ...process.env,
-  NODE_ENV: "test",
-  JWT_SECRET: "test-secret",
-};

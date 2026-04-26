@@ -9,7 +9,7 @@ export class CompanyService {
   }
 
   async getCompanyById(id: string): Promise<Company | null> {
-    return CompanyRepository.findById(id);
+    return CompanyRepository.getById(id);
   }
 
   async createCompany(

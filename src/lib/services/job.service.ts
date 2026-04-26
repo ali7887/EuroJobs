@@ -11,11 +11,11 @@ export const jobService = {
   },
 
   async getById(id: string) {
-    return jobRepository.findById(id);
+    return jobRepository.getById(id);
   },
 
   async update(id: string, data: any) {
-    const job = await jobRepository.findById(id);
+    const job = await jobRepository.getById(id);
     if (!job) throw new Error("Job not found");
     return jobRepository.updateById(id, data);
   },
@@ -25,11 +25,11 @@ export const jobService = {
   },
 
   async getJob(id: string) {
-    return jobRepository.findById(id);
+    return jobRepository.getById(id);
   },
 
   async updateJob(id: string, userId: string, data: any) {
-    const job = await jobRepository.findById(id);
+    const job = await jobRepository.getById(id);
     if (!job) throw new Error("Job not found");
 
     if (job.employerId !== userId) throw new Error("Forbidden");
@@ -38,7 +38,7 @@ export const jobService = {
   },
 
   async deleteJob(id: string, userId: string) {
-    const job = await jobRepository.findById(id);
+    const job = await jobRepository.getById(id);
     if (!job) throw new Error("Job not found");
 
     if (job.employerId !== userId) throw new Error("Forbidden");

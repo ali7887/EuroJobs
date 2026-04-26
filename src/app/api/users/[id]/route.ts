@@ -9,7 +9,7 @@ export async function GET(
     const { id } = await params;
 
     // UUID → string، پس Number(id) ممنوع
-    const user = await userService.getUserById(id);
+    const user = await userService.getById(id);
 
     return NextResponse.json(user);
   } catch (err) {

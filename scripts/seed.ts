@@ -1,77 +1,72 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { users, companies, jobs } from "@/lib/db/schema";
+import pkg from "pg";
 
-import { db } from "@/lib/db";
-import { companies, jobs, users } from "../src/lib/db/schema";
-import bcrypt from "bcryptjs";
+dotenv.config();
+const { Client } = pkg;
+
+// SHA-256 helper
+async function sha256(str: string): Promise<string> {
+  const enc = new TextEncoder();
+  const hash = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(hash)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 async function seed() {
-  console.log("🌱 Seeding PostgreSQL database...");
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+  });
 
-  // ترتیب delete مهم است به خاطر foreign key ها
+  await client.connect();
+  const db = drizzle(client);
+
+  console.log("🌱 Seeding database...");
+
   await db.delete(jobs);
   await db.delete(companies);
   await db.delete(users);
 
-  // ساخت ادمین واقعی در postgres
-  const passwordHash = await bcrypt.hash("Password123", 10);
+  const adminPass = await sha256("Password123");
 
-  const [admin] = await db.insert(users).values({
-    // اگر در schema برای id، defaultRandom() داری، این را حذف کن:
-    // id: crypto.randomUUID(),
-    email: "admin@jobboard.com",
-    name: "Admin",
-    passwordHash,
-    role: "admin",
-    
-    // اگر در schema ستون updatedAt داری و notNull است، این خوب است:
-    updatedAt: new Date(),
-  }).returning();
+  const [admin] = await db.insert(users)
+    .values({
+      email: "admin@jobboard.com",
+      name: "Admin",
+      passwordHash: adminPass,
+      role: "admin",
+      updatedAt: new Date(),
+    })
+    .returning();
 
-  console.log("👤 Admin user created:", admin.email);
+  const [company] = await db.insert(companies)
+    .values({
+      name: "Acme Corp",
+      ownerId: admin.id,
+    })
+    .returning();
 
-  // ساخت یک شرکت
-  const [acme] = await db.insert(companies).values({
-    // id را هم اگر defaultRandom() داری، ست نکن.
-    // id: crypto.randomUUID(),
-    name: "Acme Corp",
-    ownerId: admin.id, // چون در type دیدیم ownerId الزامی است
-    // می‌توانی بقیه را هم اضافه کنی اگر خواستی:
-    // website: "https://acme.com",
-    // description: "Tech company",
-  }).returning();
-
-  console.log("🏢 Company created:", acme.name);
-
-  // ساخت چند شغل
   await db.insert(jobs).values([
     {
-      // اگر jobs.id defaultRandom است، این را هم نگذار:
-      // id: crypto.randomUUID(),
       title: "Senior Frontend Engineer",
       description: "React, Next.js, TypeScript",
       location: "Remote",
-      level: "senior",        // باید با enum jobLevelEnum در schemaت بخواند
-      companyId: acme.id,
+      level: "senior",
+      companyId: company.id,
+      status: "open",
       published: true,
-      // اگر در schema ستون createdAt داری و notNull است، اضافه‌اش کن
-      // createdAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
-    {
-      title: "Junior Backend Developer",
-      description: "Node.js, PostgreSQL",
-      location: "On-site",
-      level: "junior",
-      companyId: acme.id,
-      published: true,
-      // createdAt: new Date(),
-    }
   ]);
 
-  console.log("💼 Jobs inserted.");
-  console.log("✅ Done.");
+  console.log("✅ Seed done.");
+  await client.end();
 }
 
-seed().catch((err) => {
+seed().catch(err => {
   console.error(err);
   process.exit(1);
 });

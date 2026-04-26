@@ -6,7 +6,7 @@ export const jobRepository = {
 
   async updateById(id: string, data: any) {
     await db.update(jobs).set(data).where(eq(jobs.id, id));
-    return this.findById(id);
+    return this.getById(id);
   },
 
   create: async (data: any) => {
@@ -21,7 +21,7 @@ export const jobRepository = {
       .offset(offset);
   },
 
-  findById: async (id: string) => {
+  getById: async (id: string) => {
     return db
       .select()
       .from(jobs)

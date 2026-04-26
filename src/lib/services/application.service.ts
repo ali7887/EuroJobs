@@ -25,7 +25,7 @@ export const applicationService = {
   },
 
   getApplicationById: async (id: string) => {
-    return jobApplicationsRepository.findById(id);
+    return jobApplicationsRepository.getById(id);
   },
 
   getUserApplications: async (userId: string) => {

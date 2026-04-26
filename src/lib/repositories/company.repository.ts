@@ -8,7 +8,7 @@ export class CompanyRepository {
     return await db.select().from(companies);
   }
 
-  static async findById(id: string) {
+  static async getById(id: string) {
     const result = await db
       .select()
       .from(companies)

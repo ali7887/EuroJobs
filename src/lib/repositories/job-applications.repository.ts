@@ -3,7 +3,7 @@ import { applications, ApplicationStatus } from "@/lib/db/schema/applications";
 import { eq, and } from "drizzle-orm";
 
 export const jobApplicationsRepository = {
-findById: async (
+getById: async (
   id: string
 ): Promise<(typeof applications.$inferSelect) | null> => {
   const application = await db.query.applications.findFirst({
