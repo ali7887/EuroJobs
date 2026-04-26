@@ -1,63 +1,54 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
-import "./JobSearchBar.css";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useCallback, useState } from "react";
 
 export default function JobSearchBar() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [location, setLocation] = useState(searchParams.get("location") ?? "");
-  const [type, setType] = useState(searchParams.get("type") ?? "");
+  const initialSearch = searchParams.get("search") || "";
 
-  const debouncedSearch = useDebounce(search, 400);
+  const [value, setValue] = useState(initialSearch);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
+  // Debounce function
+  const debounce = (fn: Function, delay: number) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  };
 
-    if (debouncedSearch) params.set("search", debouncedSearch);
-    if (location) params.set("location", location);
-    if (type) params.set("type", type);
+  const updateURL = useCallback(
+    debounce((searchValue: string) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    router.push(`/jobs?${params.toString()}`);
-  }, [debouncedSearch, location, type, router]);
+      if (searchValue) params.set("search", searchValue);
+      else params.delete("search");
+
+      // IMPORTANT: Reset pagination whenever search changes
+      params.delete("page");
+
+      const url = `${pathname}?${params.toString()}`;
+      router.push(url);
+    }, 400),
+    []
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    updateURL(e.target.value);
+  };
 
   return (
-    <div className="job-search">
-
-      <input
-        type="text"
-        placeholder="Search jobs..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="job-search-input"
-      />
-
-      <select
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        className="job-search-select"
-      >
-        <option value="">All locations</option>
-        <option value="remote">Remote</option>
-        <option value="berlin">Berlin</option>
-        <option value="london">London</option>
-      </select>
-
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        className="job-search-select"
-      >
-        <option value="">All types</option>
-        <option value="full-time">Full Time</option>
-        <option value="part-time">Part Time</option>
-        <option value="contract">Contract</option>
-      </select>
-
-    </div>
+    <input
+      type="text"
+      placeholder="Search jobs..."
+      value={value}
+      onChange={handleChange}
+      className="search-input"
+    />
   );
 }

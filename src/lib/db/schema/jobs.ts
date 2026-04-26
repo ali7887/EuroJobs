@@ -1,6 +1,5 @@
 import {
   pgTable,
-  serial,
   text,
   varchar,
   integer,
@@ -8,18 +7,34 @@ import {
   uuid,
   timestamp,
   pgEnum,
-  index
+  index,
 } from "drizzle-orm/pg-core";
+
 import { companies } from "./companies";
 import { users } from "./users";
 
-// ENUM job status
+/* =======================
+   ENUMS
+======================= */
+
+export const jobLevelEnum = pgEnum("job_level", [
+  "intern",
+  "junior",
+  "mid",
+  "senior",
+  "lead",
+]);
+
 export const jobStatusEnum = pgEnum("job_status", [
   "draft",
   "open",
   "closed",
   "archived",
 ]);
+
+/* =======================
+   JOBS TABLE
+======================= */
 
 export const jobs = pgTable(
   "jobs",
@@ -38,6 +53,8 @@ export const jobs = pgTable(
 
     type: varchar("type", { length: 50 }),
 
+    level: jobLevelEnum("level"), // ✅ اینجا درست است
+
     companyId: uuid("company_id").references(() => companies.id),
 
     employerId: uuid("employer_id").references(() => users.id),
@@ -54,17 +71,19 @@ export const jobs = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-
   (table) => ({
     statusIdx: index("jobs_status_idx").on(table.status),
-
     companyIdx: index("jobs_company_idx").on(table.companyId),
-
     createdIdx: index("jobs_created_idx").on(table.createdAt),
-
     employerIdx: index("jobs_employer_idx").on(table.employerId),
   })
 );
 
+/* =======================
+   TYPES
+======================= */
+
 export type Job = typeof jobs.$inferSelect;
 export type NewJob = typeof jobs.$inferInsert;
+export type JobStatus =
+  (typeof jobStatusEnum.enumValues)[number];

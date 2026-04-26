@@ -1,8 +1,9 @@
 //D:\project\NEW\job-board-saas\src\lib\db\seed.ts
 import { drizzle } from "drizzle-orm/node-postgres";
 import { users, jobs } from "./schema";
-import { eq } from "drizzle-orm";
 import pkg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { Client } = pkg;
 
@@ -39,12 +40,14 @@ async function seed() {
       company: "TechNova",
       description: "Hiring Senior React/Next.js developer",
       userId: admin.id,
+      published: true,
     },
     {
       title: "Full Stack Engineer (TS + Node)",
       company: "SoftCloud",
       description: "Node.js + TypeScript engineer needed",
       userId: admin.id,
+      published: true,
     },
   ];
 

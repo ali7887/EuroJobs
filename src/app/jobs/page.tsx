@@ -1,26 +1,43 @@
-import JobList from "@/components/jobs/JobList"
-import { JobCardDTO } from "@/types/job-card"
+import React from "react";
+import JobList from "@/components/jobs/JobList";
+import Pagination from "@/components/jobs/Pagination";
+import JobSearchBar from "@/components/jobs/JobSearchBar";
 
-async function getJobs(): Promise<JobCardDTO[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/jobs`,
-    { cache: "no-store" }
-  );
+
+export default async function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>;
+}) {
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${BASE_URL}/api/public/jobs?page=${page}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch jobs");
+    console.error("Failed to fetch jobs:", await res.text());
+    return <div>Error loading jobs...</div>;
   }
 
-  return res.json();
-}
-
-export default async function JobsPage() {
-  const jobs = await getJobs();
+  const data = await res.json();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-8">Job Opportunities</h1>
-      <JobList jobs={jobs} />
-    </main>
+    <div className="container">
+      <h1>Jobs</h1>
+      <JobSearchBar />
+
+      {/* FIX: data.items instead of data.jobs */}
+      <JobList jobs={data.items} />
+
+      <Pagination
+        totalPages={data.totalPages}
+        currentPage={data.page}
+      />
+    </div>
   );
 }

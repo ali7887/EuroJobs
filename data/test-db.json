@@ -7,11 +7,10 @@
       "id": "admin-1",
       "email": "admin@jobboard.com",
       "name": "Admin",
-      "passwordHash": "$2b$10$9CEKB.oukYUG7AlPb1EbsOlItsSOOu5RWhc8zXNXlv8DoKcmD49Le",
+      "passwordHash": "$2b$10$QJYwKBSm.9soRlxtdHOmn.RgC7Yhgpcd9Tr/QjX2dcR3VCer/aJ/G",
       "role": "admin",
       "provider": "LOCAL",
-      "createdAt": "2026-04-09T13:51:12.705Z",
-      "updatedAt": "2026-04-09T13:51:12.707Z"
+      "updatedAt": "2026-04-25T10:05:59.306Z"
     }
   ],
   "applications": [],

@@ -1,72 +1,78 @@
 import { db } from "@/lib/db";
 import { jobs } from "@/lib/db/schema/jobs";
-import { eq, ilike, and } from "drizzle-orm";
+import { eq, ilike, and, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 
-export async function createJob(data: {
-  title: string;
-  description?: string;
-  location?: string;
-  salary?: number;
-  type?: string;
-  companyId?: string;
-  employerId: string; // UUID
-}) {
-  const [job] = await db.insert(jobs).values(data).returning();
-  return job;
-}
+type JobLevel = "intern" | "junior" | "mid" | "senior" | "lead";
 
-export async function getJobById(id: string) {
-  const [job] = await db
-    .select()
-    .from(jobs)
-    .where(eq(jobs.id, id));
-  return job;
-}
-
-export async function getJobs(params: {
+export async function getJobsPaginated({
+  search,
+  location,
+  type,
+  remote,
+  level,
+  page = 1,
+  limit = 10,
+}: {
   search?: string;
   location?: string;
   type?: string;
+  remote?: string;
+  level?: JobLevel;
   page?: number;
   limit?: number;
 }) {
-  const page = params.page ?? 1;
-  const limit = params.limit ?? 10;
   const offset = (page - 1) * limit;
 
-  const where = [];
+  const conditions: SQL[] = [];
 
-  if (params.search) {
-    where.push(ilike(jobs.title, `%${params.search}%`));
+  if (search) {
+    conditions.push(ilike(jobs.title, `%${search}%`));
   }
 
-  if (params.location) {
-    where.push(eq(jobs.location, params.location));
+  if (location) {
+    conditions.push(eq(jobs.location, location));
   }
 
-  if (params.type) {
-    where.push(eq(jobs.type, params.type));
+  if (type) {
+    conditions.push(eq(jobs.type, type));
   }
 
-  const rows = await db
+  if (remote) {
+    conditions.push(eq(jobs.isRemote, remote === "true"));
+  }
+
+  if (level) {
+    conditions.push(eq(jobs.level, level));
+  }
+
+  const items = await db
     .select()
     .from(jobs)
-    .where(where.length ? and(...where) : undefined)
+    .where(conditions.length ? and(...conditions) : undefined)
     .limit(limit)
     .offset(offset);
 
-  return rows;
+  const [totalRow] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(jobs)
+    .where(conditions.length ? and(...conditions) : undefined);
+
+  return {
+    items,
+    total: Number(totalRow.count),
+    page,
+    limit,
+    totalPages: Math.ceil(Number(totalRow.count) / limit),
+  };
 }
 
-export async function updateJob(
-  id: string,
-  data: Partial<typeof jobs.$inferInsert>,
-) {
-  const [updated] = await db
-    .update(jobs)
-    .set(data)
+export async function getJobById(id: string) {
+  const job = await db
+    .select()
+    .from(jobs)
     .where(eq(jobs.id, id))
-    .returning();
+    .limit(1);
 
-  return updated;
+  return job[0] ?? null;
 }
