@@ -3,30 +3,48 @@ name: CI
 on:
   push:
     branches: [main]
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1) Pull source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      # 2) Setup Node + enable npm cache
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Downgrade npm (stable)
+      # 3) Downgrade npm to stable (critical)
+      - name: Downgrade npm (stable v9)
         run: npm install -g npm@9
 
-      - name: Force set npm registry
-        run: npm config set registry https://registry.npmjs.org/
+      # 4) Force correct registry + retry settings
+      - name: Configure npm registry
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm config set fetch-retries 5
+          npm config set fetch-retry-maxtimeout 300000
+          npm config set fetch-retry-mintimeout 20000
 
+      # 5) Verify registry (debugging)
+      - name: Verify npm registry
+        run: npm config get registry
+
+      # 6) Install deps cleanly
       - name: Install dependencies
         run: npm install
 
+      # 7) Type checking (non‑blocking)
       - name: Type Check
         run: npm run type-check || true
 
-      - name: Build
+      # 8) Build Next.js project
+      - name: Build project
         run: npm run build
