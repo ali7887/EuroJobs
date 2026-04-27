@@ -1,25 +1,27 @@
-import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import styles from "./dashboard.module.css";
+import StatsCards from "../../../../components/admin/dashboard/StatsCards";
+import RecentJobs from "../../../../components/admin/dashboard/RecentJobs";
+import RecentUsers from "../../../../components/admin/dashboard/RecentUsers";
+import AIActivity from "../../../../components/admin/dashboard/AIActivity";
+import Charts from "./Charts";
+import { AdminStats } from "@/types/admin";
+import SkeletonDashboard from "./SkeletonDashboard";
 
-export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions);
+export default async function DashboardPage() {
+  const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/stats`, {
+    cache: "no-store",
+  }).then(r => r.json()).catch(() => null);
+
+  if (!data) return <SkeletonDashboard />;
 
   return (
-    <div>
-      <h1 className={styles.title}>Admin Dashboard</h1>
+    <div className="dashboard-container">
+      <StatsCards stats={data.stats} />
+      <Charts />
 
-      <div className={styles.welcome}>
-        Welcome, <strong>{session?.user?.email}</strong>
-      </div>
-
-      <div className={styles.grid}>
-        <a className={styles.card} href="/admin/jobs">Manage Jobs</a>
-        <a className={styles.card} href="/admin/companies">Manage Companies</a>
-        <a className={styles.card} href="/admin/employers">Manage Employers</a>
-        <a className={styles.card} href="/admin/candidates">Manage Candidates</a>
-        <a className={styles.card} href="/admin/users">Manage Users</a>
+      <div className="dashboard-three-grid">
+        <RecentJobs jobs={data.recentJobs} />
+        <RecentUsers users={data.recentUsers} />
+        <AIActivity activity={data.aiActivity} />
       </div>
     </div>
   );

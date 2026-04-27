@@ -7,15 +7,26 @@ import styles from "./admin-login.module.css";
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
 
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       email,
       password,
+      redirect: false,
       callbackUrl: "/admin/dashboard",
     });
+
+    setLoading(false);
+
+    if (res?.ok) {
+      window.location.href = "/admin/dashboard";
+    } else {
+      alert("Invalid admin credentials");
+    }
   }
 
   return (
@@ -38,8 +49,8 @@ export default function AdminLoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className={styles.button} type="submit">
-          Login
+        <button className={styles.button} type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

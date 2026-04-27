@@ -20,23 +20,24 @@ async function verifyPassword(plain: string, hash: string): Promise<boolean> {
 // --------------------------------------------------------
 // Role normalization
 // --------------------------------------------------------
-type AppRole = "jobseeker" | "employer" | "admin";
+type AppRole = "admin" | "employer" | "jobseeker";
 
 function normalizeRole(role?: string | null): AppRole {
   if (!role) return "jobseeker";
 
   const map: Record<string, AppRole> = {
-    jobseeker: "jobseeker",
-    employer: "employer",
     admin: "admin",
+    employer: "employer",
+    jobseeker: "jobseeker",
 
-    JOBSEEKER: "jobseeker",
-    EMPLOYER: "employer",
     ADMIN: "admin",
+    EMPLOYER: "employer",
+    JOBSEEKER: "jobseeker",
   };
 
   return map[role] ?? "jobseeker";
 }
+
 
 // --------------------------------------------------------
 // User service

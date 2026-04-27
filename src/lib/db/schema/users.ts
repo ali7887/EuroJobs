@@ -21,7 +21,8 @@ export const users = pgTable(
 
     emailVerified: boolean("email_verified").default(false).notNull(),
 
-    role: varchar("role", { length: 20 }).default("user"),
+    role: varchar("role", { length: 20 }).default("jobseeker"),
+
 
     avatarUrl: text("avatar_url"),
 
