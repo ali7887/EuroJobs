@@ -23,11 +23,12 @@ export default function Sidebar({
       </div>
 
       <nav className="admin-nav">
-        <Link href="/(auth)/admin/dashboard">Dashboard</Link>
-        <Link href="/(auth)/admin/jobs">Jobs</Link>
-        <Link href="/(auth)/admin/users">Users</Link>
-        <Link href="/(auth)/admin/employers">Employers</Link>
-        <Link href="/(auth)/admin/companies">Companies</Link>
+        <Link href="/admin/dashboard">Dashboard</Link>
+        <Link href="/admin/jobs">Jobs</Link>
+        <Link href="/admin/users">Users</Link>
+        <Link href="/admin/employers">Employers</Link>
+        <Link href="/admin/companies">Companies</Link>
+
       </nav>
     </aside>
   );

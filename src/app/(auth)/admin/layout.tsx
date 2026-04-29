@@ -1,6 +1,10 @@
-import AdminLayout from "../../(auth)/layout";
-import "../../../styles/admin.css";
+import AdminLayout from "@/components/admin/AdminLayout";
+import "@/styles/admin.css";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <AdminLayout>{children}</AdminLayout>;
 }
