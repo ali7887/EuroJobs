@@ -1,4 +1,5 @@
-/* ROOT CONTAINER */
+@import "./admin-layout.css";
+
 .admin-container {
   display: flex;
   min-height: 100vh;
@@ -30,7 +31,7 @@
 }
 
 /* CLOSE BUTTON MOBILE */
-.admin-close-btn{
+.admin-close-btn {
   display: none;
   border: none;
   background: transparent;
@@ -97,6 +98,28 @@
 
 .admin-content {
   padding: 32px;
+}
+
+.admin-nav a.active {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+.admin-sidebar {
+  overflow-y: auto;
+}
+
+.admin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 900;
+}
+
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 20px;
+  }
 }
 
 /* RESPONSIVE */
