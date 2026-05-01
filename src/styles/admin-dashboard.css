@@ -1,85 +1,83 @@
-.admin-dashboard {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 32px;
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
 }
 
-/* Sections */
-.dashboard-section {
-  margin-bottom: 32px;
+/* HEADING */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
 }
 
-/* KPI */
+.page-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* GRID SYSTEM */
+.dashboard-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  min-height: 0;
+}
+
+/* CARDS */
+.dashboard-card {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* CHART TITLE */
+.chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* STATS CARD MINIMAL */
+.stats-card-small {
+  padding: 12px;
+}
+
+.stats-title {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.stats-value {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ===== STATS CARDS ===== */
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
 }
 
-
-.stat-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+.stat-card-small {
+  padding: 10px !important;
 }
 
 .stat-title {
-  font-size: 13px;
+  font-size: 11px;
   color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: .04em;
 }
 
 .stat-value {
-  margin-top: 10px;
-  font-size: 32px;
-  font-weight: 700;
-  color: #111827;
-}
-
-/* Charts */
-.chart-card {
-  background: white;
-  border-radius: 14px;
-  padding: 28px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.05);
-}
-
-.chart-title {
   font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-/* Grid */
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-/* Cards */
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 22px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.04);
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
+  font-weight: 700;
+  margin-top: 4px;
 }

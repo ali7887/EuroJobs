@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SpotlightProvider from "./SpotlightProvider";
 
 export const metadata: Metadata = {
   title: "Job Board SaaS - Find Your Dream Job in Europe",
