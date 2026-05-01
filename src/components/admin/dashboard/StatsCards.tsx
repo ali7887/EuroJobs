@@ -1,19 +1,27 @@
 export default function StatsCards({ stats }: any) {
-  const items = [
-    { label: "Total Users", value: stats.totalUsers },
-    { label: "Total Jobs", value: stats.totalJobs },
-    { label: "Active Companies", value: stats.activeCompanies },
-    { label: "Monthly Revenue ($)", value: stats.monthlyRevenue },
-  ];
-
   return (
     <div className="stats-grid">
-      {items.map((item, i) => (
-        <div key={i} className="stats-card">
-          <div className="stats-label">{item.label}</div>
-          <div className="stats-value">{item.value}</div>
-        </div>
-      ))}
+
+      <div className="stat-card">
+        <div className="stat-title">Total Users</div>
+        <div className="stat-value">{stats.totalUsers}</div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-title">Total Jobs</div>
+        <div className="stat-value">{stats.totalJobs}</div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-title">Active Companies</div>
+        <div className="stat-value">{stats.activeCompanies}</div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-title">Monthly Revenue</div>
+        <div className="stat-value">${stats.monthlyRevenue}</div>
+      </div>
+
     </div>
   );
 }
