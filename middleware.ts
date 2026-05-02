@@ -1,40 +1,46 @@
-// D:\project\NEW\job-board-saas\middleware.ts
-import { getToken } from "next-auth/jwt";
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // آزاد بودن مسیرهای auth و static
-  if (
-    pathname.startsWith("/api/auth") ||
-    pathname === "/admin/login"
-  ) {
+  // فقط مسیرهای /admin را محافظت می‌کنیم
+  if (!pathname.startsWith("/admin")) {
     return NextResponse.next();
   }
 
-  // فقط مسیرهای admin محافظت شوند
-  if (pathname.startsWith("/admin")) {
-    const token = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+  const accessToken = req.cookies.get("accessToken")?.value;
 
-    // اگر لاگین نیست یا نقش اشتباه دارد
-    if (!token || token.role !== "admin") {
-      const loginUrl = new URL("/admin/login", req.url);
-      loginUrl.searchParams.set("callbackUrl", "/admin/dashboard");
-      return NextResponse.redirect(loginUrl);
-    }
-    if (token.role !== "admin") {
-      return NextResponse.redirect("/unauthorized");
-    }
-
+  // اگر کوکی نبود → redirect به login
+  if (!accessToken) {
+    return redirectToLogin(req);
   }
 
-  // اجازه عبور در بقیه موارد
-  return NextResponse.next();
+  try {
+    const { payload } = await jwtVerify(accessToken, JWT_SECRET);
+
+    // چک نقش admin
+    if (payload.role !== "admin") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+
+    // دسترسی مجاز
+    return NextResponse.next();
+
+  } catch (err) {
+    // توکن خراب، منقضی یا تغییر داده شده
+    return redirectToLogin(req);
+  }
+}
+
+function redirectToLogin(req: NextRequest) {
+  const loginUrl = new URL("/admin/login", req.url);
+  loginUrl.searchParams.set("callbackUrl", "/admin/dashboard");
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {

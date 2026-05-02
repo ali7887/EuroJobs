@@ -1,7 +1,6 @@
 // src/lib/types/auth.types.ts
-import type { SafeUser } from '@/lib/db/schema';
 import type { TokenPair } from '@/lib/types/token.types';
-
+import type { User, NewUser, SafeUser } from "@/lib/db/schema/users"
 export enum AuthErrorCode {
   INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
   USER_NOT_FOUND      = 'USER_NOT_FOUND',

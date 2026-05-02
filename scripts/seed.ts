@@ -33,7 +33,8 @@ async function seed() {
 
   const [admin] = await db.insert(users)
     .values({
-      email: "admin@jobboard.com",
+      id: crypto.randomUUID(),
+      email: "admin@test.com",
       name: "Admin",
       passwordHash: adminPass,
       role: "admin",
@@ -41,7 +42,8 @@ async function seed() {
     })
     .returning();
 
-  const [company] = await db.insert(companies)
+  const [company] = await db
+    .insert(companies)
     .values({
       name: "Acme Corp",
       ownerId: admin.id,
@@ -66,7 +68,7 @@ async function seed() {
   await client.end();
 }
 
-seed().catch(err => {
+seed().catch((err) => {
   console.error(err);
   process.exit(1);
 });

@@ -7,3 +7,4 @@ export * from "./applications";
 export * from "./job_embeddings";
 export * from "./sessions";
 export * from "./refresh_tokens";
+export * from "./users";

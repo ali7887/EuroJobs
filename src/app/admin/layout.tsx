@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="admin-main">
         {/* PROFILE LINK AREA */}
         <div className="profile-link-container">
-          <Link href="/admin/profile" className="profile-link">
+          <Link href="/admin/settings" className="profile-link">
             Profile
           </Link>
         </div>

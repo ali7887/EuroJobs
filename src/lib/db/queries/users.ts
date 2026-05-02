@@ -1,16 +1,24 @@
-//D:\project\NEW\job-board-saas\src\lib\db\queries\users.ts
 import { db } from "../index";
 import { users } from "../schema";
 
-export async function getUsers() {
-  return db.select().from(users);
+async function sha256(str: string): Promise<string> {
+  const enc = new TextEncoder();
+  const hash = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function createUser(name: string, email: string) {
-  const [user] = await db
-    .insert(users)
-    .values({ name, email })
-    .returning();
+export async function createUser(name: string, email: string, password: string) {
+  const passwordHash = await sha256(password);
+
+  const userId = crypto.randomUUID();
+
+  const [user] = await db.insert(users).values({
+    id: userId,
+    name,
+    email,
+    passwordHash,
+    role: "user",
+  }).returning();
 
   return user;
 }

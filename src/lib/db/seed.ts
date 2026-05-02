@@ -31,13 +31,15 @@ async function seed() {
   const adminPass = await sha256("Password123");
 
   const [admin] = await db.insert(users)
-    .values({
-      email: "admin@jobboard.com",
-      name: "Admin",
-      passwordHash: adminPass,
-      role: "admin",
-      updatedAt: new Date(),
-    })
+.values({
+  id: crypto.randomUUID(),
+  email: "admin@test.com",
+  name: "Admin",
+  passwordHash: adminPass,
+  role: "admin",
+  updatedAt: new Date()
+})
+
     .returning();
 
   const [company] = await db.insert(companies)

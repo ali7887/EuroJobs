@@ -8,7 +8,8 @@ export async function POST(request: Request) {
 
   await db
     .update(refreshTokens)
-    .set({ revoked: true })
+    .set({ isRevoked: true })
+
     .where(eq(refreshTokens.userId, ctx.userId));
 
   return Response.json({ success: true });

@@ -18,7 +18,7 @@ export default function AdminLayout({
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="admin-main">
-         <Link href="/admin/profile">Profile</Link>
+         <Link href="/admin/settings">Profile</Link>
 
         <Topbar onMenuClick={() => setOpen(true)} />
         <main className="admin-content">{children}</main>

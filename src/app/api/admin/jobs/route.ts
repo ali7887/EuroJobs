@@ -1,8 +1,6 @@
 // src/app/api/admin/jobs/route.ts
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "@/lib/auth";
+ import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db/db";
 import { jobs, type NewJob, jobStatusEnum } from "@/lib/db/schema/jobs";
 
@@ -14,9 +12,17 @@ export async function GET() {
 
 // POST /api/admin/jobs  → ایجاد شغل جدید
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+ 
 
-  if (session?.user?.role !== "admin") {
+
+
+const session = await auth();
+
+if (!session?.userId) {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+};
+
+  if (session?.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

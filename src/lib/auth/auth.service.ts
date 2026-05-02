@@ -1,17 +1,15 @@
-import type { User } from "@/lib/db/schema";
 import type { UserRole } from "@/lib/jwt/jwt.types";
 
 import {
   signAccessToken,
   signRefreshToken,
   signResetPasswordToken,
-  signEmailVerificationToken
+  signEmailVerificationToken,
 } from "@/lib/jwt/jwt.utils";
 
 import { db } from "@/lib/db";
-import { refreshTokens } from "@/lib/db/schema";
+import { refreshTokens, User } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-
 
 export const runtime = "nodejs";
 
@@ -29,35 +27,32 @@ export async function loginUser(user: User) {
   });
 
   await db.insert(refreshTokens).values({
+    id: crypto.randomUUID(),
     userId: user.id,
-    token: refreshTokenId,
+    tokenHash: refreshTokenId, // schema requires tokenHash
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-    revoked: false
+    isRevoked: false,
   });
 
   return { accessToken, refreshToken };
 }
 
 export async function sendPasswordResetEmail(user: User) {
-  const resetToken = await signResetPasswordToken({
+  return await signResetPasswordToken({
     userId: user.id,
     email: user.email,
   });
-
-  return resetToken;
 }
 
 export async function sendVerificationEmail(user: User) {
-  const token = await signEmailVerificationToken({
+  return await signEmailVerificationToken({
     userId: user.id,
     email: user.email,
   });
-
-  return token;
 }
 
 export const authService = {
   loginUser,
   sendPasswordResetEmail,
-  sendVerificationEmail
+  sendVerificationEmail,
 };

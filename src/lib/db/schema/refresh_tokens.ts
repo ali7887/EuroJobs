@@ -1,21 +1,13 @@
-import { pgTable, uuid, text, timestamp, boolean } from "drizzle-orm/pg-core";
+// src/lib/db/schema/refresh_tokens.ts
+import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { users } from "./users";
+import { sql } from "drizzle-orm";
 
 export const refreshTokens = pgTable("refresh_tokens", {
-  id: uuid("id").defaultRandom().primaryKey(),
-
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-
-  token: text("token").notNull(),
-
-  revoked: boolean("revoked").default(false),
-
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  tokenHash: text("token_hash").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-
-  createdAt: timestamp("created_at").defaultNow(),
+  isRevoked: boolean("is_revoked").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-export type RefreshToken = typeof refreshTokens.$inferSelect;
-export type NewRefreshToken = typeof refreshTokens.$inferInsert;
