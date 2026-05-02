@@ -81,7 +81,7 @@ export default function LoginForm() {
 
       <Button
         type="submit"
-        variant="primary"
+        variant="secondary"
         size="md"
         loading={loading}
         fullWidth

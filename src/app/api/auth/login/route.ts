@@ -4,83 +4,103 @@ import { users, refreshTokens } from "@/lib/db/schema";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { eq } from "drizzle-orm";
-import { cookies } from "next/headers";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
-const JWT_ACCESS_EXP = "30m";
-const JWT_REFRESH_EXP_MS = 1000 * 60 * 60 * 24 * 7;
+const ACCESS_TOKEN_EXPIRE = "30m";
+const REFRESH_EXPIRE_MS = 1000 * 60 * 60 * 24 * 7;
+console.log("ENV CHECK:", process.env.DATABASE_URL);
+
+const ACCESS_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "dev-secret-access-1234567890"
+);
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    console.log("LOGIN ROUTE (FINAL) HIT");
+    console.log("ENV CHECK:", process.env.DATABASE_URL);
 
-    if (!email || !password)
+    const body = await req.json();
+    const { email, password } = body || {};
+
+    if (!email || !password) {
       return NextResponse.json(
-        { error: "ایمیل یا رمز عبور وارد نشده است" },
+        { error: "Username or Password is wrong" },
         { status: 400 }
       );
+    }
 
+    // Find user
     const [user] = await db.select().from(users).where(eq(users.email, email));
-    if (!user)
-      return NextResponse.json({ error: "کاربر یافت نشد" }, { status: 404 });
 
-    const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match)
-      return NextResponse.json({ error: "رمز عبور نادرست است" }, { status: 401 });
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
 
-    // Access Token
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      return NextResponse.json(
+        { error: " Username or Password is wrong" },
+        { status: 401 }
+      );
+    }
+
+    // Generate Access Token
     const accessToken = await new SignJWT({
       userId: user.id,
       role: user.role,
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime(JWT_ACCESS_EXP)
-      .sign(JWT_SECRET);
+      .setExpirationTime(ACCESS_TOKEN_EXPIRE)
+      .sign(ACCESS_SECRET);
 
-    // Refresh Token
+    // Generate Refresh Token
     const refreshToken = crypto.randomUUID();
     const tokenHash = await bcrypt.hash(refreshToken, 10);
 
     await db.insert(refreshTokens).values({
       id: crypto.randomUUID(),
       userId: user.id,
-      tokenHash: tokenHash,
-      expiresAt: new Date(Date.now() + JWT_REFRESH_EXP_MS),
+      tokenHash,
       isRevoked: false,
+      expiresAt: new Date(Date.now() + REFRESH_EXPIRE_MS),
     });
 
-    const res = NextResponse.json({
+    // Build Response
+    const response = NextResponse.json({
       success: true,
       user: {
         id: user.id,
-        name: user.name,
         email: user.email,
+        name: user.name,
         role: user.role,
       },
     });
 
-    res.cookies.set("accessToken", accessToken, {
+    // Attach Cookies
+    response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 30,
+      maxAge: 60 * 30, // 30 minutes
     });
 
-    res.cookies.set("refreshToken", refreshToken, {
+    response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
-    return res;
-  } catch (error) {
-    console.error("Login error:", error);
+    return response;
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
     return NextResponse.json(
-      { error: "خطا در فرایند ورود" },
+      { error: "Server error" },
       { status: 500 }
     );
   }

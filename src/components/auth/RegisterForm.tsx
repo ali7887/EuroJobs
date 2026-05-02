@@ -85,7 +85,10 @@ export default function RegisterForm() {
         placeholder="••••••••"
       />
 
-      <Button type="submit" loading={loading} fullWidth>
+      <Button type="submit" variant="secondary"
+        size="md"
+
+        loading={loading} fullWidth>
         Create Account
       </Button>
 
